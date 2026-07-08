@@ -25,7 +25,7 @@
     }
 
     :root{ --ink:#ececec; --bg:#0b0b0b; --line:#242424; --wrap:1440px; }
-    *{box-sizing:border-box} html,body{height:100%} html{scroll-behavior:smooth}
+    *{box-sizing:border-box} html,body{height:100%} html{scroll-behavior:smooth;overflow-x:hidden}
     body{margin:0;background:var(--bg);color:var(--ink);
          font:16px/1.55 'Roboto',system-ui,-apple-system,'Segoe UI',Inter,Arial;
          -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
@@ -38,36 +38,7 @@
     }
 
     /* ===== NAV */
-    .nav{position:fixed;top:0;left:0;width:100%;height:96px;display:flex;align-items:center;z-index:60;background:transparent}
-	/* ==== NAV: чисте “скло” з розмиттям, що зникає ВНИЗ через маску ==== */
-    .nav.blur{
-      background: transparent;              /* без кольорових підкладок */
-      border-bottom: none;                   /* без білої лінії */
-      position: fixed;                       /* вже є, але на випадок */
-      z-index: 70;
-    }
-
-    /* шар-скло з градієнтною маскою */
-    .nav.blur::before{
-      content:"";
-      position:absolute; inset:0;
-      pointer-events:none;                   /* не чіпляє кліки */
-      -webkit-backdrop-filter: blur(18px);
-      backdrop-filter: blur(18px);
-      background: rgba(255,255,255,0.08);    /* легенький “молочний” серпанок */
-
-      /* ГРАДІЄНТ-МАСКА: зверху повна, донизу прозоріє */
-      -webkit-mask-image: linear-gradient(to bottom,
-        rgba(0,0,0,1)   0%,
-        rgba(0,0,0,.85) 60%,
-        rgba(0,0,0,.40) 92%,
-        rgba(0,0,0,0)   100%);
-      mask-image: linear-gradient(to bottom,
-        rgba(0,0,0,1)   0%,
-        rgba(0,0,0,.85) 75%,
-        rgba(0,0,0,.40) 95%,
-        rgba(0,0,0,0)   100%);
-    }
+    .nav{position:fixed;top:0;left:0;width:100%;height:96px;display:flex;align-items:center;z-index:60;background:transparent;transition:transform .6s cubic-bezier(.22,.61,.36,1);will-change:transform}
 
     /* Текст — білі літери (залишаємо як було) */
     .nav .brand,
@@ -98,23 +69,53 @@
 	}
 	.burger span:first-child{ top:4px; }
 	.burger span:last-child{ top:16px; }
-	.nav:not(.blur) .burger span{ background:#fff; }
-	.nav.blur .burger span{ background:#111; }
+	.burger span{ background:#fff; }
 
-	/* Fullscreen mobile menu overlay */
+	/* Fullscreen menu overlay — однаковий вигляд на desktop і mobile: чорний фон, текст зліва */
 	.mobile-menu{
 	  position:fixed; top:0; left:0; width:100%; height:100%; z-index:200;
-	  background:#ffffff;
-	  display:flex; flex-direction:column; align-items:center; justify-content:center;
-	  gap:clamp(20px,4vh,36px);
-	  opacity:0; visibility:hidden; pointer-events:none;
-	  transition:opacity .35s ease;
+	  background:#000;
+	  display:flex; flex-direction:column; align-items:flex-start; justify-content:center;
+	  padding:0 clamp(24px,6vw,80px);
+	  pointer-events:none;
+	  transform:translateY(-100%);
+	  visibility:hidden;
+	  transition:transform .5s cubic-bezier(.22,.61,.36,1), visibility 0s linear .5s;
 	}
-	.mobile-menu.open{ opacity:1; visibility:visible; pointer-events:auto; }
-	.mobile-menu-links{ display:flex; flex-direction:column; align-items:center; gap:clamp(20px,4vh,36px); }
+	.mobile-menu.open{
+	  pointer-events:auto;
+	  transform:translateY(0);
+	  visibility:visible;
+	  transition:transform .5s cubic-bezier(.22,.61,.36,1), visibility 0s linear 0s;
+	}
+
+	/* Floating "MENU" button — в'їжджає знизу замість повного нав-бару під час скролу (desktop + mobile) */
+	.menu-fab{
+	  position:fixed; top:24px; right:28px; z-index:250;
+	  display:inline-flex; align-items:center; justify-content:center;
+	  background:#111; color:#fff;
+	  padding:12px 24px; border-radius:999px;
+	  font-family:'Figtree'; font-size:14px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+	  border:none; cursor:pointer;
+	  opacity:0; visibility:hidden; transform:translateY(48px);
+	  transition:opacity .4s ease, transform .4s cubic-bezier(.22,.61,.36,1), visibility 0s linear .4s;
+	}
+	.menu-fab.show{
+	  opacity:1; visibility:visible; transform:translateY(0);
+	  transition:opacity .4s ease, transform .4s cubic-bezier(.22,.61,.36,1), visibility 0s linear 0s;
+	}
+	/* Поки меню відкрите — кнопка завжди видима, незалежно від позиції скролу */
+	body.menu-active .menu-fab{
+	  opacity:1 !important; visibility:visible !important; transform:translateY(0) !important;
+	}
+	@media (max-width:999px){
+	  .menu-fab{ top:18px; right:20px; padding:10px 20px; font-size:13px; }
+	}
+	.mobile-menu-links{ display:flex; flex-direction:column; align-items:flex-start; gap:0; width:100%; }
 	.mobile-link{
-	  font-family:'Figtree'; font-size:clamp(28px,7vw,48px); font-weight:700; letter-spacing:.02em;
-	  color:#111; text-transform:uppercase; opacity:0; transform:translateY(16px);
+	  font-family:'Figtree'; font-size:clamp(32px,5.5vw,64px); font-weight:400; line-height:0.95;
+	  color:#fff; text-transform:uppercase; text-align:left; letter-spacing:.02em;
+	  opacity:0; transform:translateY(16px);
 	  transition:opacity .4s ease, transform .4s ease;
 	}
 	.mobile-menu.open .mobile-link{ opacity:1; transform:translateY(0); }
@@ -122,19 +123,21 @@
 	.mobile-menu.open .mobile-link:nth-child(2){ transition-delay:.10s; }
 	.mobile-menu.open .mobile-link:nth-child(3){ transition-delay:.15s; }
 	.mobile-menu.open .mobile-link:nth-child(4){ transition-delay:.20s; }
+	.mobile-menu.open .mobile-link:nth-child(5){ transition-delay:.25s; }
 
-	.mobile-menu-close{
-	  position:absolute; top:32px; right:28px; width:32px; height:32px;
-	  background:none; border:none; cursor:pointer; padding:0;
+	.mobile-instagram{
+	  position:absolute; bottom:32px; left:clamp(24px,6vw,80px);
+	  color:#fff; font-family:'Figtree'; font-size:14px; font-weight:700; letter-spacing:.1em;
+	  text-transform:uppercase; text-decoration:none;
+	  opacity:0; transform:translateY(10px);
+	  transition:opacity .4s ease, transform .4s ease;
 	}
-	.mobile-menu-close span{
-	  position:absolute; top:50%; left:0; width:100%; height:2px; background:#111;
+	.mobile-menu.open .mobile-instagram{
+	  opacity:1; transform:translateY(0); transition-delay:.3s;
 	}
-	.mobile-menu-close span:first-child{ transform:rotate(45deg); }
-	.mobile-menu-close span:last-child{ transform:rotate(-45deg); }
 
-	/* ===== TABLET + MOBILE (до 1279px): burger замість повного меню ===== */
-	@media (max-width:1279px){
+	/* ===== TABLET + MOBILE (до 999px): burger замість повного меню ===== */
+	@media (max-width:999px){
 	  .nav .inner{grid-template-columns:1fr auto 1fr;}
 	  .left{display:none;}
 	  .right{display:none;}
@@ -578,11 +581,11 @@
       #about .frame{ transform:scale(1); opacity:1; transition:none !important; }
     }
 
-    /* ===== ABOUT COMPACT (< 1024px): flip-card на телефоні/планшеті ===== */
+    /* ===== ABOUT COMPACT (< 1000px): flip-card на телефоні/планшеті ===== */
     .ac-pin-wrap{ display:none; }
 
-    @media (max-width:1023px){
-      /* ховаємо старий desktop pin-scroll нижче 1024px */
+    @media (max-width:999px){
+      /* ховаємо старий desktop pin-scroll нижче 1000px */
       #about .lead, #about .pin-wrap, #about .after{ display:none !important; }
       #about{ min-height:0; }
 
@@ -596,7 +599,7 @@
     }
 
     /* ---- Full-screen flip-card з "піном" ---- */
-    @media (max-width:1023px){
+    @media (max-width:999px){
       .ac-pin-wrap{ height:145vh; }
       .about-compact{
         position:sticky;
@@ -698,8 +701,8 @@
       .ac-back-btn:active{ transform:translate(-50%, 0) scale(.97); }
     }
 
-    /* ---- Планшет-портрет (768–1023px): та ж flip-логіка, просто просторіше ---- */
-    @media (min-width:768px) and (max-width:1023px){
+    /* ---- Планшет-портрет (768–999px): та ж flip-логіка, просто просторіше ---- */
+    @media (min-width:768px) and (max-width:999px){
       .ac-flip-btn{ bottom:clamp(40px,7vh,64px); padding:18px 48px; font-size:15px; }
       .ac-back{ padding:64px 64px 140px; }
       .ac-back-btn{ bottom:clamp(40px,7vh,64px); padding:18px 48px; font-size:15px; }
@@ -840,7 +843,7 @@
     }
 
     /* --- CUSTOM OVERRIDES V3 --- */
-    @media (max-width:1279px) {
+    @media (max-width:999px) {
       .nav { 
         align-items: flex-start !important; 
         padding-top: 20px !important; 
@@ -864,72 +867,12 @@
         font-weight: 700;
         letter-spacing: 0.1em;
         color: #fff;
-        transition: color 0.3s ease;
         line-height: 1 !important;
       }
-      .nav.blur .burger::after { color: #111; }
-      
+
       /* Menu active state applied via body class */
-      body.menu-active .nav.blur::before { display: none !important; }
       body.menu-active .brand { color: #fff !important; }
       body.menu-active .burger::after { content: "CLOSE" !important; color: #fff !important; }
-
-      /* Dropdown mobile menu */
-      .mobile-menu {
-        left: 0 !important;
-        right: 0 !important;
-        top: -100% !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        height: 100vh !important;
-        background: #000 !important;
-        opacity: 1 !important;
-        visibility: visible !important;
-        box-shadow: none !important;
-        transition: top 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
-        align-items: flex-start !important;
-        justify-content: center !important;
-        padding: 0 20px !important;
-      }
-      .mobile-menu.open {
-        top: 0 !important;
-        pointer-events: auto !important;
-      }
-      .mobile-menu-links {
-        align-items: flex-start !important;
-        gap: 0px !important; 
-        width: 100% !important;
-      }
-      .mobile-link {
-        font-size: 44px !important;
-        font-weight: 400 !important;
-        line-height: 0.95 !important; 
-        color: #fff !important;
-        text-align: left !important;
-        padding: 0 !important;
-      }
-      .mobile-menu-close {
-        display: none !important;
-      }
-      .mobile-instagram {
-        position: absolute;
-        bottom: 20px;
-        left: 20px;
-        color: #fff;
-        font-size: 14px;
-        font-weight: 700;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        text-decoration: none;
-        opacity: 0;
-        transform: translateY(10px);
-        transition: opacity 0.4s ease, transform 0.4s ease;
-      }
-      .mobile-menu.open .mobile-instagram {
-        opacity: 1;
-        transform: translateY(0);
-        transition-delay: 0.3s;
-      }
 	  
     }
 
@@ -958,12 +901,13 @@
     </div>
   </div>
 
+  <!-- FLOATING MENU BUTTON — з'являється замість повного нав-бару при скролі -->
+  <button class="menu-fab" id="menuFab" aria-label="Open menu">MENU</button>
+
   <!-- MOBILE / TABLET MENU OVERLAY -->
   <div class="mobile-menu" id="mobileMenu">
-    <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Close menu">
-      <span></span><span></span>
-    </button>
     <nav class="mobile-menu-links">
+      <a href="#intro" class="mobile-link">HOME</a>
       <a href="#projects" class="mobile-link">PROJECTS</a>
       <a href="#services" class="mobile-link">SERVICES</a>
       <a href="#about" class="mobile-link">ABOUT</a>
@@ -1056,7 +1000,7 @@
   <!-- ABOUT -->
   <section id="about" role="region" aria-label="About — Photo and Text Reveal" data-nav-ink="dark"> 
 
-    <!-- ABOUT COMPACT: flip-card на телефоні/планшеті (<1024px) -->
+    <!-- ABOUT COMPACT: flip-card на телефоні/планшеті (<1000px) -->
     <div class="ac-pin-wrap" id="acPinWrap">
       <div class="about-compact" id="aboutCompact">
         <div class="ac-card" id="acCard">
@@ -1200,25 +1144,48 @@
       });
     });
 
-    /* Burger menu — відкриття/закриття */
+    /* Burger / MENU-fab — відкриття/закриття */
     const burgerBtn   = document.getElementById('burgerBtn');
+    const menuFab     = document.getElementById('menuFab');
     const mobileMenu  = document.getElementById('mobileMenu');
-    const mobileClose = document.getElementById('mobileMenuClose');
+
+    let lockedScrollY = 0;
 
     function openMobileMenu(){
+      lockedScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
+      document.body.style.position = 'fixed';
+      document.body.style.top = (-lockedScrollY) + 'px';
+      document.body.style.left = '0';
+      document.body.style.right = '0';
+      document.body.style.width = '100%';
+
       mobileMenu.classList.add('open');
       document.body.classList.add('menu-active');
       burgerBtn.setAttribute('aria-expanded','true');
-      document.body.style.overflow = 'hidden';
+      menuFab.setAttribute('aria-expanded','true');
+      menuFab.textContent = 'CLOSE';
     }
     function closeMobileMenu(){
       mobileMenu.classList.remove('open');
       document.body.classList.remove('menu-active');
       burgerBtn.setAttribute('aria-expanded','false');
-      document.body.style.overflow = '';
+      menuFab.setAttribute('aria-expanded','false');
+      menuFab.textContent = 'MENU';
+
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.left = '';
+      document.body.style.right = '';
+      document.body.style.width = '';
+
+      const prevBehavior = document.documentElement.style.scrollBehavior;
+      document.documentElement.style.scrollBehavior = 'auto';
+      window.scrollTo(0, lockedScrollY);
+      document.documentElement.style.scrollBehavior = prevBehavior;
     }
-    burgerBtn.addEventListener('click', () => { mobileMenu.classList.contains('open') ? closeMobileMenu() : openMobileMenu(); });
-    mobileClose.addEventListener('click', closeMobileMenu);
+    function toggleMobileMenu(){ mobileMenu.classList.contains('open') ? closeMobileMenu() : openMobileMenu(); }
+    burgerBtn.addEventListener('click', toggleMobileMenu);
+    menuFab.addEventListener('click', toggleMobileMenu);
 
     /* Пункти мобільного меню — закрити меню і скролити до секції */
     document.querySelectorAll('.mobile-link').forEach(link=>{
@@ -1521,7 +1488,7 @@
       } else { window.addEventListener('load', show); }
     })();
 
-    /* ABOUT COMPACT: flip-card interaction (<1024px) + затримка появи кнопки під час піну */
+    /* ABOUT COMPACT: flip-card interaction (<1000px) + затримка появи кнопки під час піну */
     (function(){
       const card = document.getElementById('acCard');
       const flipBtn = document.getElementById('acFlipBtn');
@@ -1594,29 +1561,31 @@
       onScroll();
     })();
 	
-    /* NAV hide on scroll down, show on scroll up + blur when not at top */
+    /* NAV: ховається при скролі вниз, замість нього з'являється кругла кнопка MENU.
+       Кнопка лишається видимою, поки не повернешся майже до самого верху сторінки —
+       тільки тоді бар повертається, а кнопка ховається. Однакова логіка на desktop і mobile. */
 	(function(){
 	const nav = document.querySelector('.nav');
-	if(!nav) return;
-	
-	let lastY = window.pageYOffset || document.documentElement.scrollTop || 0;
-	let ticking = false;
-	const SHOW_DELTA = 6;      
-	const HIDE_AFTER = 140;    
+	const fab = document.getElementById('menuFab');
+	if(!nav || !fab) return;
 
-	function atTop(){ return (window.pageYOffset || document.documentElement.scrollTop || 0) < 2; }
+	let ticking = false;
+	const HIDE_AFTER   = 140;   // після цього нав ховається при скролі вниз
+	const FAB_AFTER    = 220;   // трохи пізніше, з невеликою затримкою, з'являється кнопка MENU
+	const NEAR_TOP     = 80;    // тільки повернувшись сюди — бар повертається, кнопка зникає
 
 	function update(){
+		if (document.body.classList.contains('menu-active')){ ticking = false; return; }
 		const y = window.pageYOffset || document.documentElement.scrollTop || 0;
-		const dirDown = y > lastY + SHOW_DELTA;
-		const dirUp   = y < lastY - SHOW_DELTA;
 
-        if (dirDown && y > HIDE_AFTER) nav.classList.add('hide');
-        if (dirUp) nav.classList.remove('hide');
+        if (y < NEAR_TOP){
+          nav.classList.remove('hide');
+          fab.classList.remove('show');
+        } else if (y > HIDE_AFTER){
+          nav.classList.add('hide');
+          if (y > FAB_AFTER) fab.classList.add('show');
+        }
 
-        nav.classList.toggle('blur', !atTop());
-
-        lastY = y;
         ticking = false;
 	}
 
@@ -1625,9 +1594,19 @@
 	}
 
 	window.addEventListener('scroll', onScroll, {passive:true});
-	window.addEventListener('resize', onScroll, {passive:true});
 	window.addEventListener('load', update, {once:true});
 	update();
+
+	/* Захист від глюку: коли вікно перетинає брейкпоінт 999px під час ресайзу,
+	   мобільне меню не повинно проїжджати анімацією — тимчасово вимикаємо transition */
+	const mobileMenuEl = document.getElementById('mobileMenu');
+	let resizeTimer;
+	window.addEventListener('resize', ()=>{
+	  if(mobileMenuEl) mobileMenuEl.style.transition = 'none';
+	  onScroll();
+	  clearTimeout(resizeTimer);
+	  resizeTimer = setTimeout(()=>{ if(mobileMenuEl) mobileMenuEl.style.transition = ''; }, 150);
+	}, {passive:true});
 	})();
 	
 	/* Cursor dot follower — вимкнено на тач-пристроях */

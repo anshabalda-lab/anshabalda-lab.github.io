@@ -152,13 +152,12 @@
       object-fit:cover;
       object-position:center;
       transform:scale(var(--sc,1));
-      transition:transform .08s linear;
       filter:contrast(1.02) saturate(1.02);
       display:block;}
     .title{position:relative;z-index:1;margin:0 6vw;font-family:'Figtree';font-weight:900;letter-spacing:-.02em;
            font-size:clamp(42px,8.2vw,88px);text-align:center;
            text-shadow:0 0 18px rgba(0,0,0,.35);
-           transform:translateY(var(--ty,0px));transition:transform .08s linear;}
+           transform:translateY(var(--ty,0px));}
     .scrollcue{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);color:#eaeaea;font-size:12px;opacity:.9}
     .ring{width:18px;height:18px;border:2px solid #eaeaea;border-radius:50%;animation:pulse 1.8s infinite;margin:0 auto 6px}
     @keyframes pulse{0%{opacity:.6;transform:scale(1)}70%{opacity:1;transform:scale(1.25)}100%{opacity:.3;transform:scale(1)}}
@@ -1243,15 +1242,26 @@
       });
     });
 
-    /* HERO parallax */
-    document.addEventListener('scroll', () => {
-      const sc = Math.min(1 + window.scrollY / 2200, 1.12);
-      const ty = Math.min(window.scrollY / 45, 18);
+    /* HERO parallax — прив'язано до requestAnimationFrame, а не до кожної
+       окремої події скролу (на мобільних вони "рвані", особливо з інерцією,
+       через що без обмеження частоти ефект сіпався) */
+    (function(){
       const hero = document.querySelector('.hero');
       const title = document.querySelector('.title');
-      if (hero) hero.style.setProperty('--sc', sc);
-      if (title) title.style.setProperty('--ty', ty + 'px');
-    }, {passive:true});
+      if (!hero || !title) return;
+      let ticking = false;
+      function update(){
+        const sc = Math.min(1 + window.scrollY / 2200, 1.12);
+        const ty = Math.min(window.scrollY / 45, 18);
+        hero.style.setProperty('--sc', sc);
+        title.style.setProperty('--ty', ty + 'px');
+        ticking = false;
+      }
+      document.addEventListener('scroll', () => {
+        if (!ticking){ ticking = true; requestAnimationFrame(update); }
+      }, {passive:true});
+      update();
+    })();
 
     /* Pinned headline (center-first reveal) */
     (function(){

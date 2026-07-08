@@ -143,7 +143,7 @@
 	}
   
     /* ===== HERO */
-    .hero{position:relative;min-height:100dvh;display:grid;place-items:center;overflow:hidden}
+    .hero{position:relative;min-height:calc(var(--vh, 1vh) * 100);display:grid;place-items:center;overflow:hidden}
     .hero .bg {
       position:absolute;
       inset:0;
@@ -164,8 +164,8 @@
     @keyframes pulse{0%{opacity:.6;transform:scale(1)}70%{opacity:1;transform:scale(1.25)}100%{opacity:.3;transform:scale(1)}}
 
     /* ===== PINNED HEADLINE */
-    #pin.pin-wrap{position:relative;height:200dvh;border-top:1px solid #d4d4d4;background:#ffffff;color:#000}
-    .pin{position:sticky;top:0;height:100dvh;padding:0 3vw}
+    #pin.pin-wrap{position:relative;height:calc(var(--vh, 1vh) * 200);border-top:1px solid #d4d4d4;background:#ffffff;color:#000}
+    .pin{position:sticky;top:0;height:calc(var(--vh, 1vh) * 100);padding:0 3vw}
     .stack{position:relative;height:100%;}
     .layer, .outline-wrap{
       position:absolute; inset:0;
@@ -189,7 +189,7 @@
     @media (max-width:900px){
       #projects-wrap{height:220vh;}
     }
-    #projects{position:sticky;top:0;height:100dvh;overflow:hidden;background:#ffffff;border-top:1px solid var(--line)}
+    #projects{position:sticky;top:0;height:calc(var(--vh, 1vh) * 100);overflow:hidden;background:#ffffff;border-top:1px solid var(--line)}
     .stage{position:absolute;inset:0}
     .stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.04);transition:opacity .8s ease, transform .8s ease;filter:brightness(.88)}
     .stage img.active{opacity:1;transform:scale(1)}
@@ -308,7 +308,7 @@
       --scale: clamp(0.88, 100vw / var(--design-w), 1);
     }
     #services{
-      position:relative;width:100%;height:100vh;background:#ffffff !important;color:#111;overflow:hidden;
+      position:relative;width:100%;height:calc(var(--vh, 1vh) * 100);background:#ffffff !important;color:#111;overflow:hidden;
       border-top:1px solid #ececec;
     }
     #services .scale-target{transform:scale(var(--scale));transform-origin:top center;will-change:transform}
@@ -526,7 +526,7 @@
     #about .lead{ height:var(--lead-h); border:none; }
     #about .after{ height:var(--after-h); border:none; }
     #about .pin-wrap{ position:relative; height:var(--pin-h); background:transparent; border:none; } 
-    #about .sticky{ position:sticky; top:0; height:100vh; overflow:visible; }
+    #about .sticky{ position:sticky; top:0; height:calc(var(--vh, 1vh) * 100); overflow:visible; }
 
     /* великі слова */
     #about .words{ position:absolute; inset:0; pointer-events:none; }
@@ -596,18 +596,18 @@
 
     /* ---- Full-screen flip-card з "піном" ---- */
     @media (max-width:999px){
-      .ac-pin-wrap{ height:145dvh; }
+      .ac-pin-wrap{ height:calc(var(--vh, 1vh) * 145); }
       .about-compact{
         position:sticky;
         top:0;
-        height:100dvh;
+        height:calc(var(--vh, 1vh) * 100);
         perspective:1800px;
         overflow:hidden;
       }
       .ac-card{
         position:relative;
         width:100%;
-        height:100dvh;
+        height:calc(var(--vh, 1vh) * 100);
         transform-style:preserve-3d;
         transition:transform .9s cubic-bezier(.22,.61,.36,1);
       }
@@ -620,15 +620,15 @@
       .ac-card.flipped .ac-front{ pointer-events:none; }
       .ac-card.flipped .ac-back{ pointer-events:auto; }
 
-      /* Safari іноді "просвічує" кнопку зі зворотної сторони крізь 3D-поворот
-         (backface-visibility сам по собі це не завжди прибирає). Ховаємо неактивну
-         сторону через visibility — з'являється одразу (щоб не зіпсувати сам 3D-flip),
-         а ховається лише через .9s (тривалість перевороту), щоб анімація встигла
-         дограти до кінця. */
-      .ac-front{ visibility:visible; transition:visibility 0s linear 0s; }
-      .ac-back{ visibility:visible; transition:visibility 0s linear 0s; }
-      .ac-card:not(.flipped) .ac-back{ visibility:hidden; transition-delay:.9s; }
-      .ac-card.flipped .ac-front{ visibility:hidden; transition-delay:.9s; }
+      /* Safari іноді "просвічує" кнопки (About/Back) крізь 3D-поворот навіть
+         посеред анімації (backface-visibility сам по собі це не прибирає).
+         Ховаємо/показуємо саме кнопки миттєво, без затримки — сама фотографія
+         і текст все одно плавно "обертаються" через backface-visibility,
+         а кнопки просто миттєво з'являються/зникають в потрібний бік. */
+      .ac-flip-btn{ visibility:visible; }
+      .ac-card.flipped .ac-flip-btn{ visibility:hidden; }
+      .ac-back-btn{ visibility:hidden; }
+      .ac-card.flipped .ac-back-btn{ visibility:visible; }
 
       .ac-face{
         position:absolute; inset:0;
@@ -1131,6 +1131,32 @@
   <div id="cursor-dot"></div>
 
   <script>
+    /* ===== Стабільна висота екрана для iOS Safari =====
+       Замість того, щоб height:100dvh перераховувався щокадру під час
+       анімації показу/ховання нижньої панелі Safari (через що всі
+       "прилипаючі" (position:sticky) секції сіпались при скролі), фіксуємо
+       висоту один раз через JS-змінну --vh і оновлюємо її тільки при
+       реальній зміні розміру вікна (поворот екрана), а не під час
+       звичайного скролу. */
+    (function(){
+      function setStableVH(){
+        document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+      }
+      setStableVH();
+
+      let resizeTimer;
+      window.addEventListener('resize', function(){
+        clearTimeout(resizeTimer);
+        // невелика затримка — щоб не ловити проміжні кадри анімації панелі Safari,
+        // а перерахувати тільки коли розмір вікна дійсно "усівся"
+        resizeTimer = setTimeout(setStableVH, 250);
+      }, {passive:true});
+
+      window.addEventListener('orientationchange', function(){
+        setTimeout(setStableVH, 300);
+      });
+    })();
+
     /* Brand → scroll to HERO */
     document.getElementById('brandLink').addEventListener('click', (e)=>{
       e.preventDefault();

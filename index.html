@@ -1,0 +1,1850 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FORMULA — Home + Projects + Services + About + Contact</title>
+  <meta name="description" content="Hero, pinned headline, projects stage, Services band, About section and refined Contacts.">
+  <style>
+    /* ===== Custom fonts ===== */
+    @font-face{
+      font-family:'Figtree';
+      src:url('Figtree-VariableFont_wght.ttf') format('truetype-variations'),
+          url('Figtree-VariableFont_wght.ttf') format('truetype');
+      font-weight:300 900;
+      font-style:normal;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:'Roboto';
+      src:url('Roboto-VariableFont_wdth,wght.ttf') format('truetype-variations'),
+          url('Roboto-VariableFont_wdth,wght.ttf') format('truetype');
+      font-weight:100 900;
+      font-style:normal;
+      font-display:swap;
+    }
+
+    :root{ --ink:#ececec; --bg:#0b0b0b; --line:#242424; --wrap:1440px; }
+    *{box-sizing:border-box} html,body{height:100%} html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--ink);
+         font:16px/1.55 'Roboto',system-ui,-apple-system,'Segoe UI',Inter,Arial;
+         -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+    a{color:inherit;text-decoration:none}
+
+    /* ===== Top gradient */
+    .nav-gradient{
+      position:fixed; top:0; left:0; width:100%; height:160px; pointer-events:none; z-index:50;
+      background:linear-gradient(180deg, rgba(0,0,0,.45), rgba(0,0,0,.15) 40%, rgba(0,0,0,0));
+    }
+
+    /* ===== NAV */
+    .nav{position:fixed;top:0;left:0;width:100%;height:96px;display:flex;align-items:center;z-index:60;background:transparent}
+	/* ==== NAV: чисте “скло” з розмиттям, що зникає ВНИЗ через маску ==== */
+    .nav.blur{
+      background: transparent;              /* без кольорових підкладок */
+      border-bottom: none;                   /* без білої лінії */
+      position: fixed;                       /* вже є, але на випадок */
+      z-index: 70;
+    }
+
+    /* шар-скло з градієнтною маскою */
+    .nav.blur::before{
+      content:"";
+      position:absolute; inset:0;
+      pointer-events:none;                   /* не чіпляє кліки */
+      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(18px);
+      background: rgba(255,255,255,0.08);    /* легенький “молочний” серпанок */
+
+      /* ГРАДІЄНТ-МАСКА: зверху повна, донизу прозоріє */
+      -webkit-mask-image: linear-gradient(to bottom,
+        rgba(0,0,0,1)   0%,
+        rgba(0,0,0,.85) 60%,
+        rgba(0,0,0,.40) 92%,
+        rgba(0,0,0,0)   100%);
+      mask-image: linear-gradient(to bottom,
+        rgba(0,0,0,1)   0%,
+        rgba(0,0,0,.85) 75%,
+        rgba(0,0,0,.40) 95%,
+        rgba(0,0,0,0)   100%);
+    }
+
+    /* Текст — білі літери (залишаємо як було) */
+    .nav .brand,
+    .nav .link { color:#fff; opacity:.95; }
+    .nav .link:hover{ opacity:1; }
+
+	/* Ефект ховання при скролі вниз (залишаємо, якщо вже є JS для .hide) */
+	.nav.hide{ transform: translateY(-110%); }
+
+	/* Текстові стилі */
+	.nav .wrap{width:100%;padding:0 28px;max-width:var(--wrap);margin:0 auto;}
+	.nav .inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;width:100%;gap:16px;}
+	.left,.right{display:flex;gap:28px;align-items:center;}
+	.right{justify-content:flex-end;}
+	.brand{font-family:'Figtree';font-weight:900;letter-spacing:.06em;color:#fff;font-size:34px;}
+	.nav .link{font-family:'Figtree';font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:#ffffff;opacity:.9;}
+	.nav .link:hover{opacity:1;}
+
+	/* Burger button — прихований на desktop */
+	.burger{
+	  display:none; position:relative; width:32px; height:22px;
+	  background:none; border:none; cursor:pointer; padding:0; z-index:80;
+	  justify-self:end;
+	}
+	.burger span{
+	  position:absolute; left:0; right:0; height:2px; background:#fff;
+	  transition:transform .3s ease, opacity .3s ease;
+	}
+	.burger span:first-child{ top:4px; }
+	.burger span:last-child{ top:16px; }
+	.nav:not(.blur) .burger span{ background:#fff; }
+	.nav.blur .burger span{ background:#111; }
+
+	/* Fullscreen mobile menu overlay */
+	.mobile-menu{
+	  position:fixed; top:0; left:0; width:100%; height:100%; z-index:200;
+	  background:#ffffff;
+	  display:flex; flex-direction:column; align-items:center; justify-content:center;
+	  gap:clamp(20px,4vh,36px);
+	  opacity:0; visibility:hidden; pointer-events:none;
+	  transition:opacity .35s ease;
+	}
+	.mobile-menu.open{ opacity:1; visibility:visible; pointer-events:auto; }
+	.mobile-menu-links{ display:flex; flex-direction:column; align-items:center; gap:clamp(20px,4vh,36px); }
+	.mobile-link{
+	  font-family:'Figtree'; font-size:clamp(28px,7vw,48px); font-weight:700; letter-spacing:.02em;
+	  color:#111; text-transform:uppercase; opacity:0; transform:translateY(16px);
+	  transition:opacity .4s ease, transform .4s ease;
+	}
+	.mobile-menu.open .mobile-link{ opacity:1; transform:translateY(0); }
+	.mobile-menu.open .mobile-link:nth-child(1){ transition-delay:.05s; }
+	.mobile-menu.open .mobile-link:nth-child(2){ transition-delay:.10s; }
+	.mobile-menu.open .mobile-link:nth-child(3){ transition-delay:.15s; }
+	.mobile-menu.open .mobile-link:nth-child(4){ transition-delay:.20s; }
+
+	.mobile-menu-close{
+	  position:absolute; top:32px; right:28px; width:32px; height:32px;
+	  background:none; border:none; cursor:pointer; padding:0;
+	}
+	.mobile-menu-close span{
+	  position:absolute; top:50%; left:0; width:100%; height:2px; background:#111;
+	}
+	.mobile-menu-close span:first-child{ transform:rotate(45deg); }
+	.mobile-menu-close span:last-child{ transform:rotate(-45deg); }
+
+	/* ===== TABLET + MOBILE (до 1279px): burger замість повного меню ===== */
+	@media (max-width:1279px){
+	  .nav .inner{grid-template-columns:1fr auto 1fr;}
+	  .left{display:none;}
+	  .right{display:none;}
+	  .brand{font-size:clamp(24px,4.6vw,42px); grid-column:2; justify-self:center;}
+	  .nav .wrap{padding:0 20px;}
+	  .burger{display:flex; align-items:center; grid-column:3; justify-self:end;}
+	}
+  
+    /* ===== HERO */
+    .hero{position:relative;min-height:100svh;display:grid;place-items:center;overflow:hidden}
+    .hero .bg {
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      object-position:center;
+      transform:scale(var(--sc,1));
+      transition:transform .08s linear;
+      filter:contrast(1.02) saturate(1.02);
+      display:block;}
+    .title{position:relative;z-index:1;margin:0 6vw;font-family:'Figtree';font-weight:900;letter-spacing:-.02em;
+           font-size:clamp(42px,8.2vw,88px);text-align:center;
+           text-shadow:0 0 18px rgba(0,0,0,.35);
+           transform:translateY(var(--ty,0px));transition:transform .08s linear;}
+    .scrollcue{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);color:#eaeaea;font-size:12px;opacity:.9}
+    .ring{width:18px;height:18px;border:2px solid #eaeaea;border-radius:50%;animation:pulse 1.8s infinite;margin:0 auto 6px}
+    @keyframes pulse{0%{opacity:.6;transform:scale(1)}70%{opacity:1;transform:scale(1.25)}100%{opacity:.3;transform:scale(1)}}
+
+    /* ===== PINNED HEADLINE */
+    #pin.pin-wrap{position:relative;height:200svh;border-top:1px solid #d4d4d4;background:#ffffff;color:#000}
+    .pin{position:sticky;top:0;height:100svh;padding:0 3vw}
+    .stack{position:relative;height:100%;}
+    .layer, .outline-wrap{
+      position:absolute; inset:0;
+      display:flex; align-items:center; justify-content:center;
+      pointer-events:none;
+    }
+    .mega{
+      margin:0; line-height:.92; font-family:'Figtree'; font-weight:900; font-size:clamp(36px,9.5vw,120px);
+      letter-spacing:var(--trk,0px);
+      white-space:normal; text-align:center;
+      will-change:transform, opacity; transform:translateZ(0);
+    }
+    .outline{color:transparent; -webkit-text-stroke:1.5px rgba(0,0,0,0.18); text-stroke:1.5px rgba(0,0,0,0.18);}
+    .solid{color:#000}
+    .line{display:block}
+    .w{display:inline-block;opacity:0;transform:translateY(10px);}
+    .full .w{opacity:1;transform:none}
+
+    /* ===== PROJECTS */
+    #projects-wrap{height:200vh;}
+    @media (max-width:900px){
+      #projects-wrap{height:220vh;}
+    }
+    #projects{position:sticky;top:0;height:100svh;overflow:hidden;background:#0e0e0e;border-top:1px solid var(--line)}
+    .stage{position:absolute;inset:0}
+    .stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.04);transition:opacity .8s ease, transform .8s ease;filter:brightness(.88)}
+    .stage img.active{opacity:1;transform:scale(1)}
+    .overlay{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+    .center{text-align:center;padding:0 1rem}
+    .p-title{margin:0 0 6px 0;font-family:'Figtree';font-weight:900;letter-spacing:-.01em;line-height:1;font-size:clamp(28px,5.4vw,64px);text-shadow:0 0 18px rgba(0,0,0,.35)}
+    .p-sub{margin:0 0 12px 0;font-family:'Roboto';color:#d0d0d0;opacity:.9;font-size:clamp(14px,2.2vw,16px)}
+    .p-actions{display:flex;justify-content:center;gap:12px}
+    .btn{
+      pointer-events:auto;
+      display:inline-flex;align-items:center;gap:14px;
+      color:#fff;
+      font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+      padding-bottom:8px;
+      position:relative;
+    }
+    .btn::before{
+      content:'';
+      position:absolute; left:0; bottom:0; width:100%; height:1px;
+      background:rgba(255,255,255,.55);
+      transition:background .25s ease;
+    }
+    .btn:hover::before{ background:rgba(255,255,255,1); }
+    .btn::after{
+      content:'';
+      width:7px; height:7px; border-radius:50%;
+      border:1.5px solid rgba(255,255,255,.7);
+      flex-shrink:0;
+      transition:transform .3s ease, background .3s ease;
+    }
+    .btn:hover::after{ background:#fff; transform:scale(1.15); }
+    .overlay.fade{animation:overlayFade .45s ease}
+
+    /* ===== Mobile/tablet (до 900px): назва вгору, кнопка вниз ===== */
+    @media (max-width:900px){
+      .overlay{ display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding-top:16vh; padding-bottom:22vh; }
+      .center{ display:flex; flex-direction:column; align-items:center; }
+    }
+    @keyframes overlayFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+    /* Side lists */
+    .side{position:absolute;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:30}
+    .side.left{left:12px;align-items:flex-start}
+    .side.right{right:12px;align-items:flex-end}
+    .side a{pointer-events:auto;color:#ffffff;text-decoration:none;opacity:.88;font-size:13px;letter-spacing:.06em;text-transform:uppercase;padding:4px 0}
+    .side a.active,.side a:hover{opacity:1;text-decoration:underline}
+    @media (max-width:900px){.side{display:none}}
+
+    /* Крапки-індикатори — тільки на mobile/tablet (заміна .side списків) */
+    .dots-nav{
+      display:none;
+      position:absolute; left:50%; bottom:28px; transform:translateX(-50%);
+      gap:10px; z-index:30; pointer-events:auto;
+    }
+    .dots-nav .dot{
+      width:8px; height:8px; border-radius:50%;
+      background:rgba(255,255,255,.35);
+      border:none; padding:0; cursor:pointer;
+      transition:background .25s ease, transform .25s ease;
+    }
+    .dots-nav .dot.active{ background:#fff; transform:scale(1.25); }
+    @media (max-width:900px){
+      .dots-nav{ display:flex; }
+    }
+
+    /* Підказка свайпу — постійна, з елегантною циклічною анімацією */
+    .swipe-hint{
+      display:none;
+      position:absolute; left:50%; bottom:96px; transform:translateX(-50%);
+      align-items:center; gap:12px; z-index:35; pointer-events:none;
+      color:rgba(255,255,255,.9); font-size:13px; font-weight:700; letter-spacing:.3em;
+      animation:swipeHintCycle 4s ease-in-out infinite;
+    }
+    .swipe-hint-arrow{ font-size:24px; line-height:1; display:inline-block; }
+    .swipe-hint-arrow.left{ animation:arrowLeft 4s ease-in-out infinite; }
+    .swipe-hint-arrow.right{ animation:arrowRight 4s ease-in-out infinite; }
+
+    /* Текст і загальна група — м'яко з'являється/тьмяніє по циклу, ніколи повністю не зникає */
+    @keyframes swipeHintCycle{
+      0%,100%{ opacity:.35; }
+      15%,45%{ opacity:1; }
+      65%{ opacity:.35; }
+    }
+    /* Стрілки "дихають" назустріч одна одній і назад */
+    @keyframes arrowLeft{
+      0%,100%{ transform:translateX(0); }
+      25%{ transform:translateX(4px); }
+      50%{ transform:translateX(-2px); }
+    }
+    @keyframes arrowRight{
+      0%,100%{ transform:translateX(0); }
+      25%{ transform:translateX(-4px); }
+      50%{ transform:translateX(2px); }
+    }
+    @media (max-width:900px){
+      .swipe-hint{ display:flex; }
+    }
+
+    /* Edge shadows */
+    .edge-shadow{position:absolute;top:0;bottom:0;width:220px;pointer-events:none;z-index:20}
+    .edge-shadow.left{left:0;background:linear-gradient(90deg, rgba(0,0,0,.55), rgba(0,0,0,.22) 45%, rgba(0,0,0,0))}
+    .edge-shadow.right{right:0;background:linear-gradient(270deg, rgba(0,0,0,.55), rgba(0,0,0,.22) 45%, rgba(0,0,0,0))}
+
+    .counter{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-size:12px;color:#cfcfcf;letter-spacing:.2em}
+    @media (max-width:900px){
+      .counter{ bottom:auto; top:24px; }
+    }
+
+    /* ===== SERVICES */
+    :root{
+      --svc-top: clamp(280px, 24vh, 360px);
+      --bar-width: clamp(340px, 32vw, 520px);
+      --bar-right: clamp(48px, 6vw, 300px);
+      --gap: clamp(24px, 4vw, 60px); 
+      --design-w: 1600;
+      --scale: clamp(0.88, 100vw / var(--design-w), 1);
+    }
+    #services{
+      position:relative;width:100%;height:100vh;background:#ffffff !important;color:#111;overflow:hidden;
+      border-top:1px solid #ececec;
+    }
+    #services .scale-target{transform:scale(var(--scale));transform-origin:top center;will-change:transform}
+
+    #services .svc-text{
+      position:absolute;top:0;width:100%;display:flex;flex-direction:column;align-items:center;text-align:center;
+      padding-top:clamp(72px,10vw,120px);padding-bottom:clamp(120px,14vw,240px);
+      pointer-events:none;z-index:2;
+    }
+    #services .svc-text h1{
+      margin:0;font-family:'Figtree';font-weight:900;letter-spacing:.02em;line-height:1.25;text-transform:uppercase;
+      font-size:clamp(18px,2.0vw,34px);color:#2a2a2a;opacity:0;transform:translateY(12px);
+      transition:opacity 2.5s ease, transform 2.5s ease;
+    }
+    #services .svc-text.show h1{opacity:1;transform:translateY(0)}
+
+    #services .svc-photos{
+      position:absolute;top:var(--svc-top);
+      right:calc(var(--bar-right) + var(--bar-width) + var(--gap));
+      bottom:0;left:0;overflow:hidden;aspect-ratio:16/9;z-index:1;
+    }
+    #services .svc-photo{
+      position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;
+      opacity:0;transform:scale(1.02);
+      transition:opacity .9s ease, transform 1.6s cubic-bezier(0.22,0.61,0.36,1);
+      will-change:auto;
+    }
+    #services .svc-photo.active{opacity:1;transform:scale(1.00);will-change:opacity,transform}
+
+    #services .svc-bar{
+      position:absolute;top:var(--svc-top);right:var(--bar-right);bottom:0;width:var(--bar-width);
+      height:calc(100% - var(--svc-top));max-inline-size:48ch;padding:0 30px 40px;
+      background:transparent;display:flex;flex-direction:column;justify-content:flex-start;
+      text-align:left; align-items:flex-start; 
+    }
+    @media (min-width:1600px){ #services .svc-bar{ max-inline-size:56ch; } }
+
+    #services .svc-item{user-select:none}
+    #services .svc-item + .svc-item{margin-top:0}
+    #services .svc-item .title{
+      cursor:pointer;font-family:'Figtree';font-weight:600;letter-spacing:.02em;text-transform:uppercase;
+      font-size:clamp(18px,1.8vw,26px);line-height:1.2;color:#b0b0b0;margin:0;position:relative;padding-left:0;
+      transition:color .2s ease; text-shadow:none !important; 
+    }
+    #services .svc-item .title::before{content:none}
+    #services .svc-item.active .title::before{
+      content:"";position:absolute;left:-20px;top:50%;transform:translateY(-50%);
+      width:9px;height:9px;border-radius:50%;background:#111;opacity:1;animation:dotFade 6s linear forwards;
+    }
+    @keyframes dotFade{from{opacity:1}to{opacity:0}}
+    #services .svc-item.active .title{color:#111}
+
+    #services .desc-wrap{
+      overflow:hidden;max-height:0;opacity:0;transform:translateY(8px);
+      transition:max-height .35s ease, opacity .35s ease, transform .35s ease, margin-top .35s ease;margin-top:0;
+    }
+    #services .svc-item.active .desc-wrap{max-height:280px;opacity:1;transform:translateY(0);margin-top:16px}
+    
+   /* ОНОВЛЕНО: Стиль опису для десктоп версії (журнальний ефект) */
+  #services .svc-item .desc {
+    margin: 0 0 16px;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: 500;
+    letter-spacing: -0.04em;
+    line-height: 1.25;
+    color: #000000;
+    font-size: clamp(16px, 1.4vw, 22px);
+    text-wrap: balance;
+    text-align: left;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    /* НАЛАШТУВАННЯ ШИРИНИ: Обмежуємо текст до 70% на великих екранах */
+    width: 100%;
+    max-width: 70% !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #services .svc-photo, #services .svc-item .desc-wrap { transition: none !important }
+    #services .svc-item .title::before { animation: none !important }
+  }
+
+  @media (max-width: 1500px) {
+    :root { --bar-right: 80px; --bar-width: 440px; --gap: 72px; }
+    #services .svc-item .title { font-size: 24px }
+    #services .svc-item .desc { font-size: 20px }
+  }
+
+  @media (max-width: 1300px) {
+    :root { --bar-right: 120px; --bar-width: 400px; --gap: 56px; }
+    #services .svc-item .title { font-size: 22px }
+    #services .svc-item .desc { font-size: 19px }
+  }
+
+  @media (max-width: 1100px) {
+    #services { height: auto; min-height: 120vh }
+    #services .svc-photos { position: relative; top: auto; left: 0; right: 0; bottom: auto; height: 44vh; aspect-ratio: auto }
+    #services .svc-photo { position: absolute }
+    #services .svc-text { position: relative; padding: 80px 16px 160px }
+    #services .svc-bar { position: relative; right: auto; top: auto; width: auto; height: auto; margin: 16px }
+    
+    /* Скидаємо обмеження в 70% на маленьких екранах, щоб текст займав усю ширину */
+    #services .svc-item .desc { max-width: 100% !important; }
+  }
+
+  #services .svc-bar,
+  #services .svc-bar .svc-item,
+  #services .svc-bar .title,
+  #services .svc-bar .desc,
+  #services .svc-bar .desc * {
+    text-align: left !important;
+  }
+
+  #services .svc-bar {
+    align-items: flex-start !important;
+  }
+
+  /* ===== Проста версія Services — завжди (і mobile, і desktop) ===== */
+  #services { height: auto; min-height: 0; }
+  .svc-mobile { display: block; padding: clamp(80px, 10vw, 160px) clamp(24px, 3vw, 40px) 100px; }
+
+  /* Grid: 2 колонки, тонкі фіксовані поля з боків, весь ріст — у центр. */
+  .svc-mobile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 64px clamp(60px, 14vw, 320px);
+    margin: 0;
+  }
+
+  .svc-mobile-label {
+    margin: 0 0 20px 0;
+    font-family: 'Roboto'; font-size: clamp(16px, 1.5vw, 26px); font-weight: 400; letter-spacing: -.02em;
+    color: #111;
+  }
+
+  .svc-mobile-headline {
+    margin: 0 0 clamp(60px, 8vw, 120px) 0;
+    font-family: 'Roboto'; font-weight: 700; letter-spacing: -.01em; line-height: 1.1;
+    font-size: clamp(30px, 6.5vw, 90px);
+    color: #111;
+    text-align: center;
+  }
+
+  .svc-mobile-item { margin-bottom: 0; }
+  .svc-mobile-item:last-child { margin-bottom: 0; }
+  .svc-mobile-item img {
+    display: block; width: 100%; height: auto;
+    object-fit: cover;
+    margin-bottom: 20px;
+  }
+  .svc-mobile-item img.ratio-square { aspect-ratio: 1/1; }
+  .svc-mobile-item img.ratio-narrow { aspect-ratio: 2/3; }
+  .svc-mobile-item img.ratio-cinema { aspect-ratio: 16/9; }
+  .svc-mobile-item img.ratio-tall { aspect-ratio: 3/4; }
+  .svc-mobile-item img.ratio-wide { aspect-ratio: 16/10; }
+  
+    /* ОНОВЛЕНО: Стиль опису для мобільної версії (журнальний ефект) */
+    .svc-mobile-desc{
+      margin:0;
+      font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-weight: 500;
+      letter-spacing: -0.04em;
+      line-height: 1.25;
+      color: #000000;
+      font-size:clamp(16px,1.5vw,26px);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    .svc-mobile-more{
+      display:flex; justify-content:center;
+      margin-top:56px;
+    }
+    .svc-more-btn{
+      pointer-events:auto;
+      display:inline-flex; align-items:center; justify-content:center; gap:14px;
+      background:#111; color:#fff;
+      padding:16px 40px;
+      border-radius:999px;
+      font-family:'Roboto'; font-size:14px; font-weight:700; letter-spacing:.06em;
+      text-transform:uppercase;
+      transition:background .25s ease, transform .25s ease;
+    }
+    .svc-more-btn::after{
+      content:'';
+      width:7px; height:7px; border-radius:50%;
+      border:1.5px solid rgba(255,255,255,.7);
+      flex-shrink:0;
+      transition:transform .3s ease, background .3s ease;
+    }
+    .svc-more-btn:hover::after{ background:#fff; transform:scale(1.15); }
+    .svc-more-btn:active{ transform:scale(.97); }
+    @media (hover:hover){
+      .svc-more-btn:hover{ background:#2a2a2a; }
+    }
+
+    /* ===== ABOUT */
+    #about{
+      --bg:#ffffff;
+      --ink:#111;
+      border:none !important;
+
+      --lead-h:10vh;
+      --after-h:10vh;
+      --pin-h:250vh;
+
+      --word-opacity:.20;
+      --word-size:clamp(80px, min(22vw, 34vh), 380px);
+      --frame-w:72vw;
+      --frame-w-max:1200px;
+
+      background:var(--bg);
+      color:var(--ink);
+    }
+    #about .lead{ height:var(--lead-h); border:none; }
+    #about .after{ height:var(--after-h); border:none; }
+    #about .pin-wrap{ position:relative; height:var(--pin-h); background:transparent; border:none; } 
+    #about .sticky{ position:sticky; top:0; height:100vh; overflow:visible; }
+
+    /* великі слова */
+    #about .words{ position:absolute; inset:0; pointer-events:none; }
+    #about .word{
+      font-family:'Figtree',sans-serif;
+      position:absolute; font-weight:500; line-height:.4; letter-spacing:-.09em;
+      font-size:var(--word-size); color:var(--ink); opacity:var(--word-opacity);
+      user-select:none; white-space:nowrap;
+    }
+    #about .word.left{ left:0.5vw; top:0%; transform:translateY(-35%); text-align:left; }
+    #about .word.right{ right:0.5vw; top:100%; transform:translateY(-60%); text-align:right; }
+
+    /* центр-фото */
+    #about .center{ position:absolute; inset:0; display:grid; align-items:center; justify-content:end; padding-right:14vw; }
+    #about .frame{
+      aspect-ratio:1/1; width:clamp(240px,40vw,700px); height:auto; background:transparent; overflow:hidden;
+      transform:scale(1.08); opacity:0; will-change:transform,opacity;
+    }
+    #about .frame img{ display:block; width:100%; height:100%; object-fit:cover; filter:grayscale(100%); }
+
+    /* текст */
+    #about .text-box{
+      position:absolute; left:7vw; top:50%; transform:translateY(-50%);
+      max-width:26vw; opacity:1;
+      font-family:"Poppins","Helvetica Neue",Helvetica,Arial,sans-serif;
+      font-weight:400; letter-spacing:-0.015em; color:#111; text-shadow:none;
+      text-align:left; 
+    }
+    #about .text-box h2{
+      margin:0 0 16px 0; font-family:'Figtree'; font-size:clamp(28px,2.4vw,44px); font-weight:600; line-height:1.15;
+      text-transform:uppercase; letter-spacing:-0.02em;
+    }
+    #about .text-box p{
+      margin:0;
+      font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-weight:500;
+      letter-spacing:-0.04em;
+      line-height:1.25;
+      color:#000000;
+      font-size:clamp(18px,1.5vw,24px);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    /* плавність fallback */
+    #about.ready .frame{ transition:transform .6s cubic-bezier(.2,.7,.2,1), opacity .6s cubic-bezier(.2,.7,.2,1); }
+    @media (prefers-reduced-motion: reduce){
+      #about .frame{ transform:scale(1); opacity:1; transition:none !important; }
+    }
+
+    /* ===== ABOUT COMPACT (< 1024px): flip-card на телефоні/планшеті ===== */
+    .ac-pin-wrap{ display:none; }
+
+    @media (max-width:1023px){
+      /* ховаємо старий desktop pin-scroll нижче 1024px */
+      #about .lead, #about .pin-wrap, #about .after{ display:none !important; }
+      #about{ min-height:0; }
+
+      .ac-pin-wrap{
+        display:block;
+        position:relative;
+      }
+      .about-compact{
+        background:#000;
+      }
+    }
+
+    /* ---- Full-screen flip-card з "піном" ---- */
+    @media (max-width:1023px){
+      .ac-pin-wrap{ height:145vh; }
+      .about-compact{
+        position:sticky;
+        top:0;
+        height:100svh;
+        perspective:1800px;
+        overflow:hidden;
+      }
+      .ac-card{
+        position:relative;
+        width:100%;
+        height:100svh;
+        transform-style:preserve-3d;
+        transition:transform .9s cubic-bezier(.22,.61,.36,1);
+      }
+      .ac-card.flipped{ transform:rotateY(180deg); }
+
+      /* Явно керуємо кліками: активна лише та сторона, що зараз повернута до глядача.
+         backface-visibility ховає елемент візуально, але не завжди виключає його з hit-testing. */
+      .ac-front{ pointer-events:auto; }
+      .ac-back{ pointer-events:none; }
+      .ac-card.flipped .ac-front{ pointer-events:none; }
+      .ac-card.flipped .ac-back{ pointer-events:auto; }
+
+      .ac-face{
+        position:absolute; inset:0;
+        backface-visibility:hidden;
+        -webkit-backface-visibility:hidden;
+        display:flex; flex-direction:column;
+      }
+
+      .ac-front{ background:#000; }
+      .ac-front .ac-photo{
+        position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:grayscale(100%);
+      }
+      .ac-front .ac-photo-scrim{
+        position:absolute; inset:0;
+        background:linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.55) 100%);
+      }
+
+      /* Кнопка з'являється із затримкою, поки секція "тримається" на екрані (пін) */
+      .ac-flip-btn{
+        position:absolute; left:50%; bottom:clamp(28px,6vh,56px);
+        z-index:2;
+        display:inline-flex; align-items:center; justify-content:center; gap:14px;
+        background:#111; color:#fff;
+        padding:16px 40px; border-radius:999px;
+        font-family:'Roboto'; font-size:14px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+        border:none; cursor:pointer;
+        opacity:0;
+        transform:translate(-50%, 18px);
+        transition:opacity .6s ease .3s, transform .6s ease .3s, background .25s ease;
+      }
+      .about-compact.show .ac-flip-btn{
+        opacity:1;
+        transform:translate(-50%, 0);
+      }
+      .ac-flip-btn::after{
+        content:''; width:7px; height:7px; border-radius:50%;
+        border:1.5px solid rgba(255,255,255,.7); flex-shrink:0;
+        transition:transform .3s ease, background .3s ease;
+      }
+      .ac-flip-btn:active{ transform:translate(-50%, 0) scale(.97); }
+
+      .ac-back{
+        background:#000; color:#fff;
+        transform:rotateY(180deg);
+        display:flex; flex-direction:column; justify-content:center;
+        padding:clamp(28px,7vh,56px) clamp(24px,6vw,40px) clamp(100px,22vh,140px);
+      }
+
+      .ac-back-text h2{
+        margin:0 0 16px; font-family:'Figtree'; font-weight:600; text-transform:uppercase;
+        letter-spacing:-.01em; font-size:clamp(24px,7vw,32px); color:#fff;
+      }
+      .ac-back-text p{
+        margin:0; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-weight:500;
+        letter-spacing:-0.02em; line-height:1.4; color:rgba(255,255,255,.88);
+        font-size:clamp(15px,4vw,18px);
+      }
+
+      /* Нижня кнопка "Back" — та ж форма, що і "About", лише інверсія кольорів */
+      .ac-back-btn{
+        position:absolute; left:50%; bottom:clamp(28px,6vh,56px);
+        z-index:2;
+        display:inline-flex; align-items:center; justify-content:center; gap:14px;
+        background:#fff; color:#111;
+        padding:16px 40px; border-radius:999px;
+        font-family:'Roboto'; font-size:14px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
+        border:none; cursor:pointer;
+        transform:translate(-50%, 0);
+        transition:background .25s ease, transform .25s ease;
+      }
+      .ac-back-btn::after{
+        content:''; width:7px; height:7px; border-radius:50%;
+        border:1.5px solid rgba(0,0,0,.55); flex-shrink:0;
+        transition:transform .3s ease, background .3s ease;
+      }
+      .ac-back-btn:active{ transform:translate(-50%, 0) scale(.97); }
+    }
+
+    /* ---- Планшет-портрет (768–1023px): та ж flip-логіка, просто просторіше ---- */
+    @media (min-width:768px) and (max-width:1023px){
+      .ac-flip-btn{ bottom:clamp(40px,7vh,64px); padding:18px 48px; font-size:15px; }
+      .ac-back{ padding:64px 64px 140px; }
+      .ac-back-btn{ bottom:clamp(40px,7vh,64px); padding:18px 48px; font-size:15px; }
+      .ac-back-text{ max-width:70%; }
+      .ac-back-text h2{ font-size:clamp(30px,4.5vw,40px); }
+      .ac-back-text p{ font-size:clamp(17px,2.2vw,20px); }
+    }
+
+    /* ===== Refined CONTACT (Perfect Grid integrated from contacts_v8.html) */
+    #contact {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      background: #ffffff; /* Тло секції контактів (сіре, як у About) */
+      color: #111;
+    }
+    .video-wrap-contact {
+      position: absolute;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .video-wrap-contact video {
+      display: block;
+      position: absolute;
+      top: -4%;
+      left: -4%;
+      width: 108%;
+      height: 108%;
+      object-fit: cover;
+      filter: grayscale(100%) contrast(1.05);
+    }
+    #contact-knockout-svg {
+      position: absolute;
+      z-index: 2;
+      pointer-events: none;
+      display: block;
+      overflow: hidden;
+    }
+    .contact-info-block {
+      position: absolute;
+      z-index: 3;
+      transition: left .1s, top .1s;
+    }
+    .contact-info-block p { margin: 0; line-height: 1.6; }
+    .contact-info-block strong {
+      display: block; margin-bottom: 3px;
+      font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+      font-size: clamp(10px, .85vw, 13px); color: rgba(0,0,0,.35);
+    }
+    .contact-info-block a {
+      color: rgba(0,0,0,.55); text-decoration: none; font-family:'Roboto';
+      font-size: clamp(15px, 1.5vw, 22px); font-weight: 500;
+    }
+    .contact-info-block a:hover { opacity: .55; }
+
+    .city-block-contact {
+      position: absolute;
+      z-index: 3;
+      display: flex;
+      gap: clamp(40px, 6vw, 100px);
+      transition: left .1s, top .1s;
+    }
+    .city-contact { display: flex; flex-direction: column; cursor: pointer; user-select: none; }
+    .city-name-contact {
+      font-family:'Figtree'; font-size: clamp(15px, 1.5vw, 22px); font-weight: 600; letter-spacing: .04em;
+      color: rgba(0,0,0,.45); display: flex; align-items: center; gap: .5em;
+      transition: color .2s, opacity .2s;
+    }
+    .city-contact:hover .city-name-contact { color: rgba(0,0,0,.7); }
+    .city-contact.inactive .city-name-contact { opacity: .25; }
+    .city-contact.active .city-name-contact { color: rgba(0,0,0,.75); }
+    .city-arrow-contact {
+      width: clamp(9px, .85vw, 13px); height: clamp(9px, .85vw, 13px);
+      border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+      transform: rotate(45deg) translateY(-2px);
+      transition: transform .35s cubic-bezier(.22,.61,.36,1);
+      opacity: .6; flex-shrink: 0;
+    }
+    .city-contact.active .city-arrow-contact { transform: rotate(-135deg) translateY(2px); }
+    .city-data-contact {
+      overflow: hidden; max-height: 0; opacity: 0; transform: translateY(-4px);
+      transition: max-height .5s cubic-bezier(.22,.61,.36,1),
+                  opacity .35s ease .05s,
+                  transform .4s cubic-bezier(.22,.61,.36,1) .05s;
+    }
+    .city-contact.active .city-data-contact { max-height: 100px; opacity: 1; transform: translateY(0); }
+    .city-data-inner-contact {
+      padding-top: clamp(6px, .6vw, 10px);
+      font-size: clamp(13px, 1.2vw, 18px); color: rgba(0,0,0,.5);
+      line-height: 1.7; font-weight: 400;
+    }
+    .city-data-inner-contact a { color: rgba(0,0,0,.5); text-decoration: none; }
+    .city-data-inner-contact a:hover { opacity: .6; }
+
+    /* Футер усередині контактів */
+    .bottom-bar-contact {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 56px;
+      display: flex; align-items: center; justify-content: flex-end;
+      padding: 0 clamp(20px, 3vw, 48px);
+      border-top: 1px solid rgba(0,0,0,.12); z-index: 10;
+      background: #ffffff;
+    }
+    .bottom-links-contact {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: clamp(20px, 3vw, 40px);
+    }
+    .bottom-bar-contact a {
+      font-size: clamp(10px, .85vw, 12px); letter-spacing: .14em;
+      text-transform: uppercase; font-weight: 600; color: rgba(0,0,0,.4);
+      text-decoration: none; transition: color .2s; cursor: pointer;
+    }
+    .bottom-bar-contact a:hover { color: rgba(0,0,0,.8); }
+    .bottom-bar-contact .copy-contact { font-size: clamp(9px, .75vw, 11px); letter-spacing: .08em; color: rgba(0,0,0,.3); }
+
+    #contact-measure-svg { position: fixed; top: -9999px; left: -9999px; visibility: hidden; }
+
+    /* ===== TABLET (768–1023px): Contact ===== */
+    @media (max-width:1023px) and (min-width:768px){
+      .city-block-contact{ gap:clamp(24px,5vw,60px); }
+      .bottom-links-contact{ gap:clamp(14px,2.5vw,28px); }
+    }
+
+    /* ===== Cursor dot */
+    #cursor-dot{
+      position:fixed;top:0;left:0;width:7px;height:7px;background:#fff;border-radius:50%;
+      pointer-events:none;z-index:1000;transform:translate3d(-50%,-50%,0);
+      mix-blend-mode:difference;
+      transition:width .2s ease,height .2s ease;
+    }
+    /* Ховаємо курсор-крапку на будь-якому пристрої що підтримує touch,
+       навіть якщо в нього є ще й миша/трекпад (напр. iPad + Magic Keyboard) */
+    @media (any-pointer: coarse){
+      #cursor-dot{ display:none !important; }
+    }
+
+    /* --- CUSTOM OVERRIDES V3 --- */
+    @media (max-width:1279px) {
+      .nav { 
+        align-items: flex-start !important; 
+        padding-top: 20px !important; 
+        height: 84px !important; 
+        z-index: 300 !important; 
+      }
+      .nav .inner { grid-template-columns: auto 1fr !important; }
+      .brand { 
+        font-size: 22px !important; 
+        grid-column: 1 !important; 
+        justify-self: start !important; 
+        transform: none !important; 
+        line-height: 1 !important;
+      }
+      .burger { grid-column: 2 !important; align-self: center !important; }
+      .burger { width: auto !important; height: auto !important; }
+      .burger span { display: none !important; }
+      .burger::after {
+        content: "MENU";
+        font-size: 14px !important;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        color: #fff;
+        transition: color 0.3s ease;
+        line-height: 1 !important;
+      }
+      .nav.blur .burger::after { color: #111; }
+      
+      /* Menu active state applied via body class */
+      body.menu-active .nav.blur::before { display: none !important; }
+      body.menu-active .brand { color: #fff !important; }
+      body.menu-active .burger::after { content: "CLOSE" !important; color: #fff !important; }
+
+      /* Dropdown mobile menu */
+      .mobile-menu {
+        left: 0 !important;
+        right: 0 !important;
+        top: -100% !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100vh !important;
+        background: #000 !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        box-shadow: none !important;
+        transition: top 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+        padding: 0 20px !important;
+      }
+      .mobile-menu.open {
+        top: 0 !important;
+        pointer-events: auto !important;
+      }
+      .mobile-menu-links {
+        align-items: flex-start !important;
+        gap: 0px !important; 
+        width: 100% !important;
+      }
+      .mobile-link {
+        font-size: 44px !important;
+        font-weight: 400 !important;
+        line-height: 0.95 !important; 
+        color: #fff !important;
+        text-align: left !important;
+        padding: 0 !important;
+      }
+      .mobile-menu-close {
+        display: none !important;
+      }
+      .mobile-instagram {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        text-decoration: none;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: opacity 0.4s ease, transform 0.4s ease;
+      }
+      .mobile-menu.open .mobile-instagram {
+        opacity: 1;
+        transform: translateY(0);
+        transition-delay: 0.3s;
+      }
+	  
+    }
+
+  </style>
+</head>
+<body>
+  <div class="nav-gradient" aria-hidden="true"></div>
+
+  <!-- NAV -->
+  <div class="nav" role="navigation" aria-label="Primary">
+    <div class="wrap">
+      <div class="inner">
+        <div class="left">
+          <a class="link" href="#projects">PROJECTS</a>
+          <a class="link" href="#services">SERVICES</a>
+        </div>
+        <a class="brand" href="#intro" id="brandLink">FORMULA</a>
+        <div class="right">
+          <a class="link" href="#about">ABOUT</a>
+          <a class="link" href="#contact">CONTACT</a>
+        </div>
+        <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE / TABLET MENU OVERLAY -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Close menu">
+      <span></span><span></span>
+    </button>
+    <nav class="mobile-menu-links">
+      <a href="#projects" class="mobile-link">PROJECTS</a>
+      <a href="#services" class="mobile-link">SERVICES</a>
+      <a href="#about" class="mobile-link">ABOUT</a>
+      <a href="#contact" class="mobile-link">CONTACT</a>
+    </nav>
+    <a href="https://instagram.com" target="_blank" class="mobile-instagram">Instagram</a>
+  </div>
+
+  <!-- HERO -->
+  <header id="intro" class="hero" aria-label="Hero">
+      <img class="bg" src="hero.jpg" alt="" aria-hidden="true" loading="eager" fetchpriority="high">
+    <h1 class="title">FORM FOLLOWS SILENCE</h1>
+    <div class="scrollcue"><div class="ring"></div>scroll</div>
+  </header>
+
+  <!-- PINNED HEADLINE -->
+  <section id="pin" class="pin-wrap" aria-label="Pinned headline">
+    <div class="pin">
+      <div class="stack">
+        <div class="outline-wrap"><h2 class="mega outline" id="headlineOutline" aria-hidden="true"></h2></div>
+        <div class="layer"><h2 class="mega solid" id="headlineSolid"></h2></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <div id="projects-wrap">
+  <section id="projects" aria-label="Projects">
+    <div class="stage" id="stage"></div>
+
+    <!-- edge shadows -->
+    <div class="edge-shadow left" aria-hidden="true"></div>
+    <div class="edge-shadow right" aria-hidden="true"></div>
+
+    <div class="overlay" id="overlay">
+      <div class="center">
+        <h3 class="p-title" id="pTitle"></h3>
+        <p class="p-sub" id="pSub"></p>
+        <div class="p-actions"><a class="btn" id="viewBtn" href="#" target="_blank" rel="noopener">View project</a></div>
+      </div>
+    </div>
+
+    <nav class="side left" id="sideLeft" aria-label="Projects list (left)"></nav>
+    <nav class="side right" id="sideRight" aria-label="Projects list (right)"></nav>
+
+    <!-- Крапки-індикатори для mobile/tablet (свайп-навігація) -->
+    <div class="dots-nav" id="dotsNav" aria-label="Project selector"></div>
+
+    <!-- Підказка "свайпни" для mobile/tablet -->
+    <div class="swipe-hint" id="swipeHint" aria-hidden="true">
+      <span class="swipe-hint-arrow left">‹</span>
+      <span class="swipe-hint-text">SWIPE</span>
+      <span class="swipe-hint-arrow right">›</span>
+    </div>
+
+    <div class="counter" id="counter">01 / 05</div>
+  </section>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="services" aria-label="Services" data-nav-ink="dark">
+    
+
+    <!-- ===== Проста mobile/tablet версія (картинка + text стовпчиком) ===== -->
+    <div class="svc-mobile" id="svcMobile">
+      <h1 class="svc-mobile-headline">
+        SPACES THAT SPEAK THE LANGUAGE OF THEIR OWNERS SCULPTED IN STONE, GLASS, AND LIGHT
+      </h1>
+
+      <div class="svc-mobile-grid">
+        <div class="svc-mobile-item">
+          <p class="svc-mobile-label">(ARCHITECTURE / FORM)</p>
+          <img class="ratio-cinema" src="service-architecture.jpg" alt="Architecture" loading="lazy">
+          <p class="svc-mobile-desc">Our work always begins with context - the landscape, the specific quality of light, the discipline of proportion. We study the site until the architecture starts to feel like a natural extension of it, rather than an interruption. Every volume and line is shaped to strike a balance between structural clarity and raw emotion, creating spaces that feel inevitable, not imposed. It is less about making a statement and more about how a building handles the sun throughout the day or frames a view. In the end, we aim for a form that simply belongs to its site - one that doesn't shout, but quietly defines its surroundings.</p>
+        </div>
+
+        <div class="svc-mobile-item">
+          <p class="svc-mobile-label">(INTERIORS / ATMOSPHERE)</p>
+          <img class="ratio-tall" src="service-interiors.jpg" alt="Interiors" loading="lazy">
+          <p class="svc-mobile-desc">Inside, we build rhythm and calm. Material transitions, shadows, and texture define the atmosphere more than decoration ever could. We treat interiors as emotional geometry — spaces that unfold through light and silence, inviting everyday rituals to feel meaningful.</p>
+        </div>
+      </div>
+
+      <div class="svc-mobile-more">
+        <a href="services.html" class="svc-more-btn">View service</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" role="region" aria-label="About — Photo and Text Reveal" data-nav-ink="dark"> 
+
+    <!-- ABOUT COMPACT: flip-card на телефоні/планшеті (<1024px) -->
+    <div class="ac-pin-wrap" id="acPinWrap">
+      <div class="about-compact" id="aboutCompact">
+        <div class="ac-card" id="acCard">
+          <div class="ac-face ac-front">
+            <img class="ac-photo" src="about-mobile.jpg" alt="Architectural studio team, sketches and materials on the table." loading="eager">
+            <div class="ac-photo-scrim" aria-hidden="true"></div>
+            <button class="ac-flip-btn" id="acFlipBtn" type="button" aria-label="Show info about the studio">About</button>
+          </div>
+          <div class="ac-face ac-back">
+            <div class="ac-back-text">
+              <h2>FORMULA BUREAU</h2>
+              <p>
+                Founded in 2017 in Kyiv, Formula Bureau has evolved from a local architectural practice into an international design bureau.
+                Our portfolio ranges from small cafés and private residences to large restaurants, medical facilities and full-scale architectural developments across Ukraine and beyond.
+                Every project begins with context — site, light, function, and the people who will inhabit it. With a team of architects, designers and engineers, we oversee every stage — from concept to realisation — guided by the same principle that started it all: to create spaces that feel essential, timeless and human.
+              </p>
+            </div>
+            <button class="ac-back-btn" id="acBackBtn" type="button" aria-label="Back to photo">Back</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lead" aria-hidden="true"></div>
+
+    <div class="pin-wrap" id="aboutPin">
+      <div class="sticky">
+
+        <!-- великі слова -->
+        <div class="words" aria-hidden="true">
+          <div class="word left">FOUNDATION</div>
+          <div class="word right">ESSENCE</div>
+        </div>
+
+        <!-- фото -->
+        <div class="center">
+          <figure class="frame" aria-label="Studio photograph">
+            <img src="about-studio.jpg" alt="Architectural studio team, sketches and materials on the table." loading="eager" fetchpriority="high">
+          </figure>
+        </div>
+
+        <!-- текст ліворуч -->
+        <div class="text-box" id="aboutText">
+          <h2>FORMULA BUREAU</h2>
+          <p>
+            Founded in 2017 in Kyiv, Formula Bureau has evolved from a local architectural practice into an international design bureau.
+            Our portfolio ranges from small cafés and private residences to large restaurants, medical facilities and full-scale architectural developments across Ukraine and beyond.
+            <br><br>
+            Every project begins with context — site, light, function, and the people who will inhabit it.
+            We translate these elements into architecture defined by clarity, proportion and emotion — spaces where material, detail and atmosphere form one coherent language.
+            <br><br>
+            With a team of architects, designers and engineers, we oversee every stage — from concept to realisation — maintaining precision and integrity throughout the process.
+            Today, with our office in Bratislava, we continue to expand across Europe and other parts of the world, guided by the same principle that started it all: to create spaces that feel essential, timeless and human.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="after" aria-hidden="true"></div>
+  </section>
+
+  <!-- Refined CONTACT (contacts_v8.html integrated seamlessly) -->
+  <section id="contact">
+    <div class="video-wrap-contact" id="contactVideoWrap">
+      <video autoplay loop muted playsinline src="video/loop_bw.mp4" id="contactVideo"></video>
+    </div>
+
+    <svg id="contact-knockout-svg" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <mask id="contact-km">
+          <rect id="contact-km-bg" fill="white"/>
+          <text id="contact-km-text"
+            text-anchor="middle"
+            dominant-baseline="middle"
+            font-weight="900"
+            fill="black">CONTACT</text>
+        </mask>
+      </defs>
+      <rect id="contact-km-fill" fill="#ffffff" mask="url(#contact-km)"/>
+    </svg>
+
+    <svg id="contact-measure-svg" xmlns="http://www.w3.org/2000/svg" width="3000" height="600">
+      <text id="contact-measure-text" x="100" y="400" font-weight="900" fill="black">CONTACT</text>
+    </svg>
+
+    <div class="contact-info-block" id="contactInfoBlock">
+      <p>
+        <strong>General Inquiries</strong>
+        <a href="mailto:formula.bureau@gmail.com">formula.bureau@gmail.com</a>
+      </p>
+    </div>
+
+    <div class="city-block-contact" id="cityBlockContact">
+      <div class="city-contact" data-city="kyiv">
+        <div class="city-name-contact">KYIV <span class="city-arrow-contact"></span></div>
+        <div class="city-data-contact">
+          <div class="city-data-inner-contact">
+            <a href="tel:+380671234567">+380 67 123 4567</a><br>Kyiv, Ukraine
+          </div>
+        </div>
+      </div>
+      <div class="city-contact" data-city="bratislava">
+        <div class="city-name-contact">BRATISLAVA <span class="city-arrow-contact"></span></div>
+        <div class="city-data-contact">
+          <div class="city-data-inner-contact">
+            <a href="tel:+421901123456">+421 901 123 456</a><br>Bratislava, Slovakia
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-bar-contact">
+      <div class="bottom-links-contact">
+        <a href="#" target="_blank" rel="noopener">Instagram</a>
+        <a href="#" target="_blank" rel="noopener">Behance</a>
+      </div>
+      <span class="copy-contact">© 2025 Formula Bureau</span>
+    </div>
+  </section>
+
+  <!-- cursor dot -->
+  <div id="cursor-dot"></div>
+
+  <script>
+    /* Brand → scroll to HERO */
+    document.getElementById('brandLink').addEventListener('click', (e)=>{
+      e.preventDefault();
+      document.getElementById('intro').scrollIntoView({behavior:'smooth'});
+    });
+
+    /* Nav links — розумний скрол з урахуванням projects-wrap */
+    document.querySelectorAll('.nav .link[href^="#"]').forEach(link=>{
+      link.addEventListener('click', e=>{
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if(!target) return;
+        // Отримуємо реальну позицію елемента відносно document
+        const targetTop = target.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({top: targetTop, behavior:'smooth'});
+      });
+    });
+
+    /* Burger menu — відкриття/закриття */
+    const burgerBtn   = document.getElementById('burgerBtn');
+    const mobileMenu  = document.getElementById('mobileMenu');
+    const mobileClose = document.getElementById('mobileMenuClose');
+
+    function openMobileMenu(){
+      mobileMenu.classList.add('open');
+      document.body.classList.add('menu-active');
+      burgerBtn.setAttribute('aria-expanded','true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMobileMenu(){
+      mobileMenu.classList.remove('open');
+      document.body.classList.remove('menu-active');
+      burgerBtn.setAttribute('aria-expanded','false');
+      document.body.style.overflow = '';
+    }
+    burgerBtn.addEventListener('click', () => { mobileMenu.classList.contains('open') ? closeMobileMenu() : openMobileMenu(); });
+    mobileClose.addEventListener('click', closeMobileMenu);
+
+    /* Пункти мобільного меню — закрити меню і скролити до секції */
+    document.querySelectorAll('.mobile-link').forEach(link=>{
+      link.addEventListener('click', e=>{
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        closeMobileMenu();
+        if(!target) return;
+        setTimeout(()=>{
+          const targetTop = target.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo({top: targetTop, behavior:'smooth'});
+        }, 350);
+      });
+    });
+
+    /* HERO parallax */
+    document.addEventListener('scroll', () => {
+      const sc = Math.min(1 + window.scrollY / 2200, 1.12);
+      const ty = Math.min(window.scrollY / 45, 18);
+      const hero = document.querySelector('.hero');
+      const title = document.querySelector('.title');
+      if (hero) hero.style.setProperty('--sc', sc);
+      if (title) title.style.setProperty('--ty', ty + 'px');
+    }, {passive:true});
+
+    /* Pinned headline (center-first reveal) */
+    (function(){
+      const text = "WE DESIGN HARMONY BETWEEN SPACE AND LIFE ARCHITECTURE WITH PURPOSE AND CALM";
+      const build = (el)=>{
+        el.innerHTML = "";
+        const lineEl = document.createElement("span");
+        lineEl.className = "line";
+        const arr = text.trim().split(/\s+/);
+        const words = [];
+        arr.forEach((w)=>{
+          const s = document.createElement("span");
+          s.className = "w";
+          s.textContent = w + " ";
+          lineEl.appendChild(s);
+          words.push(s);
+        });
+        el.appendChild(lineEl);
+        return words;
+      };
+      const outline = document.getElementById("headlineOutline");
+      const solid = document.getElementById("headlineSolid");
+      const wordsOutline = build(outline);
+      const wordsSolid = build(solid);
+      const N = wordsSolid.length;
+      const center = (N - 1) / 2;
+      const delays = new Array(N).fill(0).map((_,i)=>{
+        const dist = Math.abs(i - center) / center;
+        const jitter = (i * 137) % 17 / 200;
+        return dist * 0.55 + jitter;
+      });
+      const wrap = document.querySelector('#pin.pin-wrap');
+      let fullApplied = false;
+      function onScroll(){
+        const rect = wrap.getBoundingClientRect();
+        const vh = window.innerHeight;
+        const end = Math.max(rect.height - vh, 1);
+        const t = Math.min(Math.max(-rect.top / end, 0), 1);
+        const tracking = t * 8;
+        document.querySelectorAll(".mega").forEach(m => m.style.setProperty('--trk', tracking + 'px'));
+        const nearEnd = t > 0.92;
+        if (nearEnd && !fullApplied) { solid.classList.add('full'); outline.classList.add('full'); fullApplied = true; }
+        else if (!nearEnd && fullApplied) { solid.classList.remove('full'); outline.classList.remove('full'); fullApplied = false; }
+        const span = 0.55;
+        for (let i=0;i<N;i++){
+          const base = (t * 1.1) - delays[i];
+          const prog = Math.max(0, Math.min(base / span, 1));
+          const ease = prog*prog*(3-2*prog);
+          const op = ease;
+          const ty = (1 - ease) * 10;
+          wordsSolid[i].style.opacity = op;
+          wordsSolid[i].style.transform = 'translateY(' + ty + 'px)';
+          wordsOutline[i].style.opacity = Math.min(1, op * 0.95 + 0.05);
+          wordsOutline[i].style.transform = 'translateY(' + ty + 'px)';
+        }
+      }
+      document.addEventListener('scroll', onScroll, {passive:true});
+      window.addEventListener('resize', onScroll);
+      onScroll();
+    })();
+
+    /* PROJECTS data */
+    const projects=[
+      {title:'PV59 — Living',sub:'Interiors • 2024 • Germany',file:'project-01.jpg',href:'#'},
+      {title:'(01) Dental Clinic',sub:'Interiors • 2023 • Ukraine',file:'project-02.jpg',href:'#'},
+      {title:'(02) Eastern American',sub:'Interiors • 2023 • Germany',file:'project-03.jpg',href:'#'},
+      {title:' (03) Cottage Timber',sub:'Architecture • 2022 • Ukraine',file:'project-04.jpg',href:'#'},
+      {title:'Office — Concept',sub:'Office • 2021 • UAE',file:'project-05.jpg',href:'#'}
+    ];
+    const stage=document.getElementById('stage'),
+          overlay=document.getElementById('overlay'),
+          pTitle=document.getElementById('pTitle'),
+          pSub=document.getElementById('pSub'),
+          viewBtn=document.getElementById('viewBtn'),
+          sideLeft=document.getElementById('sideLeft'),
+          sideRight=document.getElementById('sideRight');
+
+    const pImgs=projects.map((p,i)=>{
+      const img=new Image();img.alt=p.title;img.src=p.file;img.className=i===0?'active':'';
+      img.onerror=()=>{img.src='https://images.unsplash.com/photo-1502005229762-cf1b2da7c52f?q=80&w=2000&auto=format&fit=crop';};
+      stage.appendChild(img);return img;
+    });
+    const mid=Math.ceil(projects.length/2);
+    function mkLink(p,idx){
+      const a=document.createElement('a');
+      a.href='#projects';a.textContent=p.title;
+      a.onclick=e=>{e.preventDefault();go(idx)};
+      return a;
+    }
+    projects.slice(0,mid).forEach((p,i)=>sideLeft.appendChild(mkLink(p,i)));
+    projects.slice(mid).forEach((p,i)=>sideRight.appendChild(mkLink(p,i+mid)));
+
+    let index=0;
+
+    /* ===== Крапки-індикатори (dots) для mobile/tablet ===== */
+    const dotsNav = document.getElementById('dotsNav');
+    const dots = projects.map((p, i) => {
+      const b = document.createElement('button');
+      b.className = 'dot' + (i === 0 ? ' active' : '');
+      b.setAttribute('aria-label', p.title);
+      b.addEventListener('click', () => go(i));
+      dotsNav.appendChild(b);
+      return b;
+    });
+    function updateDots(i){
+      dots.forEach((d,k)=>d.classList.toggle('active', k===i));
+    }
+
+    function setActive(i){
+      pImgs.forEach((im,k)=>im.classList.toggle('active',k===i));
+      pTitle.textContent=projects[i].title;pSub.textContent=projects[i].sub||'';viewBtn.href=projects[i].href||'#';
+      [...sideLeft.children,...sideRight.children].forEach((a,k)=>a.classList.toggle('active',k===i));
+      overlay.classList.remove('fade');void overlay.offsetWidth;overlay.classList.add('fade');
+      document.getElementById('counter').textContent=String(i+1).padStart(2,'0')+' / '+String(projects.length).padStart(2,'0');
+      index=i;
+      updateDots(i);
+    }
+    function go(n){const next=(n+projects.length)%projects.length;if(next!==index)setActive(next);}
+    setActive(0);
+
+    /* ===== Touch swipe навігація для Projects (mobile/tablet) =====
+       Логіка:
+       - Горизонтальний свайп (вліво/вправо) → перемикає проекти на місці
+       - Вертикальний свайп вниз/вгору → пропускає (не блокує), сторінка скролить далі природно
+       - Розрізняємо напрямок по першому суттєвому зсуву пальця */
+    (function(){
+      const projectsEl = document.getElementById('projects');
+      let touchStartX = 0, touchStartY = 0;
+      let isHorizontalSwipe = null; // null = ще не визначено, true/false після першого руху
+      const SWIPE_THRESHOLD = 80; // px — вдвічі більший поріг, менш чутливий до випадкових рухів
+
+      projectsEl.addEventListener('touchstart', e=>{
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        isHorizontalSwipe = null;
+      }, {passive:true});
+
+      projectsEl.addEventListener('touchmove', e=>{
+        const dx = e.touches[0].clientX - touchStartX;
+        const dy = e.touches[0].clientY - touchStartY;
+
+        // Визначаємо напрямок свайпу один раз, при першому суттєвому русі
+        if(isHorizontalSwipe === null && (Math.abs(dx) > 10 || Math.abs(dy) > 10)){
+          isHorizontalSwipe = Math.abs(dx) > Math.abs(dy);
+        }
+
+        // Якщо це горизонтальний свайп — блокуємо вертикальний скрол сторінки,
+        // щоб не було конфлікту, і самі керуємо перемиканням проектів
+        if(isHorizontalSwipe){
+          e.preventDefault();
+        }
+        // Якщо вертикальний — нічого не робимо, даємо сторінці скролити природно
+      }, {passive:false});
+
+      projectsEl.addEventListener('touchend', e=>{
+        if(!isHorizontalSwipe) return; // вертикальний свайп — вихід з секції, нічого не робимо тут
+
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        if(Math.abs(dx) < SWIPE_THRESHOLD) return;
+
+        if(dx < 0){
+          // свайп вліво → наступний проект
+          go(index + 1);
+        } else {
+          // свайп вправо → попередній проект
+          go(index - 1);
+        }
+      }, {passive:true});
+    })();
+
+    // Scroll-based project switching — тільки на desktop (де є .side списки).
+    // На mobile/tablet (до 900px) цим керує свайп, а не автоматичний scroll-switch.
+    const projectsWrap = document.getElementById('projects-wrap');
+    const isMobileProjectsLayout = () => window.innerWidth <= 900;
+    function onProjectsScroll(){
+      if(isMobileProjectsLayout()) return;
+      const wrapTop = projectsWrap.getBoundingClientRect().top;
+      const wrapH   = projectsWrap.offsetHeight - window.innerHeight;
+      const scrolled = -wrapTop; // скільки пройшли всередині wrapper
+      if(scrolled < 0 || scrolled > wrapH) return;
+      const progress = scrolled / wrapH; // 0..1
+      const target = Math.min(Math.floor(progress * 2), 1);
+      if(target !== index) go(target);
+    }
+    window.addEventListener('scroll', onProjectsScroll, {passive:true});
+    document.addEventListener('keydown',e=>{
+      if(e.key==='ArrowRight'||e.key==='ArrowDown')go(index+1);
+      if(e.key==='ArrowLeft'||e.key==='ArrowUp')go(index-1);
+    });
+
+    /* Services autoplay + tabs sync */
+    (function(){
+      const svc = document.getElementById('services');
+      if (!svc) return;
+      const items = Array.from(svc.querySelectorAll('.svc-item'));
+      const photos = Array.from(svc.querySelectorAll('.svc-photo'));
+
+      let cur = -1, userInteracted = false, start = 0, playing = false, rafId = null;
+      const D = 6000;
+
+      function setActive(i){
+        items.forEach((it,k)=>{
+          const is = k===i;
+          it.classList.toggle('active', is);
+          it.setAttribute('aria-selected', String(is));
+          if(is){ it.setAttribute('aria-current','true'); } else { it.removeAttribute('aria-current'); }
+        });
+        photos.forEach((im,k)=>im.classList.toggle('active',k===i));
+        cur = i;
+      }
+      function next(){ setActive((cur+1)%items.length); start = performance.now(); }
+
+      function frame(ts){
+        if(!start) start = ts;
+        const p = (ts - start) / D;
+        if(p >= 1){ next(); }
+        rafId = requestAnimationFrame(frame);
+      }
+      function play(){
+        if(playing) return;
+        playing = true; start = performance.now();
+        rafId = requestAnimationFrame(frame);
+      }
+      function pause(){
+        playing = false;
+        if(rafId){ cancelAnimationFrame(rafId); rafId = null; }
+      }
+
+      items.forEach((it,i)=>{
+        const t = it.querySelector('.title');
+        if(!t) return;
+        t.addEventListener('click', ()=>{
+          userInteracted = true; pause();
+          const already = it.classList.contains('active');
+          items.forEach(el=>el.classList.remove('active'));
+          if(!already) it.classList.add('active');
+          photos.forEach((im,k)=>im.classList.toggle('active',k===i));
+          items.forEach((el,k)=>{
+            const is = k===i && !already;
+            el.setAttribute('aria-selected', String(k===i));
+            if(is){ el.setAttribute('aria-current','true'); } else { el.removeAttribute('aria-current'); }
+          });
+          cur = i;
+        }, {passive:true});
+      });
+
+      if('IntersectionObserver' in window){
+        const io = new IntersectionObserver(entries=>{
+          entries.forEach(e=>{
+            if(e.isIntersecting){
+              if(cur===-1) setActive(0);
+              if(!userInteracted) play();
+            } else { pause(); }
+          });
+        }, {threshold:.25});
+        io.observe(svc);
+      } else {
+        setActive(0); play();
+      }
+
+      document.addEventListener('visibilitychange', ()=>{
+        if(document.hidden) pause(); else if(!userInteracted){ play(); }
+      });
+    })();
+
+    /* Services title reveal */
+    (function(){
+      const box = document.getElementById('svcTopText');
+      if(!box) return;
+      const show = ()=> box.classList.add('show');
+      if('IntersectionObserver' in window){
+        const io = new IntersectionObserver(entries=>{
+          entries.forEach(e=>{ if(e.isIntersecting){ show(); io.disconnect(); } });
+        },{threshold:.25});
+        io.observe(box);
+      } else { window.addEventListener('load', show); }
+    })();
+
+    /* ABOUT COMPACT: flip-card interaction (<1024px) + затримка появи кнопки під час піну */
+    (function(){
+      const card = document.getElementById('acCard');
+      const flipBtn = document.getElementById('acFlipBtn');
+      const backBtn = document.getElementById('acBackBtn');
+      const compact = document.getElementById('aboutCompact');
+      if(!card || !flipBtn || !backBtn || !compact) return;
+
+      flipBtn.addEventListener('click', ()=> card.classList.add('flipped'));
+      backBtn.addEventListener('click', ()=> card.classList.remove('flipped'));
+
+      if('IntersectionObserver' in window){
+        const io = new IntersectionObserver(entries=>{
+          entries.forEach(e=>{
+            compact.classList.toggle('show', e.isIntersecting);
+          });
+        }, {threshold:.65});
+        io.observe(compact);
+      } else {
+        compact.classList.add('show');
+      }
+    })();
+
+    /* ABOUT: photo + text reveal on scroll */
+    (function(){
+      const root = document.getElementById('about');
+      const pin  = document.getElementById('aboutPin');
+      if(!root || !pin) return;
+      const frame = root.querySelector('.frame');
+      const textBox = document.getElementById('aboutText');
+
+      requestAnimationFrame(()=> root.classList.add('ready'));
+      const clamp = (v,min,max)=> Math.min(Math.max(v,min),max);
+      const ease = t => (t<0?0:t>1?1:t*t*(3-2*t));
+
+      function onScroll(){
+        const rect = pin.getBoundingClientRect();
+        const vh   = window.innerHeight || 1;
+        const total = Math.max(rect.height - vh, 1);
+        const y = clamp(-rect.top, 0, total);
+        const p = y / total;
+
+        const revealEnd = 0.45;
+
+        // Якщо скролимо дуже швидко (навігація) — показуємо фото одразу
+        const speed = Math.abs(rect.top - (onScroll._lastTop || rect.top));
+        onScroll._lastTop = rect.top;
+        if(speed > 200){
+          frame.style.transform = 'scale(1)';
+          frame.style.opacity = '1';
+          textBox.classList.add('show');
+          return;
+        }
+
+        if (p <= revealEnd){
+          const t = ease(p / revealEnd);
+          const scale = 1.08 - 0.08 * t;
+          frame.style.transform = `scale(${scale})`;
+          frame.style.opacity = t;
+          textBox.classList.remove('show');
+          return;
+        }
+
+        frame.style.transform = 'scale(1)';
+        frame.style.opacity = '1';
+        textBox.classList.add('show');
+      }
+
+      document.addEventListener('scroll', onScroll, {passive:true});
+      window.addEventListener('resize', onScroll);
+      onScroll();
+    })();
+	
+    /* NAV hide on scroll down, show on scroll up + blur when not at top */
+	(function(){
+	const nav = document.querySelector('.nav');
+	if(!nav) return;
+	
+	let lastY = window.pageYOffset || document.documentElement.scrollTop || 0;
+	let ticking = false;
+	const SHOW_DELTA = 6;      
+	const HIDE_AFTER = 140;    
+
+	function atTop(){ return (window.pageYOffset || document.documentElement.scrollTop || 0) < 2; }
+
+	function update(){
+		const y = window.pageYOffset || document.documentElement.scrollTop || 0;
+		const dirDown = y > lastY + SHOW_DELTA;
+		const dirUp   = y < lastY - SHOW_DELTA;
+
+        if (dirDown && y > HIDE_AFTER) nav.classList.add('hide');
+        if (dirUp) nav.classList.remove('hide');
+
+        nav.classList.toggle('blur', !atTop());
+
+        lastY = y;
+        ticking = false;
+	}
+
+	function onScroll(){
+        if(!ticking){ ticking = true; requestAnimationFrame(update); }
+	}
+
+	window.addEventListener('scroll', onScroll, {passive:true});
+	window.addEventListener('resize', onScroll, {passive:true});
+	window.addEventListener('load', update, {once:true});
+	update();
+	})();
+	
+	/* Cursor dot follower — вимкнено на тач-пристроях */
+    (function(){
+      const dot = document.getElementById("cursor-dot");
+      const isTouchDevice = window.matchMedia('(hover:none), (pointer:coarse)').matches;
+      if(isTouchDevice){
+        dot.style.display = 'none';
+        return;
+      }
+      let x = window.innerWidth / 2, y = window.innerHeight / 2;
+      let targetX = x, targetY = y;
+      const speed = 0.15;
+      document.addEventListener("mousemove", e => {
+        targetX = e.clientX; targetY = e.clientY;
+      });
+      function animate() {
+        x += (targetX - x) * speed;
+        y += (targetY - y) * speed;
+        dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    /* ===== REFINED CONTACT SCRIPT (Isolated with Perfect Grid) ===== */
+    (function(){
+      const contactSection = document.getElementById('contact');
+      if (!contactSection) return;
+
+      const videoWrap   = document.getElementById('contactVideoWrap');
+      const video       = document.getElementById('contactVideo');
+      const svg         = document.getElementById('contact-knockout-svg');
+      const kmBg        = document.getElementById('contact-km-bg');
+      const kmText      = document.getElementById('contact-km-text');
+      const kmFill      = document.getElementById('contact-km-fill');
+      const mText       = document.getElementById('contact-measure-text');
+      const contactInfo = document.getElementById('contactInfoBlock');
+      const cityBlock   = document.getElementById('cityBlockContact');
+      const BAR_H       = 56;
+
+      const FONT = "'FormulaBrand','Arial Black','Helvetica Neue',Arial,sans-serif";
+      const MEASURE_FS = 300;
+
+      let videoRatio = 1312 / 218;
+
+      kmText.setAttribute('font-family', FONT);
+      mText.setAttribute('font-family', FONT);
+      mText.setAttribute('font-size', MEASURE_FS);
+
+      function syncVideoRatio() {
+        if (video && video.videoWidth && video.videoHeight) {
+          videoRatio = video.videoWidth / video.videoHeight;
+          contactLayout();
+        }
+      }
+      if (video) {
+        video.addEventListener('loadedmetadata', syncVideoRatio);
+        video.addEventListener('canplay', syncVideoRatio);
+      }
+
+      function getBBox(){
+        try {
+          const bb = mText.getBBox();
+          if(bb && bb.width > 50) return bb;
+        } catch(e){}
+        return { x: 100, y: 400 - MEASURE_FS * 0.78, width: MEASURE_FS * 4.65, height: MEASURE_FS * 0.78 };
+      }
+
+      function contactLayout(){
+        const sw = contactSection.clientWidth;
+        const sh = contactSection.clientHeight;
+        const availH = sh - BAR_H;
+
+        const padH = sw * 0.04;
+        const padV = availH * 0.08;
+
+        // На вузьких екранах (планшет/мобільний) слово займає більше ширини,
+        // щоб під ним влізли email і міста
+        const wordWidthRatio = sw < 1024 ? 0.82 : 0.45;
+        const maxW = Math.min(sw * wordWidthRatio, sw - padH * 2);
+        const maxH = availH - padV * 2;
+
+        let vw, vh;
+        if(maxW / videoRatio <= maxH){ 
+          vw = maxW; 
+          vh = vw / videoRatio; 
+        } else { 
+          vh = maxH; 
+          vw = vh * videoRatio; 
+        }
+
+        const vx = (sw - vw) / 2;
+        const vy = padV + (maxH - vh) / 2;
+
+        videoWrap.style.cssText = `left:${vx}px; top:${vy}px; width:${vw}px; height:${vh}px;`;
+
+        // Беремо РЕАЛЬНІ, вже відрендерені браузером розміри відео-контейнера
+        // (а не окремо порахований vx/vy/vw/vh) і застосовуємо їх до SVG-маски.
+        // Це гарантує піксель-в-піксель збіг і прибирає "миготливу" лінію
+        // на краю, яка з'являлась через розходження в заокругленні пікселів
+        // між двома незалежно позиціонованими елементами.
+        const realRect = videoWrap.getBoundingClientRect();
+        const contactRect = contactSection.getBoundingClientRect();
+        const rLeft = realRect.left - contactRect.left;
+        const rTop = realRect.top - contactRect.top;
+        const rW = realRect.width;
+        const rH = realRect.height;
+
+        // невеликий запас (bleed), щоб маска завжди перекривала відео з надлишком
+        const BLEED = 2;
+
+        svg.style.cssText = `left:${rLeft - BLEED}px; top:${rTop - BLEED}px; width:${rW + BLEED * 2}px; height:${rH + BLEED * 2}px;`;
+
+        svg.setAttribute('width', rW + BLEED * 2);
+        svg.setAttribute('height', rH + BLEED * 2);
+        svg.setAttribute('viewBox', `0 0 ${rW + BLEED * 2} ${rH + BLEED * 2}`);
+
+        kmBg.setAttribute('x', 0);
+        kmBg.setAttribute('y', 0);
+        kmBg.setAttribute('width', rW + BLEED * 2);
+        kmBg.setAttribute('height', rH + BLEED * 2);
+        kmFill.setAttribute('x', 0);
+        kmFill.setAttribute('y', 0);
+        kmFill.setAttribute('width', rW + BLEED * 2);
+        kmFill.setAttribute('height', rH + BLEED * 2);
+
+
+        // текст-маска (CONTACT) центрується відносно самого відео (rW x rH),
+        // яке в системі координат розширеного (bleed) SVG-полотна починається
+        // з відступу BLEED з кожного боку.
+        const bb = getBBox();
+
+        const scale = (rW * 0.92) / bb.width;
+        const fs = MEASURE_FS * scale;
+
+        const cx = BLEED + rW / 2;
+        const cy = BLEED + rH / 2;
+
+        kmText.setAttribute('font-size', fs);
+        kmText.setAttribute('x', cx);
+        kmText.setAttribute('y', cy);
+
+        // Беремо реальний bbox самого тексту CONTACT (той, що фактично рендериться
+        // в масці) замість наближеного розрахунку — це усуває асиметрію відступів
+        // зверху/знизу, викликану різницею метрик шрифту.
+        let realWordW, realWordH, wordLeft, wordTop;
+        try {
+          const kb = kmText.getBBox();
+          if (kb && kb.width > 10 && kb.height > 10) {
+            realWordW = kb.width;
+            realWordH = kb.height;
+            wordLeft = (rLeft - BLEED) + kb.x;
+            wordTop = (rTop - BLEED) + kb.y;
+          }
+        } catch (e) {}
+
+        if (realWordW === undefined) {
+          realWordW = bb.width * scale;
+          realWordH = bb.height * scale;
+          wordLeft = rLeft + (rW - realWordW) / 2;
+          wordTop = rTop + (rH - realWordH) / 2;
+        }
+
+        const wordBot = wordTop + realWordH;
+
+        const gap = Math.max(vh * 0.25, 40);
+
+        contactInfo.style.cssText =
+          `left:${wordLeft}px;
+           top:${wordTop - gap}px;
+           transform: translateY(-100%);`;
+
+        cityBlock.style.cssText =
+          `top:${wordBot + gap}px;
+           left:${wordLeft}px; 
+           width:${realWordW}px;
+           justify-content:flex-start;`;
+      }
+
+      document.querySelectorAll('.city-contact').forEach(city => {
+        city.addEventListener('click', (e) => {
+          if (e.target.tagName === 'A') return;
+          const isActive = city.classList.contains('active');
+          document.querySelectorAll('.city-contact').forEach(c => c.classList.remove('active','inactive'));
+          if(!isActive){
+            city.classList.add('active');
+            document.querySelectorAll('.city-contact').forEach(c => { if(c!==city) c.classList.add('inactive'); });
+          }
+        });
+      });
+
+      contactLayout();
+      window.addEventListener('resize', contactLayout);
+      if(document.fonts){
+        document.fonts.ready.then(()=>{ setTimeout(contactLayout, 50); });
+      }
+    })();
+
+    /* ===== Надійна обробка повороту екрану (orientationchange) =====
+       На деяких мобільних/планшетних браузерах подія 'resize' після повороту
+       спрацьовує із запізненням або з проміжними неправильними розмірами.
+       Форсуємо кілька повторних 'resize' подій одразу після повороту. */
+    (function(){
+      function forceRecalc(){
+        window.dispatchEvent(new Event('resize'));
+      }
+      window.addEventListener('orientationchange', function(){
+        // одразу, і ще кілька разів поки браузер остаточно не оновить innerWidth/Height
+        forceRecalc();
+        setTimeout(forceRecalc, 100);
+        setTimeout(forceRecalc, 300);
+        setTimeout(forceRecalc, 600);
+      });
+    })();
+  </script>
+</body>
+</html>
+Cleaned_Finish_13.5.html
+Відображається "Cleaned_Finish_13.5.html".

@@ -1144,16 +1144,27 @@
       }
       setStableVH();
 
+      // iOS Safari генерує подію 'resize' щоразу, коли анімовано ховає/показує
+      // свою нижню панель під час звичайного скролу — при цьому міняється лише
+      // висота вікна, ширина лишається тою самою. Якщо перераховувати --vh на
+      // кожен такий "фейковий" resize, висота прилипаючих секцій змінюється
+      // прямо під час скролу, і сторінку буквально відкидає назад.
+      // Тому реагуємо тільки на СПРАВЖНЮ зміну ширини (поворот екрана / ресайз
+      // вікна), а зміни лише висоти повністю ігноруємо.
+      let lastWidth = window.innerWidth;
       let resizeTimer;
       window.addEventListener('resize', function(){
+        if (window.innerWidth === lastWidth) return; // висота міняється сама — ігноруємо
+        lastWidth = window.innerWidth;
         clearTimeout(resizeTimer);
-        // невелика затримка — щоб не ловити проміжні кадри анімації панелі Safari,
-        // а перерахувати тільки коли розмір вікна дійсно "усівся"
         resizeTimer = setTimeout(setStableVH, 250);
       }, {passive:true});
 
       window.addEventListener('orientationchange', function(){
-        setTimeout(setStableVH, 300);
+        setTimeout(function(){
+          lastWidth = window.innerWidth;
+          setStableVH();
+        }, 300);
       });
     })();
 

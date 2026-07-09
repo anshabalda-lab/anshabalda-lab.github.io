@@ -1265,7 +1265,20 @@
         else window.addEventListener('load', resolve);
       });
       const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
-      Promise.all([pageLoaded, fontsReady]).then(hidePreloader);
+
+      // Завантаження байтів (load) і реальне ДЕКОДУВАННЯ фото в пікселі —
+      // це різні етапи; друге може відставати на слабших пристроях, через що
+      // після зникнення екрана завантаження на мить видно чорний квадрат
+      // замість фото (найпомітніше на About). Явно декодуємо всі фото наперед.
+      const decodeAllImages = pageLoaded.then(function(){
+        const imgs = Array.from(document.images);
+        return Promise.all(imgs.map(function(img){
+          if (img.decode) return img.decode().catch(function(){});
+          return Promise.resolve();
+        }));
+      });
+
+      Promise.all([pageLoaded, fontsReady, decodeAllImages]).then(hidePreloader);
 
       // запобіжний таймаут — не чекаємо довше 7с, навіть якщо щось не
       // довантажилось (повільний інтернет), щоб екран не завис назавжди

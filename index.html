@@ -1434,6 +1434,7 @@
         return dist * 0.55 + jitter;
       });
       const wrap = document.querySelector('#pin.pin-wrap');
+      const megaEls = document.querySelectorAll('.mega');
       let fullApplied = false;
       function onScroll(){
         const rect = wrap.getBoundingClientRect();
@@ -1441,7 +1442,7 @@
         const end = Math.max(rect.height - vh, 1);
         const t = Math.min(Math.max(-rect.top / end, 0), 1);
         const tracking = t * 8;
-        document.querySelectorAll(".mega").forEach(m => m.style.setProperty('--trk', tracking + 'px'));
+        megaEls.forEach(m => m.style.setProperty('--trk', tracking + 'px'));
         const nearEnd = t > 0.92;
         if (nearEnd && !fullApplied) { solid.classList.add('full'); outline.classList.add('full'); fullApplied = true; }
         else if (!nearEnd && fullApplied) { solid.classList.remove('full'); outline.classList.remove('full'); fullApplied = false; }
@@ -1458,8 +1459,12 @@
           wordsOutline[i].style.transform = 'translateY(' + ty + 'px)';
         }
       }
-      document.addEventListener('scroll', onScroll, {passive:true});
-      window.addEventListener('resize', onScroll);
+      let ticking = false;
+      function onScrollThrottled(){
+        if (!ticking){ ticking = true; requestAnimationFrame(function(){ onScroll(); ticking = false; }); }
+      }
+      document.addEventListener('scroll', onScrollThrottled, {passive:true});
+      window.addEventListener('resize', onScrollThrottled);
       onScroll();
     })();
 

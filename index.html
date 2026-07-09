@@ -1274,9 +1274,19 @@
         document.body.style.overflow = '';
       }
 
-      window.addEventListener('load', hidePreloader);
-      // запобіжний таймаут — не чекаємо довше 4с, навіть якщо щось не довантажилось
-      setTimeout(hidePreloader, 4000);
+      // Чекаємо і повне завантаження сторінки (фото), і завантаження кастомних
+      // шрифтів — інакше екран зникає раніше, ніж шрифт встиг підмінитись,
+      // і видно короткий "стрибок" з системного шрифту на наш.
+      const pageLoaded = new Promise(function(resolve){
+        if (document.readyState === 'complete') resolve();
+        else window.addEventListener('load', resolve);
+      });
+      const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+      Promise.all([pageLoaded, fontsReady]).then(hidePreloader);
+
+      // запобіжний таймаут — не чекаємо довше 7с, навіть якщо щось не
+      // довантажилось (повільний інтернет), щоб екран не завис назавжди
+      setTimeout(hidePreloader, 7000);
     })();
 
     /* ===== Стабільна висота екрана для iOS Safari =====

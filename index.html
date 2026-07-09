@@ -159,7 +159,7 @@
 	}
   
     /* ===== HERO */
-    .hero{position:relative;min-height:100dvh;display:grid;place-items:center;overflow:hidden}
+    .hero{position:relative;min-height:calc(var(--vh, 1vh) * 100);display:grid;place-items:center;overflow:hidden}
     .hero .bg {
       position:absolute;
       inset:0;
@@ -179,8 +179,8 @@
     @keyframes pulse{0%{opacity:.6;transform:scale(1)}70%{opacity:1;transform:scale(1.25)}100%{opacity:.3;transform:scale(1)}}
 
     /* ===== PINNED HEADLINE */
-    #pin.pin-wrap{position:relative;height:200dvh;border-top:1px solid #d4d4d4;background:#ffffff;color:#000}
-    .pin{position:sticky;top:0;height:100dvh;padding:0 3vw}
+    #pin.pin-wrap{position:relative;height:calc(var(--vh, 1vh) * 200);border-top:1px solid #d4d4d4;background:#ffffff;color:#000}
+    .pin{position:sticky;top:0;height:calc(var(--vh, 1vh) * 100);padding:0 3vw}
     .stack{position:relative;height:100%;}
     .layer, .outline-wrap{
       position:absolute; inset:0;
@@ -204,7 +204,7 @@
     @media (max-width:900px){
       #projects-wrap{height:auto;}
     }
-    #projects{position:sticky;top:0;height:100dvh;overflow:hidden;background:#ffffff;border-top:1px solid var(--line)}
+    #projects{position:sticky;top:0;height:calc(var(--vh, 1vh) * 100);overflow:hidden;background:#ffffff;border-top:1px solid var(--line)}
     @media (max-width:900px){
       #projects{position:relative;top:auto;}
     }
@@ -326,7 +326,7 @@
       --scale: clamp(0.88, 100vw / var(--design-w), 1);
     }
     #services{
-      position:relative;width:100%;height:100dvh;background:#ffffff !important;color:#111;overflow:hidden;
+      position:relative;width:100%;height:calc(var(--vh, 1vh) * 100);background:#ffffff !important;color:#111;overflow:hidden;
       border-top:1px solid #ececec;
     }
     #services .scale-target{transform:scale(var(--scale));transform-origin:top center;will-change:transform}
@@ -558,7 +558,7 @@
     #about .lead{ height:var(--lead-h); border:none; }
     #about .after{ height:var(--after-h); border:none; }
     #about .pin-wrap{ position:relative; height:var(--pin-h); background:transparent; border:none; } 
-    #about .sticky{ position:sticky; top:0; height:100dvh; overflow:visible; }
+    #about .sticky{ position:sticky; top:0; height:calc(var(--vh, 1vh) * 100); overflow:visible; }
 
     /* великі слова */
     #about .words{ position:absolute; inset:0; pointer-events:none; }
@@ -632,14 +632,14 @@
       .about-compact{
         position:relative;
         top:auto;
-        height:100dvh;
+        height:calc(var(--vh, 1vh) * 100);
         perspective:1800px;
         overflow:hidden;
       }
       .ac-card{
         position:relative;
         width:100%;
-        height:100dvh;
+        height:calc(var(--vh, 1vh) * 100);
         transform-style:preserve-3d;
         transition:transform .9s cubic-bezier(.22,.61,.36,1);
       }
@@ -1200,6 +1200,44 @@
   <div id="cursor-dot"></div>
 
   <script>
+    /* ===== Стабільна висота екрана для iOS Safari =====
+       height:dvh сам по собі динамічно змінюється в реальному часі, поки
+       Safari анімує показ/ховання своєї нижньої панелі під час скролу —
+       через це будь-яка секція з такою висотою (навіть без position:sticky)
+       візуально "роздувається/стискається" прямо під пальцем. Фіксуємо
+       висоту один раз через JS-змінну --vh і оновлюємо її тільки при
+       реальній зміні розміру вікна (поворот екрана), а не під час
+       звичайного скролу. */
+    (function(){
+      function setStableVH(){
+        document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+      }
+      setStableVH();
+
+      // iOS Safari генерує подію 'resize' щоразу, коли анімовано ховає/показує
+      // свою нижню панель під час звичайного скролу — при цьому міняється лише
+      // висота вікна, ширина лишається тою самою. Якщо перераховувати --vh на
+      // кожен такий "фейковий" resize, висота секцій змінюється прямо під час
+      // скролу, і сторінку буквально "роздуває"/відкидає назад.
+      // Тому реагуємо тільки на СПРАВЖНЮ зміну ширини (поворот екрана / ресайз
+      // вікна), а зміни лише висоти повністю ігноруємо.
+      let lastWidth = window.innerWidth;
+      let resizeTimer;
+      window.addEventListener('resize', function(){
+        if (window.innerWidth === lastWidth) return; // висота міняється сама — ігноруємо
+        lastWidth = window.innerWidth;
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(setStableVH, 250);
+      }, {passive:true});
+
+      window.addEventListener('orientationchange', function(){
+        setTimeout(function(){
+          lastWidth = window.innerWidth;
+          setStableVH();
+        }, 300);
+      });
+    })();
+
     /* Brand → scroll to HERO */
     document.getElementById('brandLink').addEventListener('click', (e)=>{
       e.preventDefault();

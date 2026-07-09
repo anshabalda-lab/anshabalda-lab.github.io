@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
   <title>FORMULA — Home + Projects + Services + About + Contact</title>
   <meta name="description" content="Hero, pinned headline, projects stage, Services band, About section and refined Contacts.">
   <style>
@@ -671,7 +672,9 @@
       .ac-front{ background:#000; }
       .ac-front .ac-photo{
         position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:grayscale(100%);
+        opacity:0; transition:opacity .6s ease;
       }
+      .ac-front .ac-photo.loaded{ opacity:1; }
       .ac-front .ac-photo-scrim{
         position:absolute; inset:0;
         background:linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.55) 100%);
@@ -713,9 +716,42 @@
         letter-spacing:-.01em; font-size:clamp(24px,7vw,32px); color:#fff;
       }
       .ac-back-text p{
-        margin:0; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-weight:500;
+        margin:0;
+        font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-weight:500;
         letter-spacing:-0.02em; line-height:1.4; color:rgba(255,255,255,.88);
         font-size:clamp(15px,4vw,18px);
+      }
+      /* Абзац теж ховається під маскою і піднімається рядок за рядком — той
+         самий "схід сонця", тільки по рядках (не по словах — їх забагато). */
+      .ac-back-text p .ln-mask{ display:block; overflow:hidden; }
+      .ac-back-text p .ln-inner{
+        display:block;
+        transform:translateY(115%);
+        opacity:0;
+        transition:transform .6s cubic-bezier(.16,.84,.24,1), opacity .5s ease;
+      }
+      .ac-card.flipped .ac-back-text p .ln-inner{
+        transform:translateY(0);
+        opacity:1;
+        transition-delay: calc(.6s + var(--i, 0) * .07s);
+      }
+
+      /* Заголовок "FORMULA BUREAU" ховається під маскою і піднімається знизу вгору
+         по слову, коли картка перевертається — той самий ефект, що й на заголовку
+         під Projects. Абзац під ним просто плавно проявляється і трохи піднімається,
+         з невеликою затримкою після заголовка. */
+      .ac-back-text h2 .wm{ display:inline-block; overflow:hidden; vertical-align:top; }
+      .ac-back-text h2 .wm-i{
+        display:inline-block;
+        transform:translateY(115%);
+        opacity:0;
+        transition:transform .6s cubic-bezier(.16,.84,.24,1), opacity .5s ease;
+        transition-delay:0s;
+      }
+      .ac-card.flipped .ac-back-text h2 .wm-i{
+        transform:translateY(0);
+        opacity:1;
+        transition-delay: calc(.45s + var(--i, 0) * .09s);
       }
 
       /* Нижня кнопка "Back" — та ж форма, що і "About", лише інверсія кольорів */
@@ -1608,6 +1644,73 @@
       } else {
         headline.classList.add('reveal');
       }
+    })();
+
+    /* Фото About (мобільна картка) — плавно проявляємо, коли воно реально
+       завантажилось, замість різкого "стрибка" поверх чорного фону */
+    (function(){
+      const photo = document.querySelector('.ac-front .ac-photo');
+      if(!photo) return;
+      if(photo.complete && photo.naturalWidth > 0){
+        photo.classList.add('loaded');
+      } else {
+        photo.addEventListener('load', ()=> photo.classList.add('loaded'), {once:true});
+      }
+    })();
+
+    /* Заголовок "FORMULA BUREAU" на звороті картки About — розбиваємо на слова
+       під маску (як і заголовок під Projects), анімація запускається CSS-ом
+       автоматично при .ac-card.flipped */
+    (function(){
+      const heading = document.querySelector('.ac-back-text h2');
+      if(!heading) return;
+      const words = heading.textContent.trim().split(/\s+/);
+      heading.innerHTML = words.map((w,i)=>
+        `<span class="wm"><span class="wm-i" style="--i:${i}">${w}</span></span> `
+      ).join('');
+    })();
+
+    /* Абзац під заголовком — розбиваємо на РЯДКИ (за фактичною висотою верстки,
+       а не по словах — щоб не було задовго) і обгортаємо кожен рядок у маску */
+    (function(){
+      const p = document.querySelector('.ac-back-text p');
+      if(!p) return;
+
+      function splitIntoLines(){
+        const text = p.textContent.trim();
+        const words = text.split(/\s+/);
+        // Спочатку розкладаємо звичайними словами, щоб виміряти реальні рядки
+        p.innerHTML = words.map(w=>`<span class="ln-word">${w}</span>`).join(' ');
+        const wordEls = Array.from(p.querySelectorAll('.ln-word'));
+        const lines = [];
+        let currentTop = null, currentLine = [];
+        wordEls.forEach(el=>{
+          const top = el.offsetTop;
+          if(currentTop === null || Math.abs(top - currentTop) < 2){
+            currentLine.push(el.textContent);
+            currentTop = top;
+          } else {
+            lines.push(currentLine);
+            currentLine = [el.textContent];
+            currentTop = top;
+          }
+        });
+        if(currentLine.length) lines.push(currentLine);
+
+        // Тепер перебудовуємо вже готовими рядками під маску
+        p.innerHTML = lines.map((line,i)=>
+          `<span class="ln-mask"><span class="ln-inner" style="--i:${i}">${line.join(' ')}</span></span>`
+        ).join('');
+      }
+      splitIntoLines();
+
+      // Перерахунок рядків при реальній зміні ширини (як і --vh фікс раніше)
+      let lastW = window.innerWidth;
+      window.addEventListener('resize', ()=>{
+        if(window.innerWidth === lastW) return;
+        lastW = window.innerWidth;
+        splitIntoLines();
+      }, {passive:true});
     })();
 
     /* ABOUT COMPACT: flip-card interaction (<1000px) + затримка появи кнопки під час піну */

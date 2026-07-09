@@ -1262,8 +1262,6 @@
     const menuFabLabel = document.getElementById('menuFabLabel');
     const mobileMenu  = document.getElementById('mobileMenu');
 
-    let lockedScrollY = 0;
-
     /* Міняє напис кнопки й щоразу заново програє ефект "піднімається знизу під маскою" */
     function setFabLabel(text){
       if (!menuFabLabel || menuFabLabel.textContent === text) { if(menuFabLabel) menuFabLabel.textContent = text; return; }
@@ -1274,13 +1272,6 @@
     }
 
     function openMobileMenu(){
-      lockedScrollY = window.pageYOffset || document.documentElement.scrollTop || 0;
-      document.body.style.position = 'fixed';
-      document.body.style.top = (-lockedScrollY) + 'px';
-      document.body.style.left = '0';
-      document.body.style.right = '0';
-      document.body.style.width = '100%';
-
       mobileMenu.classList.add('open');
       document.body.classList.add('menu-active');
       burgerBtn.setAttribute('aria-expanded','true');
@@ -1293,17 +1284,6 @@
       burgerBtn.setAttribute('aria-expanded','false');
       menuFabBtn.setAttribute('aria-expanded','false');
       setFabLabel('MENU');
-
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.width = '';
-
-      const prevBehavior = document.documentElement.style.scrollBehavior;
-      document.documentElement.style.scrollBehavior = 'auto';
-      window.scrollTo(0, lockedScrollY);
-      document.documentElement.style.scrollBehavior = prevBehavior;
     }
     function toggleMobileMenu(){ mobileMenu.classList.contains('open') ? closeMobileMenu() : openMobileMenu(); }
     burgerBtn.addEventListener('click', toggleMobileMenu);

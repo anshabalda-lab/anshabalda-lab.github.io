@@ -588,6 +588,10 @@
       --frame-w:72vw;
       --frame-w-max:1200px;
 
+      --side-pad: clamp(24px, 3vw, 40px);
+      --about-max: 1600px;
+      --photo-size: clamp(180px, min(42vw, 60vh), 640px);
+
       background:var(--bg);
       color:var(--ink);
     }
@@ -607,24 +611,39 @@
     #about .word.left{ left:0.5vw; top:0%; transform:translateY(-35%); text-align:left; }
     #about .word.right{ right:0.5vw; top:100%; transform:translateY(-60%); text-align:right; }
 
+    /* спільний рядок: текст + фото, флекс не дає їм перекритись,
+       і на дуже широких екранах обмежений по ширині — зайвий простір
+       іде в поля з боків, а не розпирає текст і фото */
+    #about .about-row{
+      position:absolute; top:50%; left:50%;
+      transform:translate(-50%, -50%);
+      width:100%; max-width:var(--about-max);
+      display:flex; align-items:flex-start; justify-content:center;
+      gap:clamp(24px, 4vw, 80px);
+      padding:0 var(--side-pad);
+    }
+
     /* центр-фото */
-    #about .center{ position:absolute; inset:0; display:grid; align-items:center; justify-content:end; padding-right:14vw; }
+    #about .center{ position:relative; flex:0 1 auto; order:2; min-width:0; padding:0; text-align:left; }
     #about .frame{
-      aspect-ratio:1/1; width:clamp(240px,40vw,700px); height:auto; background:transparent; overflow:hidden;
+      margin:0;
+      aspect-ratio:1/1; width:var(--photo-size); height:auto; background:transparent; overflow:hidden;
       transform:scale(1.08); opacity:0; will-change:transform,opacity;
+      max-width:100%;
     }
     #about .frame img{ display:block; width:100%; height:100%; object-fit:cover; filter:grayscale(100%); }
 
     /* текст */
     #about .text-box{
-      position:absolute; left:7vw; top:50%; transform:translateY(-50%);
-      max-width:26vw; opacity:1;
+      position:relative; order:1; flex:0 1 var(--photo-size); width:var(--photo-size); min-width:0;
+      height:var(--photo-size); opacity:1;
+      display:flex; flex-direction:column; justify-content:space-between;
       font-family:"Poppins","Helvetica Neue",Helvetica,Arial,sans-serif;
       font-weight:400; letter-spacing:-0.015em; color:#111; text-shadow:none;
       text-align:left; 
     }
     #about .text-box h2{
-      margin:0 0 16px 0; font-family:'Figtree'; font-size:clamp(28px,2.4vw,44px); font-weight:600; line-height:1.15;
+      margin:0; font-family:'Figtree'; font-size:clamp(22px, calc(var(--photo-size) * 0.07), 44px); font-weight:600; line-height:1.15;
       text-transform:uppercase; letter-spacing:-0.02em;
     }
     #about .text-box p{
@@ -634,7 +653,7 @@
       letter-spacing:-0.04em;
       line-height:1.25;
       color:#000000;
-      font-size:clamp(18px,1.5vw,24px);
+      font-size:clamp(14px, calc(var(--photo-size) * 0.04), 24px);
       -webkit-font-smoothing:antialiased;
       -moz-osx-font-smoothing:grayscale;
     }
@@ -645,11 +664,12 @@
       #about .frame{ transform:scale(1); opacity:1; transition:none !important; }
     }
 
-    /* ===== ABOUT COMPACT (< 1000px): flip-card на телефоні/планшеті ===== */
+    /* ===== ABOUT COMPACT (< 1000px, і портретні планшети до 1400px): flip-card ===== */
     .ac-pin-wrap{ display:none; }
 
-    @media (max-width:999px){
-      /* ховаємо старий desktop pin-scroll нижче 1000px */
+    @media (max-width:999px), (max-width:1400px) and (orientation:portrait){
+      /* ховаємо старий desktop pin-scroll нижче 1000px, а також на портретних
+         планшетах (iPad Pro тощо) — там vh занадто великий для pin-scroll дизайну */
       #about .lead, #about .pin-wrap, #about .after{ display:none !important; }
       #about{ min-height:0; }
 
@@ -665,7 +685,7 @@
     /* ---- Full-screen картка з чорною панеллю, що виїжджає знизу вгору
        (замість 3D-перевороту — Safari нестабільно рендерить вміст усередині
        3D-трансформованих контейнерів, тому перейшли на простий slide-up) ---- */
-    @media (max-width:999px){
+    @media (max-width:999px), (max-width:1400px) and (orientation:portrait){
       .ac-pin-wrap{ height:auto; }
       .about-compact{
         position:relative;
@@ -806,8 +826,8 @@
       .ac-back-btn:active{ transform:translate(-50%, 0) scale(.97); }
     }
 
-    /* ---- Планшет-портрет (768–999px): та ж flip-логіка, просто просторіше ---- */
-    @media (min-width:768px) and (max-width:999px){
+    /* ---- Планшет-портрет: та ж flip-логіка, просто просторіше ---- */
+    @media (min-width:768px) and (max-width:999px), (min-width:768px) and (max-width:1400px) and (orientation:portrait){
       .ac-flip-btn{ bottom:clamp(40px,7vh,64px); padding:18px 48px; font-size:15px; }
       .ac-back{ padding:64px 64px 140px; }
       .ac-back-btn{ bottom:clamp(40px,7vh,64px); padding:18px 48px; font-size:15px; }
@@ -1145,26 +1165,31 @@
           <div class="word right">ESSENCE</div>
         </div>
 
-        <!-- фото -->
-        <div class="center">
-          <figure class="frame" aria-label="Studio photograph">
-            <img src="about-studio.jpg" alt="Architectural studio team, sketches and materials on the table." loading="eager" fetchpriority="high">
-          </figure>
-        </div>
+        <!-- фото + текст: спільний flex-рядок, ніколи не перекриваються -->
+        <div class="about-row">
+          <!-- фото -->
+          <div class="center">
+            <figure class="frame" aria-label="Studio photograph">
+              <img src="about-studio.jpg" alt="Architectural studio team, sketches and materials on the table." loading="eager" fetchpriority="high">
+            </figure>
+          </div>
 
-        <!-- текст ліворуч -->
-        <div class="text-box" id="aboutText">
-          <h2>FORMULA BUREAU</h2>
-          <p>
-            Founded in 2017 in Kyiv, Formula Bureau has evolved from a local architectural practice into an international design bureau.
-            Our portfolio ranges from small cafés and private residences to large restaurants, medical facilities and full-scale architectural developments across Ukraine and beyond.
-            <br><br>
-            Every project begins with context — site, light, function, and the people who will inhabit it.
-            We translate these elements into architecture defined by clarity, proportion and emotion — spaces where material, detail and atmosphere form one coherent language.
-            <br><br>
-            With a team of architects, designers and engineers, we oversee every stage — from concept to realisation — maintaining precision and integrity throughout the process.
-            Today, with our office in Bratislava, we continue to expand across Europe and other parts of the world, guided by the same principle that started it all: to create spaces that feel essential, timeless and human.
-          </p>
+          <!-- текст ліворуч -->
+          <div class="text-box" id="aboutText">
+            <h2>FORMULA BUREAU</h2>
+            <p>
+              Founded in 2017 in Kyiv, Formula Bureau has evolved from a local architectural practice into an international design bureau.
+              Our portfolio ranges from small cafés and private residences to large restaurants, medical facilities and full-scale architectural developments across Ukraine and beyond.
+            </p>
+            <p>
+              Every project begins with context — site, light, function, and the people who will inhabit it.
+              We translate these elements into architecture defined by clarity, proportion and emotion — spaces where material, detail and atmosphere form one coherent language.
+            </p>
+            <p>
+              With a team of architects, designers and engineers, we oversee every stage — from concept to realisation — maintaining precision and integrity throughout the process.
+              Today, with our office in Bratislava, we continue to expand across Europe and other parts of the world, guided by the same principle that started it all: to create spaces that feel essential, timeless and human.
+            </p>
+          </div>
         </div>
 
       </div>
@@ -1367,6 +1392,48 @@
           setStableVH();
         }, 300);
       });
+    })();
+
+    /* ===== Автопідгонка слів FOUNDATION / ESSENCE під ширину екрана =====
+       CSS clamp() не може гарантовано врахувати різну довжину слів
+       (FOUNDATION довше за ESSENCE) на всіх можливих ширинах екрана —
+       тому вимірюємо реальну відрендерену ширину і, якщо слово не
+       вміщається, зменшуємо font-size пропорційно, щоб воно завжди
+       залишалось повністю видимим, без обрізання по краях. */
+    (function(){
+      const words = Array.from(document.querySelectorAll('#about .word'));
+      if(!words.length) return;
+
+      function fitWords(){
+        words.forEach(el=>{
+          el.style.fontSize = ''; // скидаємо до базового CSS-розміру перед виміром
+          const available = window.innerWidth * 0.98; // невеликий запас з боків
+          const natural = el.scrollWidth;
+          if(natural > available){
+            const baseSize = parseFloat(getComputedStyle(el).fontSize);
+            const scale = available / natural;
+            el.style.fontSize = (baseSize * scale) + 'px';
+          }
+        });
+      }
+
+      fitWords();
+      if(document.fonts && document.fonts.ready){
+        document.fonts.ready.then(fitWords);
+      }
+      window.addEventListener('load', fitWords);
+
+      // Той самий принцип, що й для --vh: перераховуємо тільки при
+      // реальній зміні ширини, ігноруючи "фейкові" resize від адресної
+      // панелі мобільних браузерів під час скролу.
+      let lastWidth = window.innerWidth;
+      let resizeTimer;
+      window.addEventListener('resize', function(){
+        if (window.innerWidth === lastWidth) return;
+        lastWidth = window.innerWidth;
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(fitWords, 200);
+      }, {passive:true});
     })();
 
     /* Brand → scroll to HERO */

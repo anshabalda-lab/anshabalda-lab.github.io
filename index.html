@@ -967,7 +967,7 @@
     .contact-mobile-footer{ display:none; }
     @media (max-width:767px){
       #contact{
-        min-height:calc((var(--vh, 1vh) * 100) + 100px); background:#ffffff;
+        min-height:calc((var(--vh, 1vh) * 100) + 200px); background:#ffffff;
         display:flex; flex-direction:column;
       }
       .video-wrap-contact,
@@ -1010,6 +1010,14 @@
       .cm-cities.has-active .cm-city:not(.open) .cm-dot{ border-color:rgba(0,0,0,.22); }
       .cm-city.open .cm-city-name{ color:#111; }
       .cm-city.open .cm-dot{ border-color:#111; background:#111; transform:scale(1.1); }
+
+      /* Легка підказка "натисни мене" — кружечок біля KYIV пульсує кілька разів,
+         поки секція у полі зору і поки людина ще жодного разу не тапала по місту */
+      .cm-dot.hint-pulse{ animation:cmDotPulse 3.5s ease-in-out infinite; }
+      @keyframes cmDotPulse{
+        0%,100%{ transform:scale(1); border-color:rgba(0,0,0,.55); }
+        50%{ transform:scale(1.35); border-color:rgba(0,0,0,.9); }
+      }
 
       .cm-city-detail{
         overflow:hidden; max-height:0; opacity:0;
@@ -2344,10 +2352,35 @@
       const wrap = document.getElementById('cmCities');
       if(!wrap) return;
       const cities = wrap.querySelectorAll('.cm-city');
+
+      /* Підказка "натисни мене": кружечок біля KYIV пульсує через ~2.5с
+         після того, як секція з'явилась у полі зору, і зупиняється
+         назавжди (для цієї сесії), щойно людина тапнула по будь-якому місту */
+      const firstDot = wrap.querySelector('.cm-city .cm-dot');
+      let hintTimer = null;
+      function startHint(){
+        if(firstDot) firstDot.classList.add('hint-pulse');
+      }
+      function stopHint(){
+        if(hintTimer){ clearTimeout(hintTimer); hintTimer = null; }
+        if(firstDot) firstDot.classList.remove('hint-pulse');
+      }
+      if(firstDot && 'IntersectionObserver' in window){
+        const io = new IntersectionObserver(entries=>{
+          entries.forEach(e=>{
+            if(e.isIntersecting && !hintTimer){
+              hintTimer = setTimeout(startHint, 2500);
+            }
+          });
+        }, {threshold:.6});
+        io.observe(wrap);
+      }
+
       cities.forEach(city=>{
         const head = city.querySelector('.cm-city-name');
         if(!head) return;
         head.addEventListener('click', ()=>{
+          stopHint();
           const wasOpen = city.classList.contains('open');
           cities.forEach(c=>c.classList.remove('open'));
           if(!wasOpen){

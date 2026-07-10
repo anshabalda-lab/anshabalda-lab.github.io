@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light">
   <title>FORMULA — Home + Projects + Services + About + Contact</title>
@@ -27,8 +27,13 @@
     }
 
     :root{ --ink:#ececec; --bg:#ffffff; --line:#242424; --wrap:1440px; }
-    *{box-sizing:border-box} html,body{height:100%} html{scroll-behavior:smooth;overflow-x:hidden;overscroll-behavior-y:none}
-    body{overscroll-behavior-y:none;}
+    *{box-sizing:border-box} html,body{height:100%} html{overflow-x:hidden}
+    /* Твердий стоп у кінці скролу — тільки на десктопі/планшеті.
+       На мобільному (<768px) навмисно лишаємо нативний "гумовий" відскок iOS/Android. */
+    @media (min-width:768px){
+      html{ overscroll-behavior-y:none; }
+      body{ overscroll-behavior-y:none; }
+    }
     body{margin:0;background:var(--bg);color:var(--ink);
          font:16px/1.55 'Roboto',system-ui,-apple-system,'Segoe UI',Inter,Arial;
          -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
@@ -840,7 +845,9 @@
     /* ===== Refined CONTACT (Perfect Grid integrated from contacts_v8.html) */
     #contact {
       position: relative;
-      min-height: 100vh;
+      height: calc(var(--vh, 1vh) * 100);
+      min-height: calc(var(--vh, 1vh) * 100);
+      max-height: calc(var(--vh, 1vh) * 100);
       overflow: hidden;
       background: #ffffff; /* Тло секції контактів (сіре, як у About) */
       color: #111;
@@ -1034,23 +1041,18 @@
         display:flex; flex:0 0 auto;
         align-items:flex-start; justify-content:space-between; gap:20px;
         background:transparent;
-        border-top:1px solid rgba(0,0,0,.1);
-        padding:20px clamp(20px,5vw,32px) 24px;
+        padding:20px clamp(20px,5vw,32px) calc(24px + env(safe-area-inset-bottom, 0px));
       }
       .cm-footer-left, .cm-footer-right{
-        display:flex; flex-direction:column; gap:4px;
+        display:flex; flex-direction:column; gap:6px;
       }
       .cm-footer-right{ align-items:flex-end; text-align:right; }
-      .cm-copy, .cm-status{
-        font-family:'Roboto'; font-weight:700; letter-spacing:.03em;
-        font-size:11px; text-transform:uppercase; color:rgba(0,0,0,.55);
+      .cm-copy, .cm-status, .cm-footer-link{
+        font-family:'Roboto'; font-weight:600; font-size:clamp(11px,3vw,13px);
+        letter-spacing:.1em; text-transform:uppercase; color:#111;
+        text-decoration:none;
       }
-      .cm-status{ color:rgba(0,0,0,.4); }
-      .cm-footer-link{
-        font-family:'Roboto'; font-weight:700; font-size:11px; letter-spacing:.03em; text-transform:uppercase;
-        color:rgba(0,0,0,.55); text-decoration:none;
-      }
-    }
+      .cm-status{ color:rgba(0,0,0,.55); }
     }
 
     /* ===== Cursor dot */

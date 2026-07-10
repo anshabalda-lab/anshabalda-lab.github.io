@@ -959,12 +959,9 @@
     .contact-mobile{ display:none; }
     .contact-mobile-footer{ display:none; }
     @media (max-width:767px){
-      html{ scroll-snap-type:y proximity; }
-      .about-compact{ scroll-snap-align:start; scroll-snap-stop:always; }
       #contact{
         min-height:calc(var(--vh, 1vh) * 100); background:#ffffff;
         display:flex; flex-direction:column;
-        scroll-snap-align:start; scroll-snap-stop:always;
       }
       .video-wrap-contact,
       #contact-knockout-svg,
@@ -1034,25 +1031,24 @@
       .cm-link:active{ opacity:.6; }
 
       .contact-mobile-footer{
-        display:block; flex:0 0 auto;
+        display:flex; flex:0 0 auto;
+        align-items:flex-start; justify-content:space-between; gap:20px;
         background:transparent;
         border-top:1px solid rgba(0,0,0,.1);
-        padding:22px clamp(20px,5vw,32px) 20px;
+        padding:20px clamp(20px,5vw,32px) 24px;
       }
-      .cm-legal{
-        margin:0 0 14px; text-align:center;
-        font-family:'Roboto'; font-size:12px; line-height:1.6; color:rgba(0,0,0,.55);
+      .cm-footer-left, .cm-footer-right{
+        display:flex; flex-direction:column; gap:4px;
       }
-      .cm-legal a{ color:rgba(0,0,0,.6); text-decoration:underline; }
-      .cm-footer-row{
-        display:flex; align-items:center; justify-content:center; gap:20px;
+      .cm-footer-right{ align-items:flex-end; text-align:right; }
+      .cm-copy, .cm-status{
+        font-family:'Roboto'; font-weight:700; letter-spacing:.03em;
+        font-size:11px; text-transform:uppercase; color:rgba(0,0,0,.55);
       }
+      .cm-status{ color:rgba(0,0,0,.4); }
       .cm-footer-link{
-        font-family:'Roboto'; font-size:10px; letter-spacing:.08em; text-transform:uppercase;
-        color:rgba(0,0,0,.45); text-decoration:none;
-      }
-      .cm-copy{
-        font-family:'Roboto'; letter-spacing:.06em; font-size:10px; color:rgba(0,0,0,.32);
+        font-family:'Roboto'; font-weight:700; font-size:11px; letter-spacing:.03em; text-transform:uppercase;
+        color:rgba(0,0,0,.55); text-decoration:none;
       }
     }
     }
@@ -1389,11 +1385,13 @@
     </div>
 
     <div class="contact-mobile-footer">
-      <p class="cm-legal">All photography, drawings and other materials on this site are the intellectual property of Formula Bureau. To request permission to use them, contact <a href="mailto:formula.bureau@gmail.com">formula.bureau@gmail.com</a>.</p>
-      <div class="cm-footer-row">
-        <a class="cm-footer-link" href="#">Privacy Policy</a>
-        <a class="cm-footer-link" href="#">Terms</a>
+      <div class="cm-footer-left">
         <span class="cm-copy">© 2025 Formula Bureau</span>
+        <span class="cm-status" id="cmStatus">KYI — · BTS —</span>
+      </div>
+      <div class="cm-footer-right">
+        <a class="cm-footer-link" href="#">Privacy Policy</a>
+        <a class="cm-footer-link" href="#">Terms of Service</a>
       </div>
     </div>
   </section>
@@ -2358,6 +2356,27 @@
           }
         });
       });
+    })();
+
+    /* Футер Contact: табло як в аеропорту — код міста + місцевий час */
+    (function(){
+      const statusEl = document.getElementById('cmStatus');
+      if(!statusEl) return;
+
+      function timeIn(tz){
+        return new Intl.DateTimeFormat('en-GB', {
+          timeZone:tz, hour:'2-digit', minute:'2-digit', hour12:false
+        }).format(new Date());
+      }
+
+      function update(){
+        const kyiv = timeIn('Europe/Kyiv');
+        const bratislava = timeIn('Europe/Bratislava');
+        statusEl.textContent = 'KYI ' + kyiv + '  ·  BTS ' + bratislava;
+      }
+
+      update();
+      setInterval(update, 30000);
     })();
 
     /* Рядок "Contact us / Instagram" підганяємо по ширині під найдовшу назву

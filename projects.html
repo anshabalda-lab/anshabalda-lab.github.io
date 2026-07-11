@@ -208,8 +208,10 @@
     font-size:clamp(32px,5vw,64px); color:var(--ink); line-height:1;
   }
 
-  /* ===== MOBILE / TABLET (<900px): вертикальний скрол, картки стовпчиком, квадратні прев'ю ===== */
-  @media (max-width:900px){
+  /* ===== MOBILE (<680px): вертикальний скрол, картки стовпчиком, квадратні прев'ю =====
+     Поріг навмисно низький — щоб iPad mini/Air/Pro в портреті (768–1024px)
+     потрапляли в "планшетну" сходинку (2 картки в рядку), а не сюди. */
+  @media (max-width:680px){
     .screen{ min-height:auto; }
     .filters{
       padding:14px 20px 12px;
@@ -470,7 +472,7 @@
     function layoutRows(){
       const list = currentList();
       rows.innerHTML = '';
-      const isMobile = window.innerWidth < 900;
+      const isMobile = window.innerWidth < 680;
       if(isMobile){
         const row = document.createElement('div');
         row.className = 'row';

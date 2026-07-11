@@ -1136,7 +1136,7 @@
     <div class="wrap">
       <div class="inner">
         <div class="left">
-          <a class="link" href="#projects">PROJECTS</a>
+          <a class="link" href="projects.html">PROJECTS</a>
           <a class="link" href="#services">SERVICES</a>
         </div>
         <a class="brand" href="#intro" id="brandLink">FORM·A</a>
@@ -1160,7 +1160,7 @@
   <div class="mobile-menu" id="mobileMenu">
     <nav class="mobile-menu-links">
       <a href="#intro" class="mobile-link">HOME</a>
-      <a href="#projects" class="mobile-link">PROJECTS</a>
+      <a href="projects.html" class="mobile-link">PROJECTS</a>
       <a href="#services" class="mobile-link">SERVICES</a>
       <a href="#about" class="mobile-link">ABOUT</a>
       <a href="#contact" class="mobile-link">CONTACT</a>
@@ -1662,11 +1662,18 @@
     burgerBtn.addEventListener('click', toggleMobileMenu);
     menuFabBtn.addEventListener('click', toggleMobileMenu);
 
-    /* Пункти мобільного меню — закрити меню і скролити до секції */
+    /* Пункти мобільного меню — закрити меню і скролити до секції.
+       Посилання на іншу сторінку (напр. projects.html, не починається з "#")
+       не перехоплюємо — даємо браузеру перейти туди звичайним чином. */
     document.querySelectorAll('.mobile-link').forEach(link=>{
       link.addEventListener('click', e=>{
+        const href = link.getAttribute('href') || '';
+        if(!href.startsWith('#')){
+          closeMobileMenu();
+          return; // звичайний перехід на іншу сторінку
+        }
         e.preventDefault();
-        const target = document.querySelector(link.getAttribute('href'));
+        const target = document.querySelector(href);
         closeMobileMenu();
         if(!target) return;
         setTimeout(()=>{

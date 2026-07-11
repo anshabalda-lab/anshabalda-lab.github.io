@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="color-scheme" content="light">
+<title>Projects — FORM·A dsgn</title>
+<style>
+  /* ===== Custom fonts (ідентично index.html) ===== */
+  @font-face{
+    font-family:'Figtree';
+    src:url('Figtree-VariableFont_wght.ttf') format('truetype-variations'),
+        url('Figtree-VariableFont_wght.ttf') format('truetype');
+    font-weight:300 900; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Roboto';
+    src:url('Roboto-VariableFont_wdth,wght.ttf') format('truetype-variations'),
+        url('Roboto-VariableFont_wdth,wght.ttf') format('truetype');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+
+  :root{
+    --bg:#ffffff; --ink:#111; --wrap:1600px;
+    --side-pad: clamp(40px, 9vw, 160px);
+  }
+  *{box-sizing:border-box} html,body{height:100%} html{overflow-x:hidden}
+  @media (min-width:768px){ html{ overscroll-behavior-y:none; } body{ overscroll-behavior-y:none; } }
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:16px/1.55 'Roboto',system-ui,-apple-system,'Segoe UI',Inter,Arial;
+       -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  a{color:inherit;text-decoration:none}
+
+  /* ===== PRELOADER (ідентично index.html) ===== */
+  .preloader{ position:fixed; inset:0; z-index:9999; background:#0b0b0b;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px;
+    transition:opacity .6s ease, visibility 0s linear 0s; }
+  .preloader.hide{ opacity:0; visibility:hidden; transition:opacity .6s ease, visibility 0s linear .6s; pointer-events:none; }
+  .preloader-mark{ font-family:'Figtree'; font-weight:900; text-transform:uppercase;
+    font-size:clamp(90px,15vw,170px); color:#fff; line-height:1;
+    width:clamp(90px,15vw,170px); height:clamp(90px,15vw,170px);
+    display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .15s ease; }
+  .preloader-mark.font-ready{ opacity:1; }
+  .preloader-edge-bar{ position:fixed; bottom:0; left:0; width:100%; height:2px;
+    background:rgba(255,255,255,.15); z-index:9999; overflow:hidden; transition:opacity .4s ease; }
+  .preloader-edge-bar.hide{ opacity:0; }
+  .preloader-edge-bar span{ display:block; height:100%; width:0%; background:#fff; transition:width .25s ease; }
+
+  /* ===== NAV — та ж структура, що на головній, темний текст, без лінії знизу ===== */
+  .nav{position:fixed;top:0;left:0;width:100%;height:96px;display:flex;align-items:center;z-index:60;
+       background:#fff;
+       transition:transform .6s cubic-bezier(.22,.61,.36,1);will-change:transform}
+  .nav .brand, .nav .link{ color:var(--ink); opacity:.95; }
+  .nav .link:hover{ opacity:1; }
+  .nav.hide{ transform: translateY(-110%); }
+  .nav .wrap{width:100%;padding:0 28px;max-width:var(--wrap);margin:0 auto;}
+  .nav .inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;width:100%;gap:16px;}
+  .left,.right{display:flex;gap:28px;align-items:center;}
+  .right{justify-content:flex-end;}
+  .brand{font-family:'Figtree';font-weight:900;letter-spacing:.06em;color:var(--ink);font-size:34px;}
+  .nav .link{font-family:'Figtree';font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);opacity:.7;}
+  .nav .link.current{ opacity:1; }
+  .nav .link:hover{opacity:1;}
+
+  .burger{ display:none; position:relative; width:32px; height:22px;
+    background:none; border:none; cursor:pointer; padding:0; z-index:80; justify-self:end; }
+  .burger span{ position:absolute; left:0; right:0; height:2px; background:var(--ink); transition:transform .3s ease, opacity .3s ease; }
+  .burger span:first-child{ top:4px; } .burger span:last-child{ top:16px; }
+
+  .mobile-menu{ position:fixed; top:0; left:0; width:100%; height:100%; z-index:200; background:#000;
+    display:flex; flex-direction:column; align-items:flex-start; justify-content:center;
+    padding:0 clamp(24px,6vw,80px); pointer-events:none; transform:translateY(-100%); visibility:hidden;
+    transition:transform .75s cubic-bezier(.16,.84,.24,1), visibility 0s linear .75s; }
+  .mobile-menu.open{ pointer-events:auto; transform:translateY(0); visibility:visible;
+    transition:transform .75s cubic-bezier(.16,.84,.24,1), visibility 0s linear 0s; }
+
+  .menu-fab{ position:fixed; top:24px; right:28px; z-index:250; overflow:hidden; border-radius:999px; pointer-events:none; }
+  .menu-fab-btn{ display:inline-flex; align-items:center; justify-content:center; background:#111; color:#fff;
+    padding:12px 24px; border-radius:999px; font-family:'Figtree'; font-size:14px; font-weight:700;
+    letter-spacing:.1em; text-transform:uppercase; border:none; cursor:pointer;
+    transform:translateY(115%); transition:transform .55s cubic-bezier(.16,.84,.24,1); }
+  .menu-fab.show{ pointer-events:auto; } .menu-fab.show .menu-fab-btn{ transform:translateY(0); }
+  .menu-fab-btn .wm{ display:inline-block; overflow:hidden; vertical-align:top; }
+  .menu-fab-btn .wm-i{ display:inline-block; transform:translateY(120%); opacity:0;
+    transition:transform .5s cubic-bezier(.16,.84,.24,1), opacity .4s ease; }
+  .menu-fab-btn .wm-i.in{ transform:translateY(0); opacity:1; }
+  body.menu-active .nav.hide ~ .menu-fab{ pointer-events:auto; }
+  body.menu-active .nav.hide ~ .menu-fab .menu-fab-btn{ transform:translateY(0) !important; }
+  @media (max-width:999px){ .menu-fab{ top:18px; right:20px; } .menu-fab-btn{ padding:10px 20px; font-size:13px; } }
+
+  .mobile-menu-links{ display:flex; flex-direction:column; align-items:flex-start; gap:0; width:100%; }
+  .mobile-link{ font-family:'Figtree'; font-size:clamp(32px,5.5vw,64px); font-weight:400; line-height:0.95;
+    color:#fff; text-transform:uppercase; text-align:left; letter-spacing:.02em;
+    opacity:0; transform:translateY(16px); transition:opacity .4s ease, transform .4s ease; }
+  .mobile-menu.open .mobile-link{ opacity:1; transform:translateY(0); }
+  .mobile-menu.open .mobile-link:nth-child(1){ transition-delay:.05s; }
+  .mobile-menu.open .mobile-link:nth-child(2){ transition-delay:.10s; }
+  .mobile-menu.open .mobile-link:nth-child(3){ transition-delay:.15s; }
+  .mobile-menu.open .mobile-link:nth-child(4){ transition-delay:.20s; }
+  .mobile-menu.open .mobile-link:nth-child(5){ transition-delay:.25s; }
+  .mobile-instagram{ position:absolute; bottom:32px; left:clamp(24px,6vw,80px); color:#fff; font-family:'Figtree';
+    font-size:14px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; text-decoration:none;
+    opacity:0; transform:translateY(10px); transition:opacity .4s ease, transform .4s ease; }
+  .mobile-menu.open .mobile-instagram{ opacity:1; transform:translateY(0); transition-delay:.3s; }
+
+  @media (max-width:999px){
+    .nav .inner{grid-template-columns:1fr auto 1fr;}
+    .left{display:none;} .right{display:none;}
+    .brand{font-size:clamp(24px,4.6vw,42px); grid-column:2; justify-self:center;}
+    .nav .wrap{padding:0 20px;}
+    .burger{display:flex; align-items:center; grid-column:3; justify-self:end;}
+  }
+  @media (max-width:999px){
+    .nav{ align-items:flex-start !important; padding-top:20px !important; height:84px !important; z-index:300 !important; }
+    .nav .inner{ grid-template-columns:auto 1fr !important; }
+    .brand{ font-size:22px !important; grid-column:1 !important; justify-self:start !important; transform:none !important; line-height:1 !important; }
+    .burger{ grid-column:2 !important; align-self:center !important; width:auto !important; height:auto !important; }
+    .burger span{ display:none !important; }
+    .burger::after{ content:"MENU"; font-size:14px !important; font-weight:700; letter-spacing:.1em; color:var(--ink); line-height:1 !important; }
+    body.menu-active .brand{ color:var(--ink) !important; }
+    body.menu-active .burger::after{ content:"CLOSE" !important; color:var(--ink) !important; }
+  }
+
+  /* ===== SCREEN — на десктопі вміщається в один екран, без вертикального скролу ===== */
+  .screen{
+    position:relative;
+    min-height:calc(var(--vh, 1vh) * 100);
+    display:flex; flex-direction:column;
+    padding-top:96px;
+  }
+  .grid-area{
+    flex:1;
+    display:flex; align-items:center; justify-content:center;
+    padding:0 var(--side-pad);
+  }
+
+  /* ===== ROWS — контейнер заповнюється рядками через JS.
+     Кожен .row отримує власну точно розраховану висоту (--rh), щоб картки
+     влазили ідеально впритул до країв; висота/ширина кожної картинки в межах
+     рядка визначається її власними пропорціями (aspect-ratio) в парі з
+     максимальною шириною --rh*BOX_ASPECT — це і дає "поличний" ефект з
+     нерівними верхами й спільною нижньою лінією. */
+  .rows{ width:100%; max-width:var(--wrap); display:flex; flex-direction:column; }
+  .row{
+    display:flex; align-items:flex-end;
+    margin-top:clamp(12px,1.75vh,24px);
+  }
+  .row:first-child{ margin-top:0; }
+  .row.fit{ justify-content:space-between; }
+  .row.loose{ justify-content:flex-start; }
+
+  .thumb{ display:flex; flex-direction:column; align-items:flex-start; }
+  .thumb-media{ display:block; overflow:hidden; background:#141414; position:relative; }
+  .thumb-media img{
+    display:block;
+    aspect-ratio:var(--ar, 3/2);
+    width:auto; height:auto;
+    max-height:var(--rh);
+    max-width:calc(var(--rh) * var(--box-ar, 1.5));
+    object-fit:cover; /* запобіжник: навіть якщо ar злегка розійдеться, фото не спотворюється */
+    transition:transform .6s cubic-bezier(.22,.61,.36,1);
+  }
+  .thumb:hover .thumb-media img{ transform:scale(1.045); }
+  .thumb-media .ph-fallback{
+    display:flex; align-items:center; justify-content:center;
+    aspect-ratio:var(--ar, 3/2);
+    width:auto; height:auto;
+    max-height:var(--rh);
+    max-width:calc(var(--rh) * var(--box-ar, 1.5));
+    background:linear-gradient(135deg,#3a3a3a,#151515);
+    color:rgba(255,255,255,.18); font-family:'Figtree'; font-weight:900;
+    font-size:clamp(16px,2vw,28px);
+  }
+  .thumb .name{
+    margin-top:10px; font-family:'Figtree'; font-weight:800; letter-spacing:.01em; text-transform:uppercase;
+    font-size:clamp(11px,.85vw,14px); color:var(--ink); white-space:nowrap;
+  }
+
+  /* ===== Футер: лого/копірайт/час зліва, велике слово PROJECTS справа ===== */
+  .page-foot{
+    position:absolute; left:0; right:0; bottom:0;
+    display:flex; align-items:flex-end; justify-content:space-between; gap:20px;
+    padding:0 var(--side-pad) clamp(28px,4.5vh,56px);
+  }
+  .pf-left{ display:flex; flex-direction:column; gap:6px; }
+  .pf-copy, .pf-status{
+    font-family:'Roboto'; font-weight:600; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink);
+  }
+  .pf-status{ color:rgba(0,0,0,.5); }
+  .pf-title{
+    font-family:'Figtree'; font-weight:900; letter-spacing:-.01em; text-transform:uppercase;
+    font-size:clamp(32px,5vw,64px); color:var(--ink); line-height:1;
+  }
+
+  /* ===== MOBILE / TABLET (<900px): вертикальний скрол, картки стовпчиком ===== */
+  @media (max-width:900px){
+    .screen{ min-height:auto; }
+    .grid-area{ padding:clamp(24px,6vw,40px) 20px 0; }
+    .rows{ gap:28px; }
+    .row{ flex-direction:column; align-items:stretch; margin-top:0 !important; gap:28px; }
+    .thumb-media, .thumb-media img, .thumb-media .ph-fallback{
+      width:100% !important; max-width:100% !important; height:auto !important; max-height:none !important;
+    }
+    .thumb .name{ font-size:15px; margin-top:12px; }
+    .page-foot{
+      position:static; flex-direction:row; padding:28px 20px calc(28px + env(safe-area-inset-bottom,0px));
+    }
+    .pf-title{ font-size:clamp(28px,9vw,44px); }
+  }
+</style>
+</head>
+<body>
+  <div class="preloader" id="preloader">
+    <div class="preloader-mark" id="preloaderMark">F</div>
+  </div>
+  <div class="preloader-edge-bar" id="preloaderEdgeBar"><span></span></div>
+
+  <!-- NAV -->
+  <div class="nav" role="navigation" aria-label="Primary">
+    <div class="wrap">
+      <div class="inner">
+        <div class="left">
+          <a class="link current" href="projects.html">PROJECTS</a>
+          <a class="link" href="index.html#services">SERVICES</a>
+        </div>
+        <a class="brand" href="index.html" id="brandLink">FORM·A</a>
+        <div class="right">
+          <a class="link" href="index.html#about">ABOUT</a>
+          <a class="link" href="index.html#contact">CONTACT</a>
+        </div>
+        <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="menu-fab" id="menuFab">
+    <button class="menu-fab-btn" id="menuFabBtn" aria-label="Open menu"><span class="wm"><span class="wm-i in" id="menuFabLabel">MENU</span></span></button>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <nav class="mobile-menu-links">
+      <a href="index.html#intro" class="mobile-link">HOME</a>
+      <a href="projects.html" class="mobile-link">PROJECTS</a>
+      <a href="index.html#services" class="mobile-link">SERVICES</a>
+      <a href="index.html#about" class="mobile-link">ABOUT</a>
+      <a href="index.html#contact" class="mobile-link">CONTACT</a>
+    </nav>
+    <a href="https://instagram.com" target="_blank" class="mobile-instagram">Instagram</a>
+  </div>
+
+  <!-- PAGE CONTENT -->
+  <div class="screen">
+    <div class="grid-area">
+      <div class="rows" id="rows">
+        <!-- JS будує рядки з картками -->
+      </div>
+    </div>
+
+    <div class="page-foot">
+      <div class="pf-left">
+        <span class="pf-copy">© 2025 FORM·A DSGN</span>
+        <span class="pf-status" id="pfStatus">KYI — · BTS —</span>
+      </div>
+      <div class="pf-title">Projects</div>
+    </div>
+  </div>
+
+  <script>
+    /* ===== PRELOADER ===== */
+    (function(){
+      const preloader = document.getElementById('preloader');
+      const mark = document.getElementById('preloaderMark');
+      const edgeBar = document.getElementById('preloaderEdgeBar');
+      const edgeFill = edgeBar ? edgeBar.querySelector('span') : null;
+      if(!preloader) return;
+      document.documentElement.classList.add('is-loading');
+      document.body.style.overflow = 'hidden';
+
+      const LETTERS = ['F','O','R','M','A'];
+      let letterIdx = 0, letterTimer = null;
+      if(mark){
+        letterTimer = setInterval(()=>{ letterIdx = (letterIdx+1)%LETTERS.length; mark.textContent = LETTERS[letterIdx]; }, 250);
+        const revealMark = ()=> mark.classList.add('font-ready');
+        if(document.fonts && document.fonts.load){
+          document.fonts.load("900 170px Figtree").then(revealMark).catch(revealMark);
+          setTimeout(revealMark, 600);
+        } else revealMark();
+      }
+
+      function afterImagesReady(cb){
+        const imgs = Array.from(document.images);
+        const total = imgs.length || 1;
+        let loaded = 0;
+        function bump(){ loaded++; if(edgeFill) edgeFill.style.width = Math.min(100, Math.round((loaded/total)*100)) + '%'; if(loaded>=total) cb(); }
+        if(total === 0) return cb();
+        imgs.forEach(img=>{
+          if(img.complete) bump();
+          else{ img.addEventListener('load', bump, {once:true}); img.addEventListener('error', bump, {once:true}); }
+        });
+      }
+
+      const startTime = Date.now();
+      const MIN_SHOW_TIME = 1400;
+      let done = false;
+      function reallyHide(){
+        if(done) return; done = true;
+        if(letterTimer){ clearInterval(letterTimer); letterTimer = null; }
+        if(edgeFill) edgeFill.style.width = '100%';
+        preloader.classList.add('hide');
+        if(edgeBar) edgeBar.classList.add('hide');
+        document.documentElement.classList.remove('is-loading');
+        document.body.style.overflow = '';
+        if (window.__setStableVH) { window.__setStableVH(); setTimeout(window.__setStableVH, 300); }
+      }
+      function hidePreloader(){
+        const remaining = MIN_SHOW_TIME - (Date.now() - startTime);
+        if (remaining > 0) setTimeout(reallyHide, remaining); else reallyHide();
+      }
+
+      const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+      window.__renderProjectsThenHide = function(){
+        afterImagesReady(()=> fontsReady.then(hidePreloader));
+      };
+      setTimeout(hidePreloader, 5000);
+    })();
+
+    /* ===== Стабільна висота екрана (iOS Safari) ===== */
+    (function(){
+      function setStableVH(){ document.documentElement.style.setProperty('--vh', (window.innerHeight*0.01)+'px'); }
+      window.__setStableVH = setStableVH;
+      setStableVH();
+      setTimeout(setStableVH, 300); setTimeout(setStableVH, 700); setTimeout(setStableVH, 1200);
+      let lastWidth = window.innerWidth, resizeTimer;
+      window.addEventListener('resize', function(){
+        if (window.innerWidth === lastWidth) return;
+        lastWidth = window.innerWidth;
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(setStableVH, 250);
+      }, {passive:true});
+      window.addEventListener('orientationchange', function(){
+        setTimeout(function(){ lastWidth = window.innerWidth; setStableVH(); }, 300);
+      });
+    })();
+
+    /* ===== Burger / MENU-fab ===== */
+    const burgerBtn = document.getElementById('burgerBtn');
+    const menuFab = document.getElementById('menuFab');
+    const menuFabBtn = document.getElementById('menuFabBtn');
+    const menuFabLabel = document.getElementById('menuFabLabel');
+    const mobileMenu = document.getElementById('mobileMenu');
+    function setFabLabel(text){
+      if (!menuFabLabel || menuFabLabel.textContent === text) { if(menuFabLabel) menuFabLabel.textContent = text; return; }
+      menuFabLabel.classList.remove('in'); menuFabLabel.textContent = text;
+      void menuFabLabel.offsetWidth;
+      requestAnimationFrame(()=> menuFabLabel.classList.add('in'));
+    }
+    function openMobileMenu(){
+      mobileMenu.classList.add('open'); document.body.classList.add('menu-active');
+      burgerBtn.setAttribute('aria-expanded','true'); menuFabBtn.setAttribute('aria-expanded','true');
+      setFabLabel('CLOSE');
+    }
+    function closeMobileMenu(){
+      mobileMenu.classList.remove('open'); document.body.classList.remove('menu-active');
+      burgerBtn.setAttribute('aria-expanded','false'); menuFabBtn.setAttribute('aria-expanded','false');
+      setFabLabel('MENU');
+    }
+    function toggleMobileMenu(){ mobileMenu.classList.contains('open') ? closeMobileMenu() : openMobileMenu(); }
+    burgerBtn.addEventListener('click', toggleMobileMenu);
+    menuFabBtn.addEventListener('click', toggleMobileMenu);
+
+    /* ===== NAV: ховається при скролі вниз (працює на mobile, де сторінка скролиться) ===== */
+    (function(){
+      const nav = document.querySelector('.nav');
+      const fab = document.getElementById('menuFab');
+      if(!nav || !fab) return;
+      let ticking = false;
+      const HIDE_AFTER = 140, FAB_AFTER = 220, NEAR_TOP = 80;
+      function update(){
+        if (document.body.classList.contains('menu-active')){ ticking = false; return; }
+        const y = window.pageYOffset || document.documentElement.scrollTop || 0;
+        if (y < NEAR_TOP){ nav.classList.remove('hide'); fab.classList.remove('show'); }
+        else if (y > HIDE_AFTER){ nav.classList.add('hide'); if (y > FAB_AFTER) fab.classList.add('show'); }
+        ticking = false;
+      }
+      function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }
+      window.addEventListener('scroll', onScroll, {passive:true});
+      window.addEventListener('load', update, {once:true});
+      update();
+    })();
+
+    /* ===== Футер: живий час Києва/Братислави (та сама логіка, що на головній) ===== */
+    (function(){
+      const statusEl = document.getElementById('pfStatus');
+      if(!statusEl) return;
+      function timeIn(tz){
+        return new Intl.DateTimeFormat('en-GB', { timeZone:tz, hour:'2-digit', minute:'2-digit', hour12:false }).format(new Date());
+      }
+      function update(){
+        statusEl.textContent = 'KYI ' + timeIn('Europe/Kyiv') + ' · BTS ' + timeIn('Europe/Bratislava');
+      }
+      update();
+      setInterval(update, 30000);
+    })();
+
+    /* ===== PROJECTS DATA =====
+       ar тут — лише запасний варіант на випадок, якщо фото не завантажиться.
+       Реальні пропорції читаються з самого файлу (naturalWidth/naturalHeight),
+       тому картинка ніколи не розтягується — показується у своєму
+       справжньому форматі, портретна лишається портретною, широка — широкою. */
+    const projects = [
+      {title:'PV59 — Living', file:'project-01.jpg', ar: 3/4,   href:'project.html?id=01'},
+      {title:'Dental Clinic', file:'project-02.jpg', ar: 16/9,  href:'project.html?id=02'},
+      {title:'Eastern American', file:'project-03.jpg', ar: 1/1, href:'project.html?id=03'},
+      {title:'Cottage Timber', file:'project-04.jpg', ar: 2.4/1, href:'project.html?id=04'},
+      {title:'Office — Concept', file:'project-05.jpg', ar: 4/5, href:'project.html?id=05'}
+    ];
+
+    /* Підвантажуємо кожне фото окремо (поза DOM), щоб дізнатись його СПРАВЖНІ
+       пропорції ще до розкладки — тоді <img>, який потрапить у DOM, вже бере
+       готовий файл з кешу браузера (повторного запиту в мережу не буде). */
+    function measureRealAr(p){
+      return new Promise(resolve=>{
+        const probe = new Image();
+        probe.onload = ()=>{
+          if(probe.naturalWidth && probe.naturalHeight){
+            p.ar = probe.naturalWidth / probe.naturalHeight;
+          }
+          resolve();
+        };
+        probe.onerror = ()=> resolve(); // лишаємо запасний ar, покаже плейсхолдер
+        probe.src = p.file;
+      });
+    }
+
+    /* ===== Побудова карток (без прив'язки до рядків — розкладку рахує layoutRows) ===== */
+    function buildThumb(p, i){
+      const a = document.createElement('a');
+      a.className = 'thumb';
+      a.href = p.href;
+      a.style.setProperty('--ar', p.ar);
+
+      const media = document.createElement('div');
+      media.className = 'thumb-media';
+
+      const img = document.createElement('img');
+      img.src = p.file;
+      img.alt = p.title;
+      img.loading = i < 4 ? 'eager' : 'lazy';
+      img.onerror = function(){
+        this.remove();
+        const fb = document.createElement('div');
+        fb.className = 'ph-fallback';
+        fb.textContent = String(i+1).padStart(2,'0');
+        media.appendChild(fb);
+      };
+
+      const name = document.createElement('div');
+      name.className = 'name';
+      name.textContent = p.title;
+
+      media.appendChild(img);
+      a.appendChild(media);
+      a.appendChild(name);
+      return a;
+    }
+
+    /* ===== Точний розрахунок рядків =====
+       BOX_AR — пропорція "рамки", в яку вписується кожне фото (ширина/висота).
+       Якщо власне ar фото більше за BOX_AR (широке панорамне) — воно впирається
+       у максимальну ширину рядка і стає нижчим за сусідів; якщо менше
+       (портретне) — впирається у висоту рядка. Це і дає "поличний" ефект.
+       Для кожного рядка висота (--rh) підбирається так, щоб сума ширин карток
+       + гепи рівно дорівнювала ширині контейнера — картки завжди впритул
+       до країв, без діри справа. */
+    const rows = document.getElementById('rows');
+    const BOX_AR = 1.5;
+    const MIN_RH = 110, MAX_RH = 250, NOMINAL_RH = 180;
+
+    function layoutRows(){
+      rows.innerHTML = '';
+      const isMobile = window.innerWidth < 900;
+      if(isMobile){
+        const row = document.createElement('div');
+        row.className = 'row';
+        projects.forEach((p,i)=> row.appendChild(buildThumb(p,i)));
+        rows.appendChild(row);
+        return;
+      }
+
+      const containerWidth = rows.clientWidth || (window.innerWidth - 2*160);
+      const GAP = Math.max(8, Math.min(16, window.innerWidth*0.008));
+
+      // 1) групуємо проєкти в рядки жадібно, орієнтуючись на номінальну висоту
+      const groups = [];
+      let current = [], currentW = 0;
+      projects.forEach((p,idx)=>{
+        const w = Math.min(p.ar, BOX_AR) * NOMINAL_RH;
+        const projected = currentW + (current.length ? GAP : 0) + w;
+        if(projected > containerWidth && current.length){
+          groups.push(current);
+          current = [{p,idx}]; currentW = w;
+        } else {
+          current.push({p,idx}); currentW = projected;
+        }
+      });
+      if(current.length) groups.push(current);
+
+      // 2) для кожного рядка рахуємо точну висоту, що заповнює ширину впритул
+      groups.forEach((group, gi)=>{
+        const row = document.createElement('div');
+        row.className = 'row';
+
+        const sumWeights = group.reduce((s,it)=> s + Math.min(it.p.ar, BOX_AR), 0);
+        const gaps = GAP * (group.length - 1);
+        const solvedRh = (containerWidth - gaps) / sumWeights;
+
+        const isLast = gi === groups.length - 1;
+        const tooBig = solvedRh > MAX_RH * 1.15; // останній рядок замалий, щоб тягнути його на всю ширину
+        let rh;
+        if(isLast && tooBig){
+          rh = MAX_RH;
+          row.classList.add('loose');
+        } else {
+          rh = Math.max(MIN_RH, Math.min(MAX_RH, solvedRh));
+          row.classList.add('fit');
+        }
+
+        row.style.setProperty('--rh', rh + 'px');
+        row.style.setProperty('--box-ar', BOX_AR);
+        row.style.gap = GAP + 'px';
+
+        group.forEach(it=> row.appendChild(buildThumb(it.p, it.idx)));
+        rows.appendChild(row);
+      });
+    }
+
+    Promise.all(projects.map(measureRealAr)).then(()=>{
+      layoutRows();
+      if (window.__renderProjectsThenHide) window.__renderProjectsThenHide();
+    });
+
+    // Перераховуємо тільки при реальній зміні ширини (як і --vh фікс на сайті)
+    let lastLayoutWidth = window.innerWidth;
+    let layoutTimer;
+    window.addEventListener('resize', function(){
+      if (window.innerWidth === lastLayoutWidth) return;
+      lastLayoutWidth = window.innerWidth;
+      clearTimeout(layoutTimer);
+      layoutTimer = setTimeout(layoutRows, 150);
+    }, {passive:true});
+  </script>
+</body>
+</html>

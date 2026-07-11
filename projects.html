@@ -140,16 +140,17 @@
      влазили ідеально впритул до країв; висота/ширина кожної картинки в межах
      рядка визначається її власними пропорціями (aspect-ratio) в парі з
      максимальною шириною --rh*BOX_ASPECT — фото притиснуті до спільної
-     верхньої лінії (рівний край зверху), нижні краї природно різняться
-     залежно від формату фото, назва проєкту — під ним. */
+     нижньої лінії (рівний край знизу, "поличний" ефект), верхні краї
+     природно різняться залежно від формату фото. Назва проєкту йде одразу
+     під фото, тому всі підписи опиняються на одній рівній лінії. */
   .rows{ width:100%; max-width:var(--wrap); display:flex; flex-direction:column; }
   .row{
-    display:flex; align-items:flex-start;
+    display:flex; align-items:flex-end;
     margin-top:clamp(12px,1.75vh,24px);
   }
   .row:first-child{ margin-top:0; }
   .row.fit{ justify-content:space-between; }
-  .row.loose{ justify-content:flex-start; }
+  .row.loose{ justify-content:center; }
 
   .thumb{ display:flex; flex-direction:column; align-items:flex-start; }
   .thumb-media{ display:block; overflow:hidden; background:#141414; position:relative; }
@@ -483,11 +484,12 @@
         return (containerWidth - gaps) / sumW;
       }
 
-      // На вужчих (планшетних) ширинах обмежуємо кількість карток у рядку —
-      // інакше вони просто розтягуються на всю ширину замалим числом і
-      // виходять надто великими. На широкому десктопі обмеження немає:
-      // скільки природно влазить, стільки й стає в рядок.
-      const maxItemsPerRow = containerWidth < 1300 ? 2 : Infinity;
+      // Ніяких прив'язок до конкретних пристроїв чи порогів ширини — просто
+      // складаємо картки в рядок, орієнтуючись на комфортний розмір, поки
+      // природно влазять; як тільки не влазить наступна — вона йде на новий
+      // рядок. Це однаково добре працює на будь-якій ширині: широкий десктоп
+      // вміщає більше карток меншого розміру в один рядок, вузький планшет —
+      // менше карток, і рядків стає більше, само собою.
       const NOMINAL_RH = 180;
 
       const groups = [];
@@ -495,8 +497,7 @@
       list.forEach((p)=>{
         const w = weight(p) * NOMINAL_RH;
         const projected = currentW + (current.length ? GAP : 0) + w;
-        const hitCount = current.length >= maxItemsPerRow;
-        if((projected > containerWidth || hitCount) && current.length){
+        if(projected > containerWidth && current.length){
           groups.push(current);
           current = [p]; currentW = w;
         } else {
@@ -510,15 +511,19 @@
         row.className = 'row';
 
         const solvedRh = solveHeight(group);
-        // Замало карток на цю ширину — не тягнемо силоміць на всю ширину
-        // (буде величезна діра між ними), показуємо природним розміром зліва.
-        const tooBig = solvedRh > MAX_RH * 1.15;
+        // Якщо карток замало навіть для щедрої стелі — це, по суті, "хвіст"
+        // (напр. 1 картка сама на рядку): не тягнемо її на всю ширину силоміць
+        // (вийшло б абсурдно високе фото), показуємо природним розміром по центру.
+        // В решті випадків НЕ обмежуємо висоту зверху — рядок тягнеться до своєї
+        // справжньої розрахованої висоти, тому фото завжди впритул до країв.
+        const FIT_CEILING = MAX_RH * 1.8;
+        const tooBig = solvedRh > FIT_CEILING;
         let rh;
         if(tooBig){
           rh = MAX_RH;
           row.classList.add('loose');
         } else {
-          rh = Math.max(MIN_RH, Math.min(MAX_RH, solvedRh));
+          rh = Math.max(MIN_RH, solvedRh);
           row.classList.add('fit');
         }
 

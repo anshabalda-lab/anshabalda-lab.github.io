@@ -2062,7 +2062,7 @@
           entries.forEach(e=>{
             compact.classList.toggle('show', e.isIntersecting);
           });
-        }, {threshold:.65});
+        }, {threshold:.3});
         io.observe(compact);
       } else {
         compact.classList.add('show');

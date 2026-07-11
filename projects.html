@@ -122,15 +122,29 @@
     padding:0 var(--side-pad);
   }
 
+  /* ===== Фільтри категорій — над сіткою, звужують список одразу по тапу ===== */
+  .filters{
+    display:flex; gap:clamp(18px,2.2vw,32px);
+    padding:clamp(18px,3vh,28px) var(--side-pad) 0;
+  }
+  .filter-btn{
+    background:none; border:none; padding:0; cursor:pointer;
+    font-family:'Figtree'; font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
+    color:rgba(0,0,0,.38); transition:color .25s ease;
+  }
+  .filter-btn.active{ color:var(--ink); }
+  .filter-btn:hover{ color:rgba(0,0,0,.7); }
+
   /* ===== ROWS — контейнер заповнюється рядками через JS.
      Кожен .row отримує власну точно розраховану висоту (--rh), щоб картки
      влазили ідеально впритул до країв; висота/ширина кожної картинки в межах
      рядка визначається її власними пропорціями (aspect-ratio) в парі з
-     максимальною шириною --rh*BOX_ASPECT — це і дає "поличний" ефект з
-     нерівними верхами й спільною нижньою лінією. */
+     максимальною шириною --rh*BOX_ASPECT — фото притиснуті до спільної
+     верхньої лінії (рівний край зверху), нижні краї природно різняться
+     залежно від формату фото, назва проєкту — під ним. */
   .rows{ width:100%; max-width:var(--wrap); display:flex; flex-direction:column; }
   .row{
-    display:flex; align-items:flex-end;
+    display:flex; align-items:flex-start;
     margin-top:clamp(12px,1.75vh,24px);
   }
   .row:first-child{ margin-top:0; }
@@ -160,7 +174,7 @@
     font-size:clamp(16px,2vw,28px);
   }
   .thumb .name{
-    margin-bottom:10px; font-family:'Roboto'; font-weight:500; letter-spacing:.04em; text-transform:uppercase;
+    margin-top:10px; font-family:'Roboto'; font-weight:500; letter-spacing:.04em; text-transform:uppercase;
     font-size:clamp(11px,.85vw,14px); color:var(--ink); white-space:nowrap;
   }
 
@@ -191,6 +205,11 @@
   /* ===== MOBILE / TABLET (<900px): вертикальний скрол, картки стовпчиком, квадратні прев'ю ===== */
   @media (max-width:900px){
     .screen{ min-height:auto; }
+    .filters{
+      padding:14px 20px; gap:20px;
+      border-bottom:1px solid #f0f0f0;
+    }
+    .filter-btn{ font-size:12px; }
     .grid-area{ padding:clamp(24px,6vw,40px) 20px 0; }
     .rows{ gap:28px; }
     .row{ flex-direction:column; align-items:stretch; margin-top:0 !important; gap:28px; }
@@ -202,7 +221,7 @@
       width:100% !important; height:100% !important; max-width:100% !important; max-height:none !important;
       aspect-ratio:auto !important; object-fit:cover !important;
     }
-    .thumb .name{ font-size:15px; margin-bottom:12px; margin-top:0; }
+    .thumb .name{ font-size:15px; margin-top:12px; margin-bottom:0; }
     .page-foot{
       position:static; flex-direction:row; padding:28px 20px calc(28px + env(safe-area-inset-bottom,0px));
     }
@@ -248,6 +267,13 @@
 
   <!-- PAGE CONTENT -->
   <div class="screen">
+    <div class="filters" id="filters">
+      <button class="filter-btn active" data-cat="all">All</button>
+      <button class="filter-btn" data-cat="private">Private</button>
+      <button class="filter-btn" data-cat="commercial">Commercial</button>
+      <button class="filter-btn" data-cat="architecture">Architecture</button>
+    </div>
+
     <div class="grid-area">
       <div class="rows" id="rows">
         <!-- JS будує рядки з картками -->
@@ -348,11 +374,11 @@
        тому картинка ніколи не розтягується — показується у своєму
        справжньому форматі, портретна лишається портретною, широка — широкою. */
     const projects = [
-      {title:'PV59 — Living', file:'project-01.jpg', ar: 3/4,   href:'project.html?id=01'},
-      {title:'Dental Clinic', file:'project-02.jpg', ar: 16/9,  href:'project.html?id=02'},
-      {title:'Eastern American', file:'project-03.jpg', ar: 1/1, href:'project.html?id=03'},
-      {title:'Cottage Timber', file:'project-04.jpg', ar: 2.4/1, href:'project.html?id=04'},
-      {title:'Office — Concept', file:'project-05.jpg', ar: 4/5, href:'project.html?id=05'}
+      {title:'PV59 — Living', file:'project-01.jpg', ar: 3/4,   href:'project.html?id=01', cat:'private'},
+      {title:'Dental Clinic', file:'project-02.jpg', ar: 16/9,  href:'project.html?id=02', cat:'commercial'},
+      {title:'Eastern American', file:'project-03.jpg', ar: 1/1, href:'project.html?id=03', cat:'private'},
+      {title:'Cottage Timber', file:'project-04.jpg', ar: 2.4/1, href:'project.html?id=04', cat:'architecture'},
+      {title:'Office — Concept', file:'project-05.jpg', ar: 4/5, href:'project.html?id=05', cat:'commercial'}
     ];
 
     /* Підвантажуємо кожне фото окремо (поза DOM), щоб дізнатись його СПРАВЖНІ
@@ -399,8 +425,8 @@
       };
 
       media.appendChild(img);
-      a.appendChild(name);
       a.appendChild(media);
+      a.appendChild(name);
       return a;
     }
 
@@ -416,6 +442,11 @@
     const BOX_AR = 1.5;
     const MIN_RH = 110, MAX_RH = 250, NOMINAL_RH = 180;
     let hasRevealed = false;
+    let activeCat = 'all';
+
+    function currentList(){
+      return activeCat === 'all' ? projects : projects.filter(p=> p.cat === activeCat);
+    }
 
     function revealThumbs(){
       const thumbs = Array.from(rows.querySelectorAll('.thumb'));
@@ -431,12 +462,13 @@
     }
 
     function layoutRows(){
+      const list = currentList();
       rows.innerHTML = '';
       const isMobile = window.innerWidth < 900;
       if(isMobile){
         const row = document.createElement('div');
         row.className = 'row';
-        projects.forEach((p,i)=> row.appendChild(buildThumb(p,i)));
+        list.forEach((p,i)=> row.appendChild(buildThumb(p,i)));
         rows.appendChild(row);
         return;
       }
@@ -447,7 +479,7 @@
       // 1) групуємо проєкти в рядки жадібно, орієнтуючись на номінальну висоту
       const groups = [];
       let current = [], currentW = 0;
-      projects.forEach((p,idx)=>{
+      list.forEach((p,idx)=>{
         const w = Math.min(p.ar, BOX_AR) * NOMINAL_RH;
         const projected = currentW + (current.length ? GAP : 0) + w;
         if(projected > containerWidth && current.length){
@@ -487,6 +519,19 @@
         rows.appendChild(row);
       });
     }
+
+    /* ===== Перемикання фільтрів ===== */
+    const filterBtns = Array.from(document.querySelectorAll('.filter-btn'));
+    filterBtns.forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        if(btn.dataset.cat === activeCat) return;
+        activeCat = btn.dataset.cat;
+        filterBtns.forEach(b=> b.classList.toggle('active', b === btn));
+        hasRevealed = false; // нова вибірка — програємо появу карток заново
+        layoutRows();
+        revealThumbs();
+      });
+    });
 
     Promise.all(projects.map(measureRealAr)).then(()=>{
       layoutRows();

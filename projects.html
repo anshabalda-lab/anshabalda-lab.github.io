@@ -489,12 +489,13 @@
         return (containerWidth - gaps) / sumW;
       }
 
-      // Ніяких прив'язок до конкретних пристроїв чи порогів ширини — просто
-      // складаємо картки в рядок, орієнтуючись на комфортний розмір, поки
-      // природно влазять; як тільки не влазить наступна — вона йде на новий
-      // рядок. Це однаково добре працює на будь-якій ширині: широкий десктоп
-      // вміщає більше карток меншого розміру в один рядок, вузький планшет —
-      // менше карток, і рядків стає більше, само собою.
+      // Три свідомі "сходинки" під ширину екрана — так само, як телефон
+      // навмисно тримає 1 колонку: мобільний (<900, окремо вище) — 1 колонка;
+      // планшет-портрет (900–1300) — рівно 2 картки в рядку (свідомий вибір,
+      // а не "як влізе"); широкий десктоп (1300+) — природний потік, скільки
+      // комфортно влазить, стільки й стає в рядок.
+      const isTablet = containerWidth < 1300;
+      const maxItemsPerRow = isTablet ? 2 : Infinity;
       const NOMINAL_RH = 180;
 
       const groups = [];
@@ -502,7 +503,8 @@
       list.forEach((p)=>{
         const w = weight(p) * NOMINAL_RH;
         const projected = currentW + (current.length ? GAP : 0) + w;
-        if(projected > containerWidth && current.length){
+        const hitCap = current.length >= maxItemsPerRow;
+        if((projected > containerWidth || hitCap) && current.length){
           groups.push(current);
           current = [p]; currentW = w;
         } else {

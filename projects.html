@@ -23,7 +23,7 @@
 
   :root{
     --bg:#ffffff; --ink:#111; --wrap:1600px;
-    --side-pad: clamp(40px, 9vw, 160px);
+    --side-pad: max(28px, calc((100vw - 1600px)/2 + 28px));
   }
   *{box-sizing:border-box} html,body{height:100%} html{overflow-x:hidden}
   @media (min-width:768px){ html{ overscroll-behavior-y:none; } body{ overscroll-behavior-y:none; } }
@@ -118,8 +118,8 @@
   }
   .grid-area{
     flex:1;
-    display:flex; align-items:center; justify-content:center;
-    padding:0 var(--side-pad);
+    display:flex; align-items:flex-start; justify-content:center;
+    padding:clamp(20px,3vh,32px) var(--side-pad) 0;
   }
 
   /* ===== Фільтри категорій — над сіткою, звужують список одразу по тапу ===== */
@@ -440,7 +440,7 @@
        до країв, без діри справа. */
     const rows = document.getElementById('rows');
     const BOX_AR = 1.5;
-    const MIN_RH = 110, MAX_RH = 250, NOMINAL_RH = 180;
+    const MIN_RH = 110, MAX_RH = 250;
     let hasRevealed = false;
     let activeCat = 'all';
 
@@ -475,35 +475,46 @@
 
       const containerWidth = rows.clientWidth || (window.innerWidth - 2*160);
       const GAP = Math.max(8, Math.min(16, window.innerWidth*0.008));
+      const weight = p => Math.min(p.ar, BOX_AR);
 
-      // 1) групуємо проєкти в рядки жадібно, орієнтуючись на номінальну висоту
+      function solveHeight(group){
+        const sumW = group.reduce((s,p)=> s + weight(p), 0);
+        const gaps = GAP * (group.length - 1);
+        return (containerWidth - gaps) / sumW;
+      }
+
+      // На вужчих (планшетних) ширинах обмежуємо кількість карток у рядку —
+      // інакше вони просто розтягуються на всю ширину замалим числом і
+      // виходять надто великими. На широкому десктопі обмеження немає:
+      // скільки природно влазить, стільки й стає в рядок.
+      const maxItemsPerRow = containerWidth < 1300 ? 2 : Infinity;
+      const NOMINAL_RH = 180;
+
       const groups = [];
       let current = [], currentW = 0;
-      list.forEach((p,idx)=>{
-        const w = Math.min(p.ar, BOX_AR) * NOMINAL_RH;
+      list.forEach((p)=>{
+        const w = weight(p) * NOMINAL_RH;
         const projected = currentW + (current.length ? GAP : 0) + w;
-        if(projected > containerWidth && current.length){
+        const hitCount = current.length >= maxItemsPerRow;
+        if((projected > containerWidth || hitCount) && current.length){
           groups.push(current);
-          current = [{p,idx}]; currentW = w;
+          current = [p]; currentW = w;
         } else {
-          current.push({p,idx}); currentW = projected;
+          current.push(p); currentW = projected;
         }
       });
       if(current.length) groups.push(current);
 
-      // 2) для кожного рядка рахуємо точну висоту, що заповнює ширину впритул
-      groups.forEach((group, gi)=>{
+      groups.forEach((group)=>{
         const row = document.createElement('div');
         row.className = 'row';
 
-        const sumWeights = group.reduce((s,it)=> s + Math.min(it.p.ar, BOX_AR), 0);
-        const gaps = GAP * (group.length - 1);
-        const solvedRh = (containerWidth - gaps) / sumWeights;
-
-        const isLast = gi === groups.length - 1;
-        const tooBig = solvedRh > MAX_RH * 1.15; // останній рядок замалий, щоб тягнути його на всю ширину
+        const solvedRh = solveHeight(group);
+        // Замало карток на цю ширину — не тягнемо силоміць на всю ширину
+        // (буде величезна діра між ними), показуємо природним розміром зліва.
+        const tooBig = solvedRh > MAX_RH * 1.15;
         let rh;
-        if(isLast && tooBig){
+        if(tooBig){
           rh = MAX_RH;
           row.classList.add('loose');
         } else {
@@ -515,7 +526,7 @@
         row.style.setProperty('--box-ar', BOX_AR);
         row.style.gap = GAP + 'px';
 
-        group.forEach(it=> row.appendChild(buildThumb(it.p, it.idx)));
+        group.forEach((p)=> row.appendChild(buildThumb(p, list.indexOf(p))));
         rows.appendChild(row);
       });
     }

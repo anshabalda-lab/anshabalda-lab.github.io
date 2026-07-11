@@ -208,12 +208,13 @@
     font-size:clamp(32px,5vw,64px); color:var(--ink); line-height:1;
   }
 
-  /* ===== MOBILE (<740px): вертикальний скрол, картки стовпчиком, квадратні прев'ю =====
-     Поріг навмисно нижчий за ширину iPad mini (768px) і iPad Air (820px) в
-     портреті — щоб вони НЕ потрапляли в мобільний стовпчик, а йшли через
-     звичайний природний алгоритм розкладки (як усі інші розміри), який сам
-     вкладе їх у 2 рядки без жодного спеціального правила під ці пристрої. */
-  @media (max-width:740px){
+  /* ===== MOBILE (<740px, або низька висота = телефон в landscape) =====
+     Поріг по ширині навмисно нижчий за iPad mini (768px) і iPad Air (820px)
+     портрет — щоб вони йшли через звичайний природний алгоритм розкладки, а
+     не мобільний стовпчик. Друга умова (по висоті) ловить телефон у landscape
+     — там ширина може бути схожою на iPad-портрет (~800-900px), але висоти
+     мало, тож туди теж краще стовпчиком, а не "десктопну" сітку. */
+  @media (max-width:740px), (max-height:500px){
     .screen{ min-height:auto; }
     .filters{
       padding:14px 20px 12px;
@@ -292,8 +293,8 @@
 
     <div class="page-foot">
       <div class="pf-left">
-        <span class="pf-copy">© 2025 FORM·A DSGN</span>
         <span class="pf-status" id="pfStatus">KYI — · BTS —</span>
+        <span class="pf-copy">© 2025 FORM·A DSGN</span>
       </div>
       <div class="pf-title">Projects</div>
     </div>
@@ -474,7 +475,11 @@
     function layoutRows(){
       const list = currentList();
       rows.innerHTML = '';
-      const isMobile = window.innerWidth < 740;
+      // Сама ширина не розрізняє "iPad портрет" від "iPhone landscape" — обидва
+      // можуть мати схожу ширину (~800-900px). Тому додатково дивимось на
+      // висоту екрана: у телефона в landscape вона завжди мала (~400-430px),
+      // і туди краще так само стовпчиком, а не "десктопну" розкладку.
+      const isMobile = window.innerWidth < 740 || window.innerHeight < 500;
       if(isMobile){
         const row = document.createElement('div');
         row.className = 'row';
@@ -563,12 +568,16 @@
       revealThumbs();
     });
 
-    // Перераховуємо тільки при реальній зміні ширини (як і --vh фікс на сайті)
+    // Перераховуємо при зміні ширини АБО висоти — раніше стежили тільки за
+    // шириною, а мобільна перевірка тепер залежить ще й від висоти екрана
+    // (телефон landscape), тому саму зміну орієнтації могли пропустити.
     let lastLayoutWidth = window.innerWidth;
+    let lastLayoutHeight = window.innerHeight;
     let layoutTimer;
     window.addEventListener('resize', function(){
-      if (window.innerWidth === lastLayoutWidth) return;
+      if (window.innerWidth === lastLayoutWidth && window.innerHeight === lastLayoutHeight) return;
       lastLayoutWidth = window.innerWidth;
+      lastLayoutHeight = window.innerHeight;
       clearTimeout(layoutTimer);
       layoutTimer = setTimeout(function(){ layoutRows(); revealThumbs(); }, 150);
     }, {passive:true});

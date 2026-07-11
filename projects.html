@@ -187,11 +187,16 @@
   }
   .thumb.in{ opacity:1; transform:translateY(0); }
 
-  /* ===== Футер: лого/копірайт/час зліва, велике слово PROJECTS справа ===== */
+  /* ===== Футер: лого/копірайт/час зліва, велике слово PROJECTS справа =====
+     Раніше був position:absolute+bottom:0 — якщо фото виходило вищим, ніж
+     очікувалось, футер міг накластись прямо на нього. Тепер це звичайний
+     елемент потоку з margin-top:auto: сам "притискається" донизу, коли є
+     вільне місце, і просто йде одразу під сіткою, якщо фото багато/високі —
+     накладання фізично неможливе. */
   .page-foot{
-    position:absolute; left:0; right:0; bottom:0;
+    margin-top:auto;
     display:flex; align-items:flex-end; justify-content:space-between; gap:20px;
-    padding:0 var(--side-pad) clamp(28px,4.5vh,56px);
+    padding:clamp(20px,3vh,32px) var(--side-pad) clamp(28px,4.5vh,56px);
   }
   .pf-left{ display:flex; flex-direction:column; gap:6px; }
   .pf-copy, .pf-status{
@@ -224,7 +229,7 @@
     }
     .thumb .name{ font-size:15px; margin-top:12px; margin-bottom:0; }
     .page-foot{
-      position:static; flex-direction:row; padding:28px 20px calc(28px + env(safe-area-inset-bottom,0px));
+      flex-direction:row; padding:28px 20px calc(28px + env(safe-area-inset-bottom,0px));
     }
     .pf-title{ font-size:clamp(28px,9vw,44px); }
   }

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light">
-  <title>FORMULA — Home + Projects + Services + About + Contact</title>
+  <title>FORM·A dsgn — Home + Projects + Services + About + Contact</title>
   <meta name="description" content="Hero, pinned headline, projects stage, Services band, About section and refined Contacts.">
   <style>
     /* ===== Custom fonts ===== */
@@ -57,7 +57,9 @@
       font-size:clamp(90px,15vw,170px); color:#fff; line-height:1;
       width:clamp(90px,15vw,170px); height:clamp(90px,15vw,170px);
       display:flex; align-items:center; justify-content:center;
+      opacity:0; transition:opacity .15s ease;
     }
+    .preloader-mark.font-ready{ opacity:1; }
 
     /* Тонка біла смужка завантаження прямо на нижньому краю екрана —
        реальний прогрес (не нескінченна анімація) */
@@ -789,7 +791,7 @@
         transition-delay: calc(.5s + var(--i, 0) * .07s);
       }
 
-      /* Заголовок "FORMULA BUREAU" ховається під маскою і піднімається знизу вгору
+      /* Заголовок "FORM·A dsgn" ховається під маскою і піднімається знизу вгору
          по слову, коли панель виїжджає — той самий ефект, що й на заголовку
          під Projects. Абзац під ним просто плавно проявляється і трохи піднімається,
          з невеликою затримкою після заголовка. */
@@ -1011,12 +1013,13 @@
       .cm-city.open .cm-city-name{ color:#111; }
       .cm-city.open .cm-dot{ border-color:#111; background:#111; transform:scale(1.1); }
 
-      /* Легка підказка "натисни мене" — кружечок біля KYIV пульсує кілька разів,
-         поки секція у полі зору і поки людина ще жодного разу не тапала по місту */
-      .cm-dot.hint-pulse{ animation:cmDotPulse 3.5s ease-in-out infinite; }
+      /* Легка підказка "натисни мене" — кружечок біля KYIV плавно "моргає"
+         заливкою (порожній → чорний → порожній), поки секція у полі зору
+         і поки людина ще жодного разу не тапала по місту */
+      .cm-dot.hint-pulse{ animation:cmDotPulse 3s ease-in-out infinite; }
       @keyframes cmDotPulse{
-        0%,100%{ transform:scale(1); border-color:rgba(0,0,0,.55); }
-        50%{ transform:scale(1.35); border-color:rgba(0,0,0,.9); }
+        0%,100%{ background:transparent; border-color:rgba(0,0,0,.55); transform:scale(1); }
+        50%{ background:#111; border-color:#111; transform:scale(1.2); }
       }
 
       .cm-city-detail{
@@ -1126,7 +1129,7 @@
           <a class="link" href="#projects">PROJECTS</a>
           <a class="link" href="#services">SERVICES</a>
         </div>
-        <a class="brand" href="#intro" id="brandLink">FORMULA</a>
+        <a class="brand" href="#intro" id="brandLink">FORM·A</a>
         <div class="right">
           <a class="link" href="#about">ABOUT</a>
           <a class="link" href="#contact">CONTACT</a>
@@ -1250,9 +1253,9 @@
           </div>
           <div class="ac-face ac-back">
             <div class="ac-back-text">
-              <h2>FORMULA BUREAU</h2>
+              <h2>FORM·A dsgn</h2>
               <p>
-                Founded in 2017 in Kyiv, Formula Bureau has evolved from a local architectural practice into an international design bureau.
+                Founded in 2017 in Kyiv, FORM·A dsgn has evolved from a local architectural practice into an international design bureau.
                 Our portfolio ranges from small cafés and private residences to large restaurants, medical facilities and full-scale architectural developments across Ukraine and beyond.
                 Every project begins with context — site, light, function, and the people who will inhabit it. With a team of architects, designers and engineers, we oversee every stage — from concept to realisation — guided by the same principle that started it all: to create spaces that feel essential, timeless and human.
               </p>
@@ -1285,9 +1288,9 @@
 
           <!-- текст ліворуч -->
           <div class="text-box" id="aboutText">
-            <h2>FORMULA BUREAU</h2>
+            <h2>FORM·A dsgn</h2>
             <p>
-              Founded in 2017 in Kyiv, Formula Bureau has evolved from a local architectural practice into an international design bureau.
+              Founded in 2017 in Kyiv, FORM·A dsgn has evolved from a local architectural practice into an international design bureau.
               Our portfolio ranges from small cafés and private residences to large restaurants, medical facilities and full-scale architectural developments across Ukraine and beyond.
             </p>
             <p>
@@ -1362,7 +1365,7 @@
         <a href="#" target="_blank" rel="noopener">Instagram</a>
         <a href="#" target="_blank" rel="noopener">Behance</a>
       </div>
-      <span class="copy-contact">© 2025 Formula Bureau</span>
+      <span class="copy-contact">© 2025 FORM·A dsgn</span>
     </div>
 
     <!-- MOBILE (<768px): карта-фон + міста зліва з тап-розкриттям + рядок лінків -->
@@ -1396,7 +1399,7 @@
 
     <div class="contact-mobile-footer">
       <div class="cm-footer-left">
-        <span class="cm-copy">© 2025 Formula Bureau</span>
+        <span class="cm-copy">© 2025 FORM·A dsgn</span>
         <span class="cm-status" id="cmStatus">KYI — · BTS —</span>
       </div>
       <div class="cm-footer-right">
@@ -1426,8 +1429,11 @@
       document.documentElement.classList.add('is-loading');
       document.body.style.overflow = 'hidden';
 
-      /* Літери лого по черзі, різкий свап без анімації, поки триває завантаження */
-      const LETTERS = ['F','O','R','M','U','L','A'];
+      /* Літери лого по черзі, різкий свап без анімації, поки триває завантаження.
+         Спочатку літера прихована (opacity:0) — показуємо її лише коли шрифт
+         Figtree реально довантажився, інакше перша літера на мить блимає
+         системним шрифтом до підміни. */
+      const LETTERS = ['F','O','R','M','A'];
       let letterIdx = 0;
       let letterTimer = null;
       if(mark){
@@ -1435,6 +1441,15 @@
           letterIdx = (letterIdx + 1) % LETTERS.length;
           mark.textContent = LETTERS[letterIdx];
         }, 250);
+
+        const revealMark = ()=> mark.classList.add('font-ready');
+        if(document.fonts && document.fonts.load){
+          document.fonts.load("900 170px Figtree").then(revealMark).catch(revealMark);
+          // запобіжник: якщо шрифт зависне, все одно показуємо за 600мс
+          setTimeout(revealMark, 600);
+        } else {
+          revealMark();
+        }
       }
 
       /* Реальний прогрес завантаження — рахуємо по кількості довантажених фото */
@@ -1966,7 +1981,7 @@
       }
     })();
 
-    /* Заголовок "FORMULA BUREAU" на звороті картки About — розбиваємо на слова
+    /* Заголовок "FORM·A dsgn" на звороті картки About — розбиваємо на слова
        під маску (як і заголовок під Projects), анімація запускається CSS-ом
        автоматично при .ac-card.flipped */
     (function(){
@@ -2185,7 +2200,7 @@
       const cityBlock   = document.getElementById('cityBlockContact');
       const BAR_H       = 56;
 
-      const FONT = "'FormulaBrand','Arial Black','Helvetica Neue',Arial,sans-serif";
+      const FONT = "'FormAaBrand','Arial Black','Helvetica Neue',Arial,sans-serif";
       const MEASURE_FS = 300;
 
       let videoRatio = 1312 / 218;

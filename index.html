@@ -844,6 +844,16 @@
       .ac-back-text p{ font-size:clamp(17px,2.2vw,20px); }
     }
 
+    /* ---- Телефон в landscape (коротка висота екрана): фіксована на var(--vh)
+       картка стає занадто короткою і фото обрізається до тонкої смужки.
+       Тут даємо картці мінімальну висоту з "запасом" замість жорсткого
+       "рівно один екран" — з'являється невеликий природний скрол, зате фото
+       залишається пропорційним. ---- */
+    @media (max-height:500px) and (orientation:landscape) and (max-width:1000px){
+      .about-compact{ height:auto; min-height:640px; overflow:visible; }
+      .ac-card{ height:auto; min-height:640px; }
+    }
+
     /* ===== Refined CONTACT (Perfect Grid integrated from contacts_v8.html) */
     #contact {
       position: relative;
@@ -967,7 +977,7 @@
     /* ===== MOBILE (<768px): Contact — карта-фон + акордеон міст ===== */
     .contact-mobile{ display:none; }
     .contact-mobile-footer{ display:none; }
-    @media (max-width:767px){
+    @media (max-width:767px), (max-height:500px) and (orientation:landscape) and (max-width:1000px){
       #contact{
         min-height:calc((var(--vh, 1vh) * 100) + 200px); background:#ffffff;
         display:flex; flex-direction:column;

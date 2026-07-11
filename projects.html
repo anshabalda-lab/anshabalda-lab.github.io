@@ -217,11 +217,26 @@
   @media (max-width:740px), (max-height:500px){
     .screen{ min-height:auto; }
     .filters{
-      flex-direction:column; align-items:flex-start;
-      gap:10px;
+      display:grid;
+      grid-template-rows:repeat(2, auto);
+      grid-auto-flow:column;
+      grid-auto-columns:max-content;
+      column-gap:36px; row-gap:7px;
+      align-items:start;
       padding:18px 20px 12px;
     }
-    .filter-btn{ font-family:'Roboto'; font-size:15px; font-weight:500; letter-spacing:.04em; }
+    .filter-btn{
+      font-family:'Roboto'; font-size:15px; font-weight:500; letter-spacing:.04em;
+      display:inline-flex; align-items:center; gap:8px;
+      color:var(--ink) !important; /* усі категорії однаково чорні на мобільному */
+    }
+    .filter-btn::after{
+      content:''; width:0; height:7px; border-radius:50%; flex-shrink:0;
+      background:var(--ink);
+      transition:width .2s ease;
+      overflow:hidden;
+    }
+    .filter-btn.active::after{ width:7px; }
     .grid-area{ padding:0 20px 0; }
     .rows{ gap:28px; }
     .row{ flex-direction:column; align-items:stretch; margin-top:0 !important; gap:28px; }

@@ -32,20 +32,7 @@
        -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
   a{color:inherit;text-decoration:none}
 
-  /* ===== PRELOADER (ідентично index.html) ===== */
-  .preloader{ position:fixed; inset:0; z-index:9999; background:#0b0b0b;
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px;
-    transition:opacity .6s ease, visibility 0s linear 0s; }
-  .preloader.hide{ opacity:0; visibility:hidden; transition:opacity .6s ease, visibility 0s linear .6s; pointer-events:none; }
-  .preloader-mark{ font-family:'Figtree'; font-weight:900; text-transform:uppercase;
-    font-size:clamp(90px,15vw,170px); color:#fff; line-height:1;
-    width:clamp(90px,15vw,170px); height:clamp(90px,15vw,170px);
-    display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity .15s ease; }
-  .preloader-mark.font-ready{ opacity:1; }
-  .preloader-edge-bar{ position:fixed; bottom:0; left:0; width:100%; height:2px;
-    background:rgba(255,255,255,.15); z-index:9999; overflow:hidden; transition:opacity .4s ease; }
-  .preloader-edge-bar.hide{ opacity:0; }
-  .preloader-edge-bar span{ display:block; height:100%; width:0%; background:#fff; transition:width .25s ease; }
+  /* Прелоадер тут не використовується — сторінка невелика, показуємо одразу */
 
   /* ===== NAV — та ж структура, що на головній, темний текст, без лінії знизу ===== */
   .nav{position:fixed;top:0;left:0;width:100%;height:96px;display:flex;align-items:center;z-index:60;
@@ -173,9 +160,17 @@
     font-size:clamp(16px,2vw,28px);
   }
   .thumb .name{
-    margin-top:10px; font-family:'Figtree'; font-weight:800; letter-spacing:.01em; text-transform:uppercase;
+    margin-bottom:10px; font-family:'Roboto'; font-weight:500; letter-spacing:.04em; text-transform:uppercase;
     font-size:clamp(11px,.85vw,14px); color:var(--ink); white-space:nowrap;
   }
+
+  /* ===== Поява карток: піднімаються знизу вгору з легким фейдом ===== */
+  .thumb{
+    opacity:0;
+    transform:translateY(36px);
+    transition:opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1);
+  }
+  .thumb.in{ opacity:1; transform:translateY(0); }
 
   /* ===== Футер: лого/копірайт/час зліва, велике слово PROJECTS справа ===== */
   .page-foot{
@@ -193,16 +188,21 @@
     font-size:clamp(32px,5vw,64px); color:var(--ink); line-height:1;
   }
 
-  /* ===== MOBILE / TABLET (<900px): вертикальний скрол, картки стовпчиком ===== */
+  /* ===== MOBILE / TABLET (<900px): вертикальний скрол, картки стовпчиком, квадратні прев'ю ===== */
   @media (max-width:900px){
     .screen{ min-height:auto; }
     .grid-area{ padding:clamp(24px,6vw,40px) 20px 0; }
     .rows{ gap:28px; }
     .row{ flex-direction:column; align-items:stretch; margin-top:0 !important; gap:28px; }
-    .thumb-media, .thumb-media img, .thumb-media .ph-fallback{
-      width:100% !important; max-width:100% !important; height:auto !important; max-height:none !important;
+    .thumb-media{
+      width:100% !important; max-width:100% !important;
+      aspect-ratio:1/1 !important; height:auto !important; max-height:none !important;
     }
-    .thumb .name{ font-size:15px; margin-top:12px; }
+    .thumb-media img, .thumb-media .ph-fallback{
+      width:100% !important; height:100% !important; max-width:100% !important; max-height:none !important;
+      aspect-ratio:auto !important; object-fit:cover !important;
+    }
+    .thumb .name{ font-size:15px; margin-bottom:12px; margin-top:0; }
     .page-foot{
       position:static; flex-direction:row; padding:28px 20px calc(28px + env(safe-area-inset-bottom,0px));
     }
@@ -211,11 +211,6 @@
 </style>
 </head>
 <body>
-  <div class="preloader" id="preloader">
-    <div class="preloader-mark" id="preloaderMark">F</div>
-  </div>
-  <div class="preloader-edge-bar" id="preloaderEdgeBar"><span></span></div>
-
   <!-- NAV -->
   <div class="nav" role="navigation" aria-label="Primary">
     <div class="wrap">
@@ -269,64 +264,6 @@
   </div>
 
   <script>
-    /* ===== PRELOADER ===== */
-    (function(){
-      const preloader = document.getElementById('preloader');
-      const mark = document.getElementById('preloaderMark');
-      const edgeBar = document.getElementById('preloaderEdgeBar');
-      const edgeFill = edgeBar ? edgeBar.querySelector('span') : null;
-      if(!preloader) return;
-      document.documentElement.classList.add('is-loading');
-      document.body.style.overflow = 'hidden';
-
-      const LETTERS = ['F','O','R','M','A'];
-      let letterIdx = 0, letterTimer = null;
-      if(mark){
-        letterTimer = setInterval(()=>{ letterIdx = (letterIdx+1)%LETTERS.length; mark.textContent = LETTERS[letterIdx]; }, 250);
-        const revealMark = ()=> mark.classList.add('font-ready');
-        if(document.fonts && document.fonts.load){
-          document.fonts.load("900 170px Figtree").then(revealMark).catch(revealMark);
-          setTimeout(revealMark, 600);
-        } else revealMark();
-      }
-
-      function afterImagesReady(cb){
-        const imgs = Array.from(document.images);
-        const total = imgs.length || 1;
-        let loaded = 0;
-        function bump(){ loaded++; if(edgeFill) edgeFill.style.width = Math.min(100, Math.round((loaded/total)*100)) + '%'; if(loaded>=total) cb(); }
-        if(total === 0) return cb();
-        imgs.forEach(img=>{
-          if(img.complete) bump();
-          else{ img.addEventListener('load', bump, {once:true}); img.addEventListener('error', bump, {once:true}); }
-        });
-      }
-
-      const startTime = Date.now();
-      const MIN_SHOW_TIME = 1400;
-      let done = false;
-      function reallyHide(){
-        if(done) return; done = true;
-        if(letterTimer){ clearInterval(letterTimer); letterTimer = null; }
-        if(edgeFill) edgeFill.style.width = '100%';
-        preloader.classList.add('hide');
-        if(edgeBar) edgeBar.classList.add('hide');
-        document.documentElement.classList.remove('is-loading');
-        document.body.style.overflow = '';
-        if (window.__setStableVH) { window.__setStableVH(); setTimeout(window.__setStableVH, 300); }
-      }
-      function hidePreloader(){
-        const remaining = MIN_SHOW_TIME - (Date.now() - startTime);
-        if (remaining > 0) setTimeout(reallyHide, remaining); else reallyHide();
-      }
-
-      const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
-      window.__renderProjectsThenHide = function(){
-        afterImagesReady(()=> fontsReady.then(hidePreloader));
-      };
-      setTimeout(hidePreloader, 5000);
-    })();
-
     /* ===== Стабільна висота екрана (iOS Safari) ===== */
     (function(){
       function setStableVH(){ document.documentElement.style.setProperty('--vh', (window.innerHeight*0.01)+'px'); }
@@ -442,6 +379,10 @@
       a.href = p.href;
       a.style.setProperty('--ar', p.ar);
 
+      const name = document.createElement('div');
+      name.className = 'name';
+      name.textContent = p.title;
+
       const media = document.createElement('div');
       media.className = 'thumb-media';
 
@@ -457,13 +398,9 @@
         media.appendChild(fb);
       };
 
-      const name = document.createElement('div');
-      name.className = 'name';
-      name.textContent = p.title;
-
       media.appendChild(img);
-      a.appendChild(media);
       a.appendChild(name);
+      a.appendChild(media);
       return a;
     }
 
@@ -478,6 +415,20 @@
     const rows = document.getElementById('rows');
     const BOX_AR = 1.5;
     const MIN_RH = 110, MAX_RH = 250, NOMINAL_RH = 180;
+    let hasRevealed = false;
+
+    function revealThumbs(){
+      const thumbs = Array.from(rows.querySelectorAll('.thumb'));
+      thumbs.forEach((el, i)=>{
+        if(hasRevealed){
+          el.classList.add('in'); // повторні розкладки (ресайз) — без анімації, одразу видимі
+          return;
+        }
+        el.style.transitionDelay = (i * 70) + 'ms';
+        requestAnimationFrame(()=> requestAnimationFrame(()=> el.classList.add('in')));
+      });
+      hasRevealed = true;
+    }
 
     function layoutRows(){
       rows.innerHTML = '';
@@ -539,7 +490,7 @@
 
     Promise.all(projects.map(measureRealAr)).then(()=>{
       layoutRows();
-      if (window.__renderProjectsThenHide) window.__renderProjectsThenHide();
+      revealThumbs();
     });
 
     // Перераховуємо тільки при реальній зміні ширини (як і --vh фікс на сайті)
@@ -549,7 +500,7 @@
       if (window.innerWidth === lastLayoutWidth) return;
       lastLayoutWidth = window.innerWidth;
       clearTimeout(layoutTimer);
-      layoutTimer = setTimeout(layoutRows, 150);
+      layoutTimer = setTimeout(function(){ layoutRows(); revealThumbs(); }, 150);
     }, {passive:true});
   </script>
 </body>

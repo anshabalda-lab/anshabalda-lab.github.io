@@ -655,6 +655,10 @@
     window.addEventListener('orientationchange', function(){
       setTimeout(function(){
         forceHardReflow();
+        // "Поштовх" скролом на 1px і назад — відомий обхідний прийом саме
+        // для багу Safari з position:fixed елементами після повороту.
+        window.scrollTo(0, (window.scrollY || 0) + 1);
+        setTimeout(function(){ window.scrollTo(0, Math.max(0,(window.scrollY||0) - 1)); }, 60);
         waitForStableWidthThenRelayout();
       }, 200);
     });

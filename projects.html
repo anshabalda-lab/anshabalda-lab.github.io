@@ -160,31 +160,41 @@
   }
   .thumb{ display:flex; flex-direction:column; }
   .thumb-media{
-    position:relative; overflow:hidden; background:#141414;
+    position:relative; overflow:hidden; background:var(--bg);
   }
   .thumb-media.ar-square{ aspect-ratio:1/1; }
   .thumb-media.ar-tall{ aspect-ratio:2/3; }
-  .thumb-media img{
-    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
-    transition:transform .6s cubic-bezier(.22,.61,.36,1);
-  }
-  .thumb:hover .thumb-media img{ transform:scale(1.045); }
+  .thumb-media img,
   .thumb-media .ph-fallback{
-    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    position:absolute; inset:0; width:100%; height:100%;
+    transform:translateY(100%); /* сховане під маскою знизу, поки картка не "in" */
+    transition:transform .8s cubic-bezier(.16,.84,.24,1);
+    transition-delay:var(--stagger, 0ms);
+  }
+  .thumb-media img{ object-fit:cover; }
+  .thumb.in .thumb-media img,
+  .thumb.in .thumb-media .ph-fallback{ transform:translateY(0); }
+  .thumb.in:hover .thumb-media img{ transform:translateY(0) scale(1.045); }
+  .thumb-media .ph-fallback{
+    display:flex; align-items:center; justify-content:center;
     background:linear-gradient(135deg,#3a3a3a,#151515);
     color:rgba(255,255,255,.18); font-family:'Figtree'; font-weight:900; font-size:clamp(16px,2vw,28px);
   }
   .thumb .name{
     margin-top:10px; font-family:'Roboto'; font-weight:500; letter-spacing:.04em; text-transform:uppercase;
     font-size:clamp(11px,.85vw,14px); color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    opacity:0; transition:opacity .5s ease;
+    transition-delay:calc(var(--stagger, 0ms) + 150ms);
   }
+  .thumb.in .name{ opacity:1; }
 
-  /* Поява карток: піднімаються знизу вгору з легким фейдом */
-  .thumb{
-    opacity:0; transform:translateY(36px);
-    transition:opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1);
+  /* Поява карток: фото "спливає" з-під маски знизу вгору (як MENU/CLOSE) */
+  .thumb.out .thumb-media img,
+  .thumb.out .thumb-media .ph-fallback{
+    transform:translateY(-100%); /* продовжує рух вгору і зникає під маскою зверху */
+    transition:transform .45s cubic-bezier(.7,0,.84,0);
   }
-  .thumb.in{ opacity:1; transform:translateY(0); }
+  .thumb.out .name{ opacity:0; transition:opacity .2s ease; }
 
   /* ===== Футер =====
      margin-top:auto в flex-колонці .screen: якщо контенту (фото) мало,
@@ -385,7 +395,14 @@
         const fb = document.createElement('div');
         fb.className = 'ph-fallback';
         fb.textContent = String(i+1).padStart(2,'0');
+        // Заглушка додається асинхронно, вже ПІСЛЯ того, як картка могла
+        // отримати клас "in" — без цього вона просто миттєво з'явиться у
+        // фінальному стані (немає "попереднього" стану, щоб анімувати ВІД).
+        // Примусово стартуємо приховану, а наступним кадром знімаємо інлайн-
+        // стиль, щоб CSS-перехід спрацював як слід, з нуля.
+        fb.style.transform = 'translateY(100%)';
         media.appendChild(fb);
+        requestAnimationFrame(()=> requestAnimationFrame(()=> { fb.style.transform = ''; }));
       };
 
       const name = document.createElement('div');
@@ -406,7 +423,7 @@
       const thumbs = Array.from(rows.querySelectorAll('.thumb'));
       thumbs.forEach((el,i)=>{
         if(hasRevealed){ el.classList.add('in'); return; }
-        el.style.transitionDelay = (i*70)+'ms';
+        el.style.setProperty('--stagger', (i*70)+'ms');
         requestAnimationFrame(()=> requestAnimationFrame(()=> el.classList.add('in')));
       });
       hasRevealed = true;
@@ -419,7 +436,19 @@
         activeCat = btn.dataset.cat;
         filterBtns.forEach(b=> b.classList.toggle('active', b === btn));
         hasRevealed = false;
-        render();
+
+        // Спочатку плавно ховаємо поточні картки, і тільки після цього
+        // перебудовуємо сітку під нову категорію — без різкого миттєвого стрибка.
+        const current = Array.from(rows.querySelectorAll('.thumb'));
+        if(current.length){
+          current.forEach((el,i)=>{
+            el.style.setProperty('--stagger', (i*25)+'ms');
+            el.classList.add('out');
+          });
+          setTimeout(render, 320);
+        } else {
+          render();
+        }
       });
     });
 

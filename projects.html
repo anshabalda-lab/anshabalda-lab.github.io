@@ -642,7 +642,22 @@
     if (window.visualViewport){
       window.visualViewport.addEventListener('resize', waitForStableWidthThenRelayout);
     }
-    window.addEventListener('orientationchange', waitForStableWidthThenRelayout);
+    // Останній "грубий" прийом: примусово перерахувати ВСЮ сторінку, а не
+    // тільки наш блок карток — на випадок, якщо сам Safari internally ще не
+    // "усвідомив" новий розмір вкладки після повороту. Це той самий ефект,
+    // що й ручний reload, тільки без реального перезавантаження.
+    function forceHardReflow(){
+      const prev = document.body.style.display;
+      document.body.style.display = 'none';
+      void document.body.offsetHeight; // синхронний force-reflow
+      document.body.style.display = prev;
+    }
+    window.addEventListener('orientationchange', function(){
+      setTimeout(function(){
+        forceHardReflow();
+        waitForStableWidthThenRelayout();
+      }, 200);
+    });
     window.addEventListener('pageshow', function(e){
       if (e.persisted) waitForStableWidthThenRelayout();
     });

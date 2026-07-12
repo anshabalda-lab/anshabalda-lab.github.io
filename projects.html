@@ -25,7 +25,7 @@
     --bg:#ffffff; --ink:#111; --wrap:1600px;
     --side-pad: max(28px, calc((100vw - 1600px)/2 + 28px));
   }
-  *{box-sizing:border-box} html,body{height:100%} html{overflow-x:hidden}
+  *{box-sizing:border-box} html{overflow-x:hidden}
   @media (min-width:768px){ html{ overscroll-behavior-y:none; } body{ overscroll-behavior-y:none; } }
   body{margin:0;background:var(--bg);color:var(--ink);
        font:16px/1.55 'Roboto',system-ui,-apple-system,'Segoe UI',Inter,Arial;
@@ -183,7 +183,7 @@
 
   /* ===== Футер ===== */
   .page-foot{
-    margin-top:clamp(40px,6vh,72px);
+    margin-top:clamp(24px,4vh,48px);
     display:flex; align-items:flex-end; justify-content:space-between; gap:20px;
     padding:0 var(--side-pad) clamp(28px,4.5vh,56px);
   }

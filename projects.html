@@ -647,6 +647,18 @@
     window.addEventListener('orientationchange', function(){
       [350, 700, 1100].forEach(delay=> scheduleRelayout(delay));
     });
+
+    // Safari на iPad під час повороту екрана іноді ненадовго "заморожує"
+    // сторінку (bfcache) і потім відновлює її БЕЗ повторного спрацювання
+    // resize/ResizeObserver — виглядає так, ніби сторінка "зависла" на
+    // попередній орієнтації. pageshow з persisted=true і visibilitychange —
+    // це стандартний спосіб зловити саме такий момент відновлення.
+    window.addEventListener('pageshow', function(e){
+      if (e.persisted) [50, 300, 700].forEach(delay=> scheduleRelayout(delay));
+    });
+    document.addEventListener('visibilitychange', function(){
+      if (!document.hidden) [50, 300, 700].forEach(delay=> scheduleRelayout(delay));
+    });
   </script>
 </body>
 </html>

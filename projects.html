@@ -131,10 +131,23 @@
     background:none; border:none; padding:0; cursor:pointer;
     font-family:'Figtree'; font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
     color:rgba(0,0,0,.38); transition:color .25s ease;
+    display:inline-flex; align-items:center; gap:8px;
   }
   .filter-btn.active{ color:var(--ink); }
   .filter-btn:hover{ color:rgba(0,0,0,.7); }
+  .filter-btn::after{ content:none; }
+  .filter-btn.active::after{
+    content:'<';
+    font-family:'Roboto'; font-size:.9em; font-weight:500; line-height:1;
+  }
   .filters-col{ display:contents; } /* на десктопі групування не впливає на розкладку */
+  /* Порядок кнопок у DOM тепер підібраний під мобільне групування (щоб довге
+     й коротке слово чергувались у колонках) — тому фіксуємо звичний порядок
+     на десктопі окремо через order, щоб він не змінився. */
+  .filter-btn[data-cat="all"]{ order:1; }
+  .filter-btn[data-cat="private"]{ order:2; }
+  .filter-btn[data-cat="commercial"]{ order:3; }
+  .filter-btn[data-cat="architecture"]{ order:4; }
 
   /* ===== ROWS — контейнер заповнюється рядками через JS.
      Кожен .row отримує власну точно розраховану висоту (--rh), щоб картки
@@ -230,14 +243,7 @@
     .filters-col:last-child{ align-items:flex-end; text-align:right; }
     .filter-btn{
       font-family:'Roboto'; font-size:15px; font-weight:500; letter-spacing:.04em;
-      display:inline-flex; align-items:center; gap:8px;
       color:var(--ink) !important; /* усі категорії однаково чорні на мобільному */
-    }
-    .filter-btn::after{ content:none; }
-    .filter-btn.active::after{
-      content:'<';
-      font-family:'Roboto'; font-size:15px; font-weight:500;
-      line-height:1; color:var(--ink);
     }
     .grid-area{ padding:0 20px 0; }
     .rows{ gap:28px; }
@@ -603,6 +609,23 @@
       clearTimeout(layoutTimer);
       layoutTimer = setTimeout(function(){ layoutRows(); revealThumbs(); }, 150);
     }, {passive:true});
+
+    // iOS (особливо iPad) інколи остаточно не встигає "усістись" у фінальні
+    // розміри після одного resize під час повороту — та сама проблема, що й
+    // з --vh вище. Підстраховуємось кількома повторними перерахунками з
+    // різними затримками після кожного повороту, щоб напевно впіймати момент,
+    // коли розміри вже стабільні (інакше розкладка карток могла "зависнути"
+    // на попередній орієнтації).
+    window.addEventListener('orientationchange', function(){
+      [350, 700, 1100].forEach(delay=>{
+        setTimeout(function(){
+          lastLayoutWidth = window.innerWidth;
+          lastLayoutHeight = window.innerHeight;
+          layoutRows();
+          revealThumbs();
+        }, delay);
+      });
+    });
   </script>
 </body>
 </html>

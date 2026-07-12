@@ -130,11 +130,10 @@
   .filter-btn{
     background:none; border:none; padding:0; cursor:pointer;
     font-family:'Figtree'; font-size:13px; font-weight:700; letter-spacing:.1em; text-transform:uppercase;
-    color:rgba(0,0,0,.38); transition:color .25s ease;
+    color:var(--ink); transition:opacity .25s ease;
     display:inline-flex; align-items:center; gap:8px;
   }
-  .filter-btn.active{ color:var(--ink); }
-  .filter-btn:hover{ color:rgba(0,0,0,.7); }
+  .filter-btn:hover{ opacity:.65; }
   .filter-btn::after{ content:none; }
   .filter-btn.active::after{
     content:'<';
@@ -243,7 +242,6 @@
     .filters-col:last-child{ align-items:flex-end; text-align:right; }
     .filter-btn{
       font-family:'Roboto'; font-size:15px; font-weight:500; letter-spacing:.04em;
-      color:var(--ink) !important; /* усі категорії однаково чорні на мобільному */
     }
     .grid-area{ padding:0 20px 0; }
     .rows{ gap:28px; }
@@ -610,21 +608,44 @@
       layoutTimer = setTimeout(function(){ layoutRows(); revealThumbs(); }, 150);
     }, {passive:true});
 
-    // iOS (особливо iPad) інколи остаточно не встигає "усістись" у фінальні
-    // розміри після одного resize під час повороту — та сама проблема, що й
-    // з --vh вище. Підстраховуємось кількома повторними перерахунками з
-    // різними затримками після кожного повороту, щоб напевно впіймати момент,
-    // коли розміри вже стабільні (інакше розкладка карток могла "зависнути"
-    // на попередній орієнтації).
-    window.addEventListener('orientationchange', function(){
-      [350, 700, 1100].forEach(delay=>{
-        setTimeout(function(){
-          lastLayoutWidth = window.innerWidth;
-          lastLayoutHeight = window.innerHeight;
-          layoutRows();
-          revealThumbs();
-        }, delay);
+    // ResizeObserver реагує на РЕАЛЬНУ, вже застосовану зміну розміру
+    // контейнера — на відміну від window.innerWidth/innerHeight, які на
+    // реальному пристрої (не в симуляторі) деякий час після повороту можуть
+    // повертати ще старі значення. Це надійніше за таймери й ловить момент,
+    // коли розміри вже справді стабільні.
+    function scheduleRelayout(delay){
+      lastLayoutWidth = window.innerWidth;
+      lastLayoutHeight = window.innerHeight;
+      setTimeout(function(){ layoutRows(); revealThumbs(); }, delay || 0);
+    }
+    if ('ResizeObserver' in window){
+      let roTimer;
+      const ro = new ResizeObserver(function(){
+        clearTimeout(roTimer);
+        roTimer = setTimeout(function(){ scheduleRelayout(0); }, 120);
       });
+      ro.observe(document.documentElement);
+      ro.observe(document.body);
+    }
+
+    // Safari/WebKit на iOS відомий тим, що ResizeObserver і звичайний resize
+    // не завжди надійно спрацьовують під час повороту екрана. visualViewport
+    // — це саме той API, який Apple рекомендує для точного відстеження
+    // реальних змін розміру екрана на iOS, тому додаємо його як окремий,
+    // паралельний тригер (Chrome це не потребує, там і так усе працює).
+    if (window.visualViewport){
+      let vvTimer;
+      window.visualViewport.addEventListener('resize', function(){
+        clearTimeout(vvTimer);
+        vvTimer = setTimeout(function(){ scheduleRelayout(0); }, 120);
+      });
+    }
+
+    // Запасний варіант на випадок, якщо жоден з тригерів вище не спрацював —
+    // той самий принцип, що і з --vh: кілька повторних перерахунків після
+    // повороту з різними затримками.
+    window.addEventListener('orientationchange', function(){
+      [350, 700, 1100].forEach(delay=> scheduleRelayout(delay));
     });
   </script>
 </body>

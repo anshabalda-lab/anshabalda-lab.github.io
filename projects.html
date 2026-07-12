@@ -95,8 +95,7 @@
     .brand{font-size:clamp(24px,4.6vw,42px); grid-column:2; justify-self:center;}
     .nav .wrap{padding:0 20px;}
     .burger{display:flex; align-items:center; grid-column:3; justify-self:end;}
-  }
-  @media (max-width:999px){
+
     .nav{ align-items:flex-start !important; padding-top:20px !important; height:84px !important; z-index:300 !important; }
     .nav .inner{ grid-template-columns:auto 1fr !important; }
     .brand{ font-size:22px !important; grid-column:1 !important; justify-self:start !important; transform:none !important; line-height:1 !important; }
@@ -113,7 +112,7 @@
      багато і контент вищий за екран — сторінка просто природно росте вниз, і
      футер йде одразу за останнім рядком, як завжди. */
   .screen{
-    min-height:calc(var(--vh, 1vh) * 100);
+    min-height:100dvh; /* нативна CSS-одиниця, сама перераховується при повороті — JS більше не потрібен */
     display:flex; flex-direction:column;
     padding-top:96px;
   }
@@ -295,15 +294,6 @@
   </div>
 
   <script>
-    /* ===== Стабільна висота екрана (iOS Safari) — лишаємо для консистентності
-       з рештою сайту, хоча ця сторінка більше не має pin/sticky секцій, що її
-       потребують напряму. ===== */
-    (function(){
-      function setStableVH(){ document.documentElement.style.setProperty('--vh', (window.innerHeight*0.01)+'px'); }
-      setStableVH();
-      window.addEventListener('resize', setStableVH, {passive:true});
-    })();
-
     /* ===== Burger / MENU-fab ===== */
     const burgerBtn = document.getElementById('burgerBtn');
     const menuFab = document.getElementById('menuFab');
@@ -391,6 +381,7 @@
       img.src = p.file;
       img.alt = p.title;
       img.loading = i < 4 ? 'eager' : 'lazy';
+      if(i === 0) img.fetchPriority = 'high'; // перше фото — найімовірніший LCP-елемент, вантажимо його першим
       img.onerror = function(){
         this.remove();
         const fb = document.createElement('div');

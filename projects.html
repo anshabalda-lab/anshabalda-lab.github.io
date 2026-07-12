@@ -32,9 +32,7 @@
        -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
   a{color:inherit;text-decoration:none}
 
-  /* Прелоадер тут не використовується — сторінка невелика, показуємо одразу */
-
-  /* ===== NAV — та ж структура, що на головній, темний текст, без лінії знизу ===== */
+  /* ===== NAV — та ж структура, що на головній, темний текст (тут фон завжди білий) ===== */
   .nav{position:fixed;top:0;left:0;width:100%;height:96px;display:flex;align-items:center;z-index:60;
        background:#fff;
        transition:transform .6s cubic-bezier(.22,.61,.36,1);will-change:transform}
@@ -109,20 +107,12 @@
     body.menu-active .burger::after{ content:"CLOSE" !important; color:var(--ink) !important; }
   }
 
-  /* ===== SCREEN — на десктопі вміщається в один екран, без вертикального скролу ===== */
+  /* ===== PAGE ===== */
   .screen{
-    position:relative;
-    min-height:calc(var(--vh, 1vh) * 100);
-    display:flex; flex-direction:column;
     padding-top:96px;
   }
-  .grid-area{
-    flex:1;
-    display:flex; align-items:flex-start; justify-content:center;
-    padding:clamp(20px,3vh,32px) var(--side-pad) 0;
-  }
 
-  /* ===== Фільтри категорій — над сіткою, звужують список одразу по тапу ===== */
+  /* ===== Фільтри категорій ===== */
   .filters{
     display:flex; gap:clamp(18px,2.2vw,32px);
     padding:clamp(18px,3vh,28px) var(--side-pad) 0;
@@ -139,77 +129,63 @@
     content:'<';
     font-family:'Roboto'; font-size:.9em; font-weight:500; line-height:1;
   }
-  .filters-col{ display:contents; } /* на десктопі групування не впливає на розкладку */
-  /* Порядок кнопок у DOM тепер підібраний під мобільне групування (щоб довге
-     й коротке слово чергувались у колонках) — тому фіксуємо звичний порядок
-     на десктопі окремо через order, щоб він не змінився. */
+  .filters-col{ display:contents; }
   .filter-btn[data-cat="all"]{ order:1; }
   .filter-btn[data-cat="private"]{ order:2; }
   .filter-btn[data-cat="commercial"]{ order:3; }
   .filter-btn[data-cat="architecture"]{ order:4; }
 
-  /* ===== ROWS — контейнер заповнюється рядками через JS.
-     Кожен .row отримує власну точно розраховану висоту (--rh), щоб картки
-     влазили ідеально впритул до країв; висота/ширина кожної картинки в межах
-     рядка визначається її власними пропорціями (aspect-ratio) в парі з
-     максимальною шириною --rh*BOX_ASPECT — фото притиснуті до спільної
-     нижньої лінії (рівний край знизу, "поличний" ефект), верхні краї
-     природно різняться залежно від формату фото. Назва проєкту йде одразу
-     під фото, тому всі підписи опиняються на одній рівній лінії. */
-  .rows{ width:100%; max-width:var(--wrap); display:flex; flex-direction:column; }
-  .row{
-    display:flex; align-items:flex-end;
-    margin-top:clamp(12px,1.75vh,24px);
+  /* =====================================================================
+     СІТКА ПРОЄКТІВ — чистий CSS Grid, без жодного JS-розрахунку розмірів.
+     Кількість колонок підбирає сам браузер (auto-fit) залежно від ширини
+     екрана — це вбудована, завжди стабільна поведінка, яка не залежить від
+     resize/orientationchange подій і не може "зависнути" після повороту
+     екрана (на відміну від попереднього підходу з JS-обрахунком).
+     Кожна картка — одна з двох наперед заданих пропорцій (квадрат або
+     висока 2:3), без "точної підгонки під ширину" — тому нема що рахувати
+     заново при зміні розміру вікна. ===================================== */
+  .rows{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+    align-items:end; /* картки стоять на спільній нижній лінії в межах рядка */
+    gap:clamp(14px,1.6vw,28px);
+    max-width:var(--wrap);
+    margin:0 auto;
+    padding:clamp(20px,3vh,32px) var(--side-pad) 0;
   }
-  .row:first-child{ margin-top:0; }
-  .row.fit{ justify-content:space-between; }
-  .row.loose{ justify-content:center; }
-
-  .thumb{ display:flex; flex-direction:column; align-items:flex-start; }
-  .thumb-media{ display:block; overflow:hidden; background:#141414; position:relative; }
+  .thumb{ display:flex; flex-direction:column; }
+  .thumb-media{
+    position:relative; overflow:hidden; background:#141414;
+  }
+  .thumb-media.ar-square{ aspect-ratio:1/1; }
+  .thumb-media.ar-tall{ aspect-ratio:2/3; }
   .thumb-media img{
-    display:block;
-    aspect-ratio:var(--ar, 3/2);
-    width:auto; height:auto;
-    max-height:var(--rh);
-    max-width:calc(var(--rh) * var(--box-ar, 1.5));
-    object-fit:cover; /* запобіжник: навіть якщо ar злегка розійдеться, фото не спотворюється */
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
     transition:transform .6s cubic-bezier(.22,.61,.36,1);
   }
   .thumb:hover .thumb-media img{ transform:scale(1.045); }
   .thumb-media .ph-fallback{
-    display:flex; align-items:center; justify-content:center;
-    aspect-ratio:var(--ar, 3/2);
-    width:auto; height:auto;
-    max-height:var(--rh);
-    max-width:calc(var(--rh) * var(--box-ar, 1.5));
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
     background:linear-gradient(135deg,#3a3a3a,#151515);
-    color:rgba(255,255,255,.18); font-family:'Figtree'; font-weight:900;
-    font-size:clamp(16px,2vw,28px);
+    color:rgba(255,255,255,.18); font-family:'Figtree'; font-weight:900; font-size:clamp(16px,2vw,28px);
   }
   .thumb .name{
     margin-top:10px; font-family:'Roboto'; font-weight:500; letter-spacing:.04em; text-transform:uppercase;
-    font-size:clamp(11px,.85vw,14px); color:var(--ink); white-space:nowrap;
+    font-size:clamp(11px,.85vw,14px); color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
 
-  /* ===== Поява карток: піднімаються знизу вгору з легким фейдом ===== */
+  /* Поява карток: піднімаються знизу вгору з легким фейдом */
   .thumb{
-    opacity:0;
-    transform:translateY(36px);
+    opacity:0; transform:translateY(36px);
     transition:opacity .7s cubic-bezier(.22,.61,.36,1), transform .7s cubic-bezier(.22,.61,.36,1);
   }
   .thumb.in{ opacity:1; transform:translateY(0); }
 
-  /* ===== Футер: лого/копірайт/час зліва, велике слово PROJECTS справа =====
-     Раніше був position:absolute+bottom:0 — якщо фото виходило вищим, ніж
-     очікувалось, футер міг накластись прямо на нього. Тепер це звичайний
-     елемент потоку з margin-top:auto: сам "притискається" донизу, коли є
-     вільне місце, і просто йде одразу під сіткою, якщо фото багато/високі —
-     накладання фізично неможливе. */
+  /* ===== Футер ===== */
   .page-foot{
-    margin-top:auto;
+    margin-top:clamp(40px,6vh,72px);
     display:flex; align-items:flex-end; justify-content:space-between; gap:20px;
-    padding:clamp(20px,3vh,32px) var(--side-pad) clamp(28px,4.5vh,56px);
+    padding:0 var(--side-pad) clamp(28px,4.5vh,56px);
   }
   .pf-left{ display:flex; flex-direction:column; gap:6px; }
   .pf-copy, .pf-status{
@@ -221,14 +197,8 @@
     font-size:clamp(32px,5vw,64px); color:var(--ink); line-height:1;
   }
 
-  /* ===== MOBILE (<740px, або низька висота = телефон в landscape) =====
-     Поріг по ширині навмисно нижчий за iPad mini (768px) і iPad Air (820px)
-     портрет — щоб вони йшли через звичайний природний алгоритм розкладки, а
-     не мобільний стовпчик. Друга умова (по висоті) ловить телефон у landscape
-     — там ширина може бути схожою на iPad-портрет (~800-900px), але висоти
-     мало, тож туди теж краще стовпчиком, а не "десктопну" сітку. */
+  /* ===== MOBILE (<740px, або низька висота = телефон в landscape) ===== */
   @media (max-width:740px), (max-height:500px){
-    .screen{ min-height:auto; }
     .filters{
       display:flex;
       justify-content:space-between;
@@ -243,18 +213,7 @@
     .filter-btn{
       font-family:'Roboto'; font-size:15px; font-weight:500; letter-spacing:.04em;
     }
-    .grid-area{ padding:0 20px 0; }
-    .rows{ gap:28px; }
-    .row{ flex-direction:column; align-items:stretch; margin-top:0 !important; gap:28px; }
-    .thumb-media{
-      width:100% !important; max-width:100% !important;
-      aspect-ratio:1/1 !important; height:auto !important; max-height:none !important;
-    }
-    .thumb-media img, .thumb-media .ph-fallback{
-      width:100% !important; height:100% !important; max-width:100% !important; max-height:none !important;
-      aspect-ratio:auto !important; object-fit:cover !important;
-    }
-    .thumb .name{ font-size:15px; margin-top:12px; margin-bottom:0; }
+    .rows{ padding:0 20px 0; grid-template-columns:repeat(auto-fit, minmax(250px,1fr)); }
     .page-foot{
       flex-direction:row; padding:28px 20px calc(28px + env(safe-area-inset-bottom,0px));
     }
@@ -311,10 +270,8 @@
       </div>
     </div>
 
-    <div class="grid-area">
-      <div class="rows" id="rows">
-        <!-- JS будує рядки з картками -->
-      </div>
+    <div class="rows" id="rows">
+      <!-- JS підставляє картки проєктів (без розрахунку розмірів — тільки фільтрація) -->
     </div>
 
     <div class="page-foot">
@@ -327,22 +284,13 @@
   </div>
 
   <script>
-    /* ===== Стабільна висота екрана (iOS Safari) ===== */
+    /* ===== Стабільна висота екрана (iOS Safari) — лишаємо для консистентності
+       з рештою сайту, хоча ця сторінка більше не має pin/sticky секцій, що її
+       потребують напряму. ===== */
     (function(){
       function setStableVH(){ document.documentElement.style.setProperty('--vh', (window.innerHeight*0.01)+'px'); }
-      window.__setStableVH = setStableVH;
       setStableVH();
-      setTimeout(setStableVH, 300); setTimeout(setStableVH, 700); setTimeout(setStableVH, 1200);
-      let lastWidth = window.innerWidth, resizeTimer;
-      window.addEventListener('resize', function(){
-        if (window.innerWidth === lastWidth) return;
-        lastWidth = window.innerWidth;
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(setStableVH, 250);
-      }, {passive:true});
-      window.addEventListener('orientationchange', function(){
-        setTimeout(function(){ lastWidth = window.innerWidth; setStableVH(); }, 300);
-      });
+      window.addEventListener('resize', setStableVH, {passive:true});
     })();
 
     /* ===== Burger / MENU-fab ===== */
@@ -371,7 +319,7 @@
     burgerBtn.addEventListener('click', toggleMobileMenu);
     menuFabBtn.addEventListener('click', toggleMobileMenu);
 
-    /* ===== NAV: ховається при скролі вниз (працює на mobile, де сторінка скролиться) ===== */
+    /* ===== NAV: ховається при скролі вниз ===== */
     (function(){
       const nav = document.querySelector('.nav');
       const fab = document.getElementById('menuFab');
@@ -391,7 +339,7 @@
       update();
     })();
 
-    /* ===== Футер: живий час Києва/Братислави (та сама логіка, що на головній) ===== */
+    /* ===== Футер: живий час Києва/Братислави ===== */
     (function(){
       const statusEl = document.getElementById('pfStatus');
       if(!statusEl) return;
@@ -406,48 +354,27 @@
     })();
 
     /* ===== PROJECTS DATA =====
-       ar тут — лише запасний варіант на випадок, якщо фото не завантажиться.
-       Реальні пропорції читаються з самого файлу (naturalWidth/naturalHeight),
-       тому картинка ніколи не розтягується — показується у своєму
-       справжньому форматі, портретна лишається портретною, широка — широкою. */
+       ratio: 'square' (1:1) або 'tall' (2:3) — фіксовані наперед пропорції,
+       обираються вручну під кожне фото, а не рахуються від ширини екрана. */
     const projects = [
-      {title:'PV59 — Living', file:'project-01.jpg', ar: 3/4,   href:'project.html?id=01', cat:'private'},
-      {title:'Dental Clinic', file:'project-02.jpg', ar: 16/9,  href:'project.html?id=02', cat:'commercial'},
-      {title:'Eastern American', file:'project-03.jpg', ar: 1/1, href:'project.html?id=03', cat:'private'},
-      {title:'Cottage Timber', file:'project-04.jpg', ar: 2.4/1, href:'project.html?id=04', cat:'architecture'},
-      {title:'Office — Concept', file:'project-05.jpg', ar: 4/5, href:'project.html?id=05', cat:'commercial'}
+      {title:'PV59 — Living', file:'project-01.jpg', ratio:'square', href:'project.html?id=01', cat:'private'},
+      {title:'Dental Clinic', file:'project-02.jpg', ratio:'square', href:'project.html?id=02', cat:'commercial'},
+      {title:'Eastern American', file:'project-03.jpg', ratio:'tall', href:'project.html?id=03', cat:'private'},
+      {title:'Cottage Timber', file:'project-04.jpg', ratio:'square', href:'project.html?id=04', cat:'architecture'},
+      {title:'Office — Concept', file:'project-05.jpg', ratio:'tall', href:'project.html?id=05', cat:'commercial'}
     ];
 
-    /* Підвантажуємо кожне фото окремо (поза DOM), щоб дізнатись його СПРАВЖНІ
-       пропорції ще до розкладки — тоді <img>, який потрапить у DOM, вже бере
-       готовий файл з кешу браузера (повторного запиту в мережу не буде). */
-    function measureRealAr(p){
-      return new Promise(resolve=>{
-        const probe = new Image();
-        probe.onload = ()=>{
-          if(probe.naturalWidth && probe.naturalHeight){
-            p.ar = probe.naturalWidth / probe.naturalHeight;
-          }
-          resolve();
-        };
-        probe.onerror = ()=> resolve(); // лишаємо запасний ar, покаже плейсхолдер
-        probe.src = p.file;
-      });
-    }
+    const rows = document.getElementById('rows');
+    let activeCat = 'all';
+    let hasRevealed = false;
 
-    /* ===== Побудова карток (без прив'язки до рядків — розкладку рахує layoutRows) ===== */
     function buildThumb(p, i){
       const a = document.createElement('a');
       a.className = 'thumb';
       a.href = p.href;
-      a.style.setProperty('--ar', p.ar);
-
-      const name = document.createElement('div');
-      name.className = 'name';
-      name.textContent = p.title;
 
       const media = document.createElement('div');
-      media.className = 'thumb-media';
+      media.className = 'thumb-media ' + (p.ratio === 'tall' ? 'ar-tall' : 'ar-square');
 
       const img = document.createElement('img');
       img.src = p.file;
@@ -461,213 +388,42 @@
         media.appendChild(fb);
       };
 
+      const name = document.createElement('div');
+      name.className = 'name';
+      name.textContent = p.title;
+
       media.appendChild(img);
       a.appendChild(media);
       a.appendChild(name);
       return a;
     }
 
-    /* ===== Точний розрахунок рядків =====
-       BOX_AR — пропорція "рамки", в яку вписується кожне фото (ширина/висота).
-       Якщо власне ar фото більше за BOX_AR (широке панорамне) — воно впирається
-       у максимальну ширину рядка і стає нижчим за сусідів; якщо менше
-       (портретне) — впирається у висоту рядка. Це і дає "поличний" ефект.
-       Для кожного рядка висота (--rh) підбирається так, щоб сума ширин карток
-       + гепи рівно дорівнювала ширині контейнера — картки завжди впритул
-       до країв, без діри справа. */
-    const rows = document.getElementById('rows');
-    const BOX_AR = 1.5;
-    const MIN_RH = 110, MAX_RH = 250;
-    let hasRevealed = false;
-    let activeCat = 'all';
+    function render(){
+      rows.innerHTML = '';
+      const list = activeCat === 'all' ? projects : projects.filter(p=> p.cat === activeCat);
+      list.forEach((p,i)=> rows.appendChild(buildThumb(p,i)));
 
-    function currentList(){
-      return activeCat === 'all' ? projects : projects.filter(p=> p.cat === activeCat);
-    }
-
-    function revealThumbs(){
       const thumbs = Array.from(rows.querySelectorAll('.thumb'));
-      thumbs.forEach((el, i)=>{
-        if(hasRevealed){
-          el.classList.add('in'); // повторні розкладки (ресайз) — без анімації, одразу видимі
-          return;
-        }
-        el.style.transitionDelay = (i * 70) + 'ms';
+      thumbs.forEach((el,i)=>{
+        if(hasRevealed){ el.classList.add('in'); return; }
+        el.style.transitionDelay = (i*70)+'ms';
         requestAnimationFrame(()=> requestAnimationFrame(()=> el.classList.add('in')));
       });
       hasRevealed = true;
     }
 
-    function layoutRows(){
-      const list = currentList();
-      rows.innerHTML = '';
-      // Сама ширина не розрізняє "iPad портрет" від "iPhone landscape" — обидва
-      // можуть мати схожу ширину (~800-900px). Тому додатково дивимось на
-      // висоту екрана: у телефона в landscape вона завжди мала (~400-430px),
-      // і туди краще так само стовпчиком, а не "десктопну" розкладку.
-      const isMobile = window.innerWidth < 740 || window.innerHeight < 500;
-      if(isMobile){
-        const row = document.createElement('div');
-        row.className = 'row';
-        list.forEach((p,i)=> row.appendChild(buildThumb(p,i)));
-        rows.appendChild(row);
-        return;
-      }
-
-      const containerWidth = rows.clientWidth || (window.innerWidth - 2*160);
-      const GAP = Math.max(8, Math.min(16, window.innerWidth*0.008));
-      const weight = p => Math.min(p.ar, BOX_AR);
-
-      function solveHeight(group){
-        const sumW = group.reduce((s,p)=> s + weight(p), 0);
-        const gaps = GAP * (group.length - 1);
-        return (containerWidth - gaps) / sumW;
-      }
-
-      // Ніяких прив'язок до конкретних пристроїв чи порогів ширини — просто
-      // складаємо картки в рядок, орієнтуючись на комфортний розмір, поки
-      // природно влазять; як тільки не влазить наступна — вона йде на новий
-      // рядок. Це однаково добре працює на будь-якій ширині: широкий десктоп
-      // вміщає більше карток меншого розміру в один рядок, вузький планшет —
-      // менше карток, і рядків стає більше, само собою.
-      const NOMINAL_RH = 180;
-
-      const groups = [];
-      let current = [], currentW = 0;
-      list.forEach((p)=>{
-        const w = weight(p) * NOMINAL_RH;
-        const projected = currentW + (current.length ? GAP : 0) + w;
-        if(projected > containerWidth && current.length){
-          groups.push(current);
-          current = [p]; currentW = w;
-        } else {
-          current.push(p); currentW = projected;
-        }
-      });
-      if(current.length) groups.push(current);
-
-      groups.forEach((group)=>{
-        const row = document.createElement('div');
-        row.className = 'row';
-
-        const solvedRh = solveHeight(group);
-        // Тягнемо рядок на всю ширину, тільки якщо результат лишається
-        // помірного, комфортного розміру. Якщо карток замало для ширини
-        // (довелось би роздувати фото до величезних) — краще природний
-        // компактний розмір по центру, а зайві рядки просто підуть вниз
-        // (сторінка сама заскролиться, якщо не влазить в екран).
-        const FIT_CEILING = MAX_RH * 1.15;
-        const tooBig = solvedRh > FIT_CEILING;
-        let rh;
-        if(tooBig){
-          rh = MAX_RH;
-          row.classList.add('loose');
-        } else {
-          rh = Math.max(MIN_RH, solvedRh);
-          row.classList.add('fit');
-        }
-
-        row.style.setProperty('--rh', rh + 'px');
-        row.style.setProperty('--box-ar', BOX_AR);
-        row.style.gap = GAP + 'px';
-
-        group.forEach((p)=> row.appendChild(buildThumb(p, list.indexOf(p))));
-        rows.appendChild(row);
-      });
-    }
-
-    /* ===== Перемикання фільтрів ===== */
     const filterBtns = Array.from(document.querySelectorAll('.filter-btn'));
     filterBtns.forEach(btn=>{
       btn.addEventListener('click', ()=>{
         if(btn.dataset.cat === activeCat) return;
         activeCat = btn.dataset.cat;
         filterBtns.forEach(b=> b.classList.toggle('active', b === btn));
-        hasRevealed = false; // нова вибірка — програємо появу карток заново
-        layoutRows();
-        revealThumbs();
+        hasRevealed = false;
+        render();
       });
     });
 
-    Promise.all(projects.map(measureRealAr)).then(()=>{
-      layoutRows();
-      revealThumbs();
-    });
-
-    // Перераховуємо при зміні ширини АБО висоти — раніше стежили тільки за
-    // шириною, а мобільна перевірка тепер залежить ще й від висоти екрана
-    // (телефон landscape), тому саму зміну орієнтації могли пропустити.
-    let lastLayoutWidth = window.innerWidth;
-    let lastLayoutHeight = window.innerHeight;
-    window.addEventListener('resize', function(){
-      if (window.innerWidth === lastLayoutWidth && window.innerHeight === lastLayoutHeight) return;
-      waitForStableWidthThenRelayout();
-    }, {passive:true});
-
-    // Замість того, щоб вгадувати затримку (можливо, замало — Safari ще не
-    // встиг перебудувати сторінку; можливо забагато — зайве очікування),
-    // просто ПЕРЕВІРЯЄМО, чи ширина контейнера вже стабілізувалась: міряємо,
-    // чекаємо кадр, міряємо знову. Якщо однаково кілька разів поспіль —
-    // готово, рахуємо. Якщо ще змінюється — просто продовжуємо чекати.
-    let waitStableId = 0;
-    function waitForStableWidthThenRelayout(){
-      const myId = ++waitStableId; // якщо запуститься новий виклик — старий сам скасується
-      let lastW = -1, stableCount = 0;
-      function check(){
-        if (myId !== waitStableId) return; // застарілий виклик, вже є новіший
-        const w = rows.clientWidth;
-        if (w === lastW){
-          stableCount++;
-        } else {
-          stableCount = 0;
-          lastW = w;
-        }
-        if (stableCount >= 3){ // 3 кадри поспіль однакова ширина — точно стабільно
-          lastLayoutWidth = window.innerWidth;
-          lastLayoutHeight = window.innerHeight;
-          layoutRows();
-          revealThumbs();
-          return;
-        }
-        requestAnimationFrame(check);
-      }
-      requestAnimationFrame(check);
-    }
-
-    if ('ResizeObserver' in window){
-      const ro = new ResizeObserver(function(){ waitForStableWidthThenRelayout(); });
-      ro.observe(document.documentElement);
-      ro.observe(document.body);
-    }
-    if (window.visualViewport){
-      window.visualViewport.addEventListener('resize', waitForStableWidthThenRelayout);
-    }
-    // Останній "грубий" прийом: примусово перерахувати ВСЮ сторінку, а не
-    // тільки наш блок карток — на випадок, якщо сам Safari internally ще не
-    // "усвідомив" новий розмір вкладки після повороту. Це той самий ефект,
-    // що й ручний reload, тільки без реального перезавантаження.
-    function forceHardReflow(){
-      const prev = document.body.style.display;
-      document.body.style.display = 'none';
-      void document.body.offsetHeight; // синхронний force-reflow
-      document.body.style.display = prev;
-    }
-    window.addEventListener('orientationchange', function(){
-      setTimeout(function(){
-        forceHardReflow();
-        // "Поштовх" скролом на 1px і назад — відомий обхідний прийом саме
-        // для багу Safari з position:fixed елементами після повороту.
-        window.scrollTo(0, (window.scrollY || 0) + 1);
-        setTimeout(function(){ window.scrollTo(0, Math.max(0,(window.scrollY||0) - 1)); }, 60);
-        waitForStableWidthThenRelayout();
-      }, 200);
-    });
-    window.addEventListener('pageshow', function(e){
-      if (e.persisted) waitForStableWidthThenRelayout();
-    });
-    document.addEventListener('visibilitychange', function(){
-      if (!document.hidden) waitForStableWidthThenRelayout();
-    });
+    render();
   </script>
 </body>
 </html>

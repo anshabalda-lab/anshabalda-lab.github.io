@@ -599,65 +599,55 @@
     // (телефон landscape), тому саму зміну орієнтації могли пропустити.
     let lastLayoutWidth = window.innerWidth;
     let lastLayoutHeight = window.innerHeight;
-    let layoutTimer;
     window.addEventListener('resize', function(){
       if (window.innerWidth === lastLayoutWidth && window.innerHeight === lastLayoutHeight) return;
-      lastLayoutWidth = window.innerWidth;
-      lastLayoutHeight = window.innerHeight;
-      clearTimeout(layoutTimer);
-      layoutTimer = setTimeout(function(){ layoutRows(); revealThumbs(); }, 150);
+      waitForStableWidthThenRelayout();
     }, {passive:true});
 
-    // ResizeObserver реагує на РЕАЛЬНУ, вже застосовану зміну розміру
-    // контейнера — на відміну від window.innerWidth/innerHeight, які на
-    // реальному пристрої (не в симуляторі) деякий час після повороту можуть
-    // повертати ще старі значення. Це надійніше за таймери й ловить момент,
-    // коли розміри вже справді стабільні.
-    function scheduleRelayout(delay){
-      lastLayoutWidth = window.innerWidth;
-      lastLayoutHeight = window.innerHeight;
-      setTimeout(function(){ layoutRows(); revealThumbs(); }, delay || 0);
+    // Замість того, щоб вгадувати затримку (можливо, замало — Safari ще не
+    // встиг перебудувати сторінку; можливо забагато — зайве очікування),
+    // просто ПЕРЕВІРЯЄМО, чи ширина контейнера вже стабілізувалась: міряємо,
+    // чекаємо кадр, міряємо знову. Якщо однаково кілька разів поспіль —
+    // готово, рахуємо. Якщо ще змінюється — просто продовжуємо чекати.
+    let waitStableId = 0;
+    function waitForStableWidthThenRelayout(){
+      const myId = ++waitStableId; // якщо запуститься новий виклик — старий сам скасується
+      let lastW = -1, stableCount = 0;
+      function check(){
+        if (myId !== waitStableId) return; // застарілий виклик, вже є новіший
+        const w = rows.clientWidth;
+        if (w === lastW){
+          stableCount++;
+        } else {
+          stableCount = 0;
+          lastW = w;
+        }
+        if (stableCount >= 3){ // 3 кадри поспіль однакова ширина — точно стабільно
+          lastLayoutWidth = window.innerWidth;
+          lastLayoutHeight = window.innerHeight;
+          layoutRows();
+          revealThumbs();
+          return;
+        }
+        requestAnimationFrame(check);
+      }
+      requestAnimationFrame(check);
     }
+
     if ('ResizeObserver' in window){
-      let roTimer;
-      const ro = new ResizeObserver(function(){
-        clearTimeout(roTimer);
-        roTimer = setTimeout(function(){ scheduleRelayout(0); }, 120);
-      });
+      const ro = new ResizeObserver(function(){ waitForStableWidthThenRelayout(); });
       ro.observe(document.documentElement);
       ro.observe(document.body);
     }
-
-    // Safari/WebKit на iOS відомий тим, що ResizeObserver і звичайний resize
-    // не завжди надійно спрацьовують під час повороту екрана. visualViewport
-    // — це саме той API, який Apple рекомендує для точного відстеження
-    // реальних змін розміру екрана на iOS, тому додаємо його як окремий,
-    // паралельний тригер (Chrome це не потребує, там і так усе працює).
     if (window.visualViewport){
-      let vvTimer;
-      window.visualViewport.addEventListener('resize', function(){
-        clearTimeout(vvTimer);
-        vvTimer = setTimeout(function(){ scheduleRelayout(0); }, 120);
-      });
+      window.visualViewport.addEventListener('resize', waitForStableWidthThenRelayout);
     }
-
-    // Запасний варіант на випадок, якщо жоден з тригерів вище не спрацював —
-    // той самий принцип, що і з --vh: кілька повторних перерахунків після
-    // повороту з різними затримками.
-    window.addEventListener('orientationchange', function(){
-      [350, 700, 1100].forEach(delay=> scheduleRelayout(delay));
-    });
-
-    // Safari на iPad під час повороту екрана іноді ненадовго "заморожує"
-    // сторінку (bfcache) і потім відновлює її БЕЗ повторного спрацювання
-    // resize/ResizeObserver — виглядає так, ніби сторінка "зависла" на
-    // попередній орієнтації. pageshow з persisted=true і visibilitychange —
-    // це стандартний спосіб зловити саме такий момент відновлення.
+    window.addEventListener('orientationchange', waitForStableWidthThenRelayout);
     window.addEventListener('pageshow', function(e){
-      if (e.persisted) [50, 300, 700].forEach(delay=> scheduleRelayout(delay));
+      if (e.persisted) waitForStableWidthThenRelayout();
     });
     document.addEventListener('visibilitychange', function(){
-      if (!document.hidden) [50, 300, 700].forEach(delay=> scheduleRelayout(delay));
+      if (!document.hidden) waitForStableWidthThenRelayout();
     });
   </script>
 </body>

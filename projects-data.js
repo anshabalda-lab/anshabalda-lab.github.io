@@ -2,7 +2,7 @@
   Дані всіх проєктів студії FORM·A dsgn.
   Підключається одним рядком у index.html, projects.html і project.html:
     <script src="projects-data.js"></script>
- 
+
   Як додати новий проєкт:
   1. Створи папку /projects/NN-назва-проєкту/ з фото (hero.webp + інші)
   2. Додай новий об'єкт У КІНЕЦЬ масиву PROJECTS нижче (скопіюй існуючий і зміни поля) —
@@ -10,7 +10,7 @@
   3. Нічого більше правити не треба — сайт сам покаже найновіший (останній у файлі)
      проєкт першим на головній і в галереї; project.html теж врахує цей порядок
      у навігації "Next project".
- 
+
   Поля:
   - id            унікальний код проєкту, використовується в посиланні project.html?id=...
   - title         назва проєкту
@@ -23,7 +23,7 @@
                   (alt необов'язковий — якщо не вказати, підставиться назва проєкту)
   - descriptions  один або кілька текстових блоків. afterPhoto: 0 = одразу під hero,
                   afterPhoto: N = показати після N-го фото галереї
- 
+
   ВАЖЛИВО: кожен об'єкт-проєкт у масиві PROJECTS має закінчуватись комою "," —
   крім останнього перед закриваючою дужкою "]". Якщо забути кому, сайт перестане
   працювати (JavaScript не завантажиться).
@@ -68,28 +68,28 @@ const PROJECTS = [
     folder: 'projects/02-house-os-280/',
     hero: 'hero.webp',
     photos: [
-      { file: '01.webp', },
-      { file: '02.webp', },
-      { file: '03.webp', },
-      { file: '04.webp', },
-      { file: '05.webp', },
-      { file: '06.webp', },
-      { file: '07.webp', },
-      { file: '08.webp', },
-      { file: '09.webp', },
-      { file: '10.webp', },
-      { file: '11.webp', },
-      { file: '12.webp', },
-      { file: '13.webp', },
-      { file: '14.webp', },
-      { file: '15.webp', },
-      { file: '16.webp', },
-      { file: '17.webp', }
+      { file: '01.webp' },
+      { file: '02.webp' },
+      { file: '03.webp' },
+      { file: '04.webp' },
+      { file: '05.webp' },
+      { file: '06.webp' },
+      { file: '07.webp' },
+      { file: '08.webp' },
+      { file: '09.webp' },
+      { file: '10.webp' },
+      { file: '11.webp' },
+      { file: '12.webp' },
+      { file: '13.webp' },
+      { file: '14.webp' },
+      { file: '15.webp' },
+      { file: '16.webp' },
+      { file: '17.webp' }
     ],
     descriptions: [
       {
         afterPhoto: 0,
-        text: 'A 280 m² private residence where classical architecture enters into dialogue with a contemporary interior. Ionic columns and moulding in the living room coexist with minimalist furniture forms and a contrast of warm wood against cold stone. Each private space in the house carries its own character — from the restrained master bedroom to a teenager's room with a pop-art graffiti wall — while staying within a shared system of quality materials and considered lighting.'
+        text: 'A 280 m² private residence where classical architecture enters into dialogue with a contemporary interior. Ionic columns and moulding in the living room coexist with minimalist furniture forms and a contrast of warm wood against cold stone. Each private space in the house carries its own character — from the restrained master bedroom to a teenager\'s room with a pop-art graffiti wall — while staying within a shared system of quality materials and considered lighting.'
       },
       {
         afterPhoto: 3,
@@ -99,17 +99,17 @@ const PROJECTS = [
   }
 
   // Наступні проєкти додавай сюди тим самим блоком, наприклад:
-  // {
-  //   id: '02',
+  // ,{
+  //   id: '03',
   //   title: 'PV59 — Living',
   //   category: 'private',
   //   year: '2024',
   //   location: 'Germany',
-  //   folder: 'projects/02-pv59-living/',
+  //   folder: 'projects/03-pv59-living/',
   //   hero: 'hero.webp',
   //   photos: [ ... ],
   //   descriptions: [ ... ]
-  // },
+  // }
 ];
 
 /* PROJECTS_DISPLAY — той самий список, але у зворотному порядку: найновіший

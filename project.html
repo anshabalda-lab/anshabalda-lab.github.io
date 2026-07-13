@@ -194,16 +194,11 @@
   .p-gallery figure{
     margin:0;
     overflow:hidden;
-    opacity:0; transform:translateY(16px);
-    transition:opacity .45s ease, transform .45s cubic-bezier(.16,.84,.24,1);
   }
   .p-gallery figure.wide{ grid-column:1 / -1; }
-  .p-gallery figure.in{ opacity:1; transform:translateY(0); }
   .p-gallery img{
     display:block; width:100%; height:100%; object-fit:cover;
-    opacity:0; transition:opacity .45s ease;
   }
-  .p-gallery img.loaded{ opacity:1; }
   .p-gallery figure.wide img{ aspect-ratio:3/2; }
   .p-gallery figure:not(.wide) img{ aspect-ratio:2/3; }
   @media (max-width:640px){
@@ -424,7 +419,6 @@
         const img = document.createElement('img');
         img.src = project.folder + photo.file;
         img.alt = photo.alt || project.title;
-        img.loading = 'lazy';
         img.decoding = 'async';
         figure.appendChild(img);
         gallery.appendChild(figure);
@@ -474,14 +468,11 @@
         footerLink.textContent = 'All projects';
       }
 
-      /* --- Автоматичне визначення орієнтації фото галереї --- */
+      /* --- Автоматичне визначення орієнтації фото галереї (без жодної анімації появи) --- */
       function markOrientation(img){
         const figure = img.closest('figure');
         if(!figure) return;
-        function apply(){
-          if(img.naturalWidth > img.naturalHeight) figure.classList.add('wide');
-          img.classList.add('loaded');
-        }
+        function apply(){ if(img.naturalWidth > img.naturalHeight) figure.classList.add('wide'); }
         if(img.complete && img.naturalWidth) apply();
         else img.addEventListener('load', apply, {once:true});
       }
@@ -506,20 +497,6 @@
         io.observe(sec);
       });
 
-      /* --- Reveal фото галереї при появі (стагер) --- */
-      document.querySelectorAll('.p-gallery').forEach(grid=>{
-        const figs = Array.from(grid.querySelectorAll('figure'));
-        const io = new IntersectionObserver(entries=>{
-          entries.forEach(e=>{
-            if(e.isIntersecting){
-              const idx = figs.indexOf(e.target);
-              setTimeout(()=> e.target.classList.add('in'), idx * 60);
-              io.unobserve(e.target);
-            }
-          });
-        }, {threshold:.15});
-        figs.forEach(f=> io.observe(f));
-      });
     })();
   </script>
 </body>

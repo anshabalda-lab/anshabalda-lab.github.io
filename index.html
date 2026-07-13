@@ -1760,7 +1760,7 @@
 
     /* PROJECTS data — тепер береться з projects-data.js (спільне джерело для index/projects/project.html) */
     const CATEGORY_LABELS_HERO = { private:'Private', commercial:'Commercial', architecture:'Architecture' };
-    const projects = PROJECTS.map(p => ({
+    const projects = PROJECTS_DISPLAY.map(p => ({
       title: p.title,
       catLabel: CATEGORY_LABELS_HERO[p.category] || p.category,
       year: p.year,

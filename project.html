@@ -371,7 +371,7 @@
     (function(){
       const params = new URLSearchParams(window.location.search);
       const id = params.get('id');
-      const project = PROJECTS.find(p => p.id === id) || PROJECTS[0];
+      const project = PROJECTS.find(p => p.id === id) || PROJECTS_DISPLAY[0];
 
       // Якщо в даних взагалі немає жодного проєкту — нічого показати
       if(!project){
@@ -451,9 +451,9 @@
       if(allGalleries.length) allGalleries[allGalleries.length - 1].classList.add('gallery-last');
 
       /* --- NEXT PROJECT + FOOTER --- */
-      const curIndex = PROJECTS.findIndex(p => p.id === project.id);
-      const hasNext = PROJECTS.length > 1;
-      const nextProject = hasNext ? PROJECTS[(curIndex + 1) % PROJECTS.length] : null;
+      const curIndex = PROJECTS_DISPLAY.findIndex(p => p.id === project.id);
+      const hasNext = PROJECTS_DISPLAY.length > 1;
+      const nextProject = hasNext ? PROJECTS_DISPLAY[(curIndex + 1) % PROJECTS_DISPLAY.length] : null;
 
       const nextLink = document.getElementById('nextProjectLink');
       const footerLink = document.getElementById('footerNextLink');

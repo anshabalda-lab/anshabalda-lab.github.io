@@ -366,7 +366,7 @@
     /* ===== PROJECTS DATA — тепер береться з projects-data.js (спільне джерело даних) =====
        ratio лишається 'square' для картки в галереї (обкладинка завжди кадрується в квадрат,
        незалежно від оригінальної орієнтації фото — так само, як було раніше). */
-    const projects = PROJECTS.map(p => ({
+    const projects = PROJECTS_DISPLAY.map(p => ({
       title: p.title,
       file: p.folder + p.hero,
       ratio: 'square',

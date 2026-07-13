@@ -285,7 +285,7 @@
 
   <!-- HERO -->
   <section class="p-hero" id="hero">
-    <img id="heroImg" src="" alt="">
+    <img id="heroImg" src="" alt="" loading="eager" fetchpriority="high">
     <div class="p-hero-scrim"></div>
     <div class="p-hero-content">
       <p class="p-meta" id="metaText"></p>
@@ -420,6 +420,8 @@
         const img = document.createElement('img');
         img.src = project.folder + photo.file;
         img.alt = photo.alt || project.title;
+        img.loading = 'lazy';
+        img.decoding = 'async';
         figure.appendChild(img);
         gallery.appendChild(figure);
       }

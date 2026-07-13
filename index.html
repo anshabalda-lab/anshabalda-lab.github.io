@@ -258,7 +258,8 @@
     .overlay{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
     .center{text-align:center;padding:0 1rem}
     .p-title{margin:0 0 6px 0;font-family:'Figtree';font-weight:900;letter-spacing:-.01em;line-height:1;font-size:clamp(28px,5.4vw,64px);text-shadow:0 0 18px rgba(0,0,0,.35);text-transform:uppercase}
-    .p-sub{margin:0 0 12px 0;font-family:'Roboto';color:#d0d0d0;opacity:.9;font-size:clamp(14px,2.2vw,16px);text-transform:uppercase}
+    .p-sub{margin:0 0 12px 0;font-family:'Roboto';color:#d0d0d0;opacity:.9;font-size:clamp(14px,2.2vw,16px);text-transform:uppercase;
+           display:flex;justify-content:space-between;align-items:center;width:auto;margin-left:auto;margin-right:auto;letter-spacing:.04em}
     .p-actions{display:flex;justify-content:center;gap:12px}
     .btn{
       pointer-events:auto;
@@ -1774,7 +1775,9 @@
     const CATEGORY_LABELS_HERO = { private:'Private', commercial:'Commercial', architecture:'Architecture' };
     const projects = PROJECTS.map(p => ({
       title: p.title,
-      sub: (CATEGORY_LABELS_HERO[p.category] || p.category) + ' • ' + p.year + ' • ' + p.location,
+      catLabel: CATEGORY_LABELS_HERO[p.category] || p.category,
+      year: p.year,
+      location: p.location,
       file: p.folder + p.hero,
       href: 'project.html?id=' + p.id
     }));
@@ -1817,9 +1820,22 @@
       dots.forEach((d,k)=>d.classList.toggle('active', k===i));
     }
 
+    /* Ширина підрядка (категорія/локація/рік) має точно відповідати
+       реальній відрендереній ширині заголовка над ним — вимірюємо через
+       getBoundingClientRect(), бо заголовок різної довжини і різного
+       розміру шрифту на різних екранах. */
+    function syncSubWidthToTitle(){
+      const w = pTitle.getBoundingClientRect().width;
+      if(w > 0) pSub.style.width = w + 'px';
+    }
+    window.addEventListener('resize', syncSubWidthToTitle);
+
     function setActive(i){
       pImgs.forEach((im,k)=>im.classList.toggle('active',k===i));
-      pTitle.textContent=projects[i].title;pSub.textContent=projects[i].sub||'';viewBtn.href=projects[i].href||'#';
+      pTitle.textContent=projects[i].title;
+      pSub.innerHTML = '<span>'+(projects[i].catLabel||'')+'</span><span>'+(projects[i].location||'')+'</span><span>'+(projects[i].year||'')+'</span>';
+      viewBtn.href=projects[i].href||'#';
+      syncSubWidthToTitle();
       [...sideLeft.children,...sideRight.children].forEach((a,k)=>a.classList.toggle('active',k===i));
       overlay.classList.remove('fade');void overlay.offsetWidth;overlay.classList.add('fade');
       document.getElementById('counter').textContent=String(i+1).padStart(2,'0')+' / '+String(projects.length).padStart(2,'0');

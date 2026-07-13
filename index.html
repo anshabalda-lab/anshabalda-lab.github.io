@@ -286,8 +286,17 @@
     .btn:hover::after{ background:#fff; transform:scale(1.15); }
     .overlay.fade{animation:overlayFade .45s ease}
 
-    /* ===== Desktop (901px+): кнопка "View project" притиснута
-       в правий нижній кут екрана, трохи більша ===== */
+    /* ===== Mobile/tablet (до 900px): кнопка "View project" притиснута
+       внизу по центру — там, де раніше була підказка "SWIPE" ===== */
+    @media (max-width:900px){
+      .p-actions{
+        position:absolute;
+        left:50%; bottom:96px;
+        transform:translateX(-50%);
+        justify-content:center;
+        z-index:35;
+      }
+    }
     @media (min-width:901px){
       .p-actions{
         position:absolute;
@@ -334,39 +343,6 @@
     .dots-nav .dot.active{ background:#fff; transform:scale(1.25); }
     @media (max-width:900px){
       .dots-nav{ display:flex; }
-    }
-
-    /* Підказка свайпу — постійна, з елегантною циклічною анімацією */
-    .swipe-hint{
-      display:none;
-      position:absolute; left:50%; bottom:96px; transform:translateX(-50%);
-      align-items:center; gap:12px; z-index:35; pointer-events:none;
-      color:rgba(255,255,255,.9); font-size:13px; font-weight:700; letter-spacing:.3em;
-      animation:swipeHintCycle 4s ease-in-out infinite;
-    }
-    .swipe-hint-arrow{ font-size:24px; line-height:1; display:inline-block; }
-    .swipe-hint-arrow.left{ animation:arrowLeft 4s ease-in-out infinite; }
-    .swipe-hint-arrow.right{ animation:arrowRight 4s ease-in-out infinite; }
-
-    /* Текст і загальна група — м'яко з'являється/тьмяніє по циклу, ніколи повністю не зникає */
-    @keyframes swipeHintCycle{
-      0%,100%{ opacity:.35; }
-      15%,45%{ opacity:1; }
-      65%{ opacity:.35; }
-    }
-    /* Стрілки "дихають" назустріч одна одній і назад */
-    @keyframes arrowLeft{
-      0%,100%{ transform:translateX(0); }
-      25%{ transform:translateX(4px); }
-      50%{ transform:translateX(-2px); }
-    }
-    @keyframes arrowRight{
-      0%,100%{ transform:translateX(0); }
-      25%{ transform:translateX(-4px); }
-      50%{ transform:translateX(2px); }
-    }
-    @media (max-width:900px){
-      .swipe-hint{ display:flex; }
     }
 
     /* Edge shadows */
@@ -1226,13 +1202,6 @@
 
     <!-- Крапки-індикатори для mobile/tablet (свайп-навігація) -->
     <div class="dots-nav" id="dotsNav" aria-label="Project selector"></div>
-
-    <!-- Підказка "свайпни" для mobile/tablet -->
-    <div class="swipe-hint" id="swipeHint" aria-hidden="true">
-      <span class="swipe-hint-arrow left">‹</span>
-      <span class="swipe-hint-text">SWIPE</span>
-      <span class="swipe-hint-arrow right">›</span>
-    </div>
 
     <div class="counter" id="counter">01 / 05</div>
   </section>

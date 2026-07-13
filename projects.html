@@ -301,6 +301,7 @@
     </div>
   </div>
 
+  <script src="projects-data.js"></script>
   <script>
     /* ===== Burger / MENU-fab ===== */
     const burgerBtn = document.getElementById('burgerBtn');
@@ -362,16 +363,16 @@
       setInterval(update, 30000);
     })();
 
-    /* ===== PROJECTS DATA =====
-       ratio: 'square' (1:1) або 'tall' (2:3) — фіксовані наперед пропорції,
-       обираються вручну під кожне фото, а не рахуються від ширини екрана. */
-    const projects = [
-      {title:'PV59 — Living', file:'project-01.jpg', ratio:'square', href:'project.html?id=01', cat:'private'},
-      {title:'Dental Clinic', file:'project-02.jpg', ratio:'square', href:'project.html?id=02', cat:'commercial'},
-      {title:'Eastern American', file:'project-03.jpg', ratio:'square', href:'project.html?id=03', cat:'private'},
-      {title:'Cottage Timber', file:'project-04.jpg', ratio:'square', href:'project.html?id=04', cat:'architecture'},
-      {title:'Office — Concept', file:'project-05.jpg', ratio:'square', href:'project.html?id=05', cat:'commercial'}
-    ];
+    /* ===== PROJECTS DATA — тепер береться з projects-data.js (спільне джерело даних) =====
+       ratio лишається 'square' для картки в галереї (обкладинка завжди кадрується в квадрат,
+       незалежно від оригінальної орієнтації фото — так само, як було раніше). */
+    const projects = PROJECTS.map(p => ({
+      title: p.title,
+      file: p.folder + p.hero,
+      ratio: 'square',
+      href: 'project.html?id=' + p.id,
+      cat: p.category
+    }));
 
     const rows = document.getElementById('rows');
     let activeCat = 'all';

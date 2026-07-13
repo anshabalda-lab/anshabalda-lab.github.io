@@ -1839,7 +1839,7 @@
       pTitle.textContent=projects[i].title;
       pSub.innerHTML = '<span>'+(projects[i].catLabel||'')+'</span><span>'+(projects[i].location||'')+'</span><span>'+(projects[i].year||'')+'</span>';
       viewBtn.href=projects[i].href||'#';
-      syncSubWidthToTitle();
+      requestAnimationFrame(syncSubWidthToTitle);
       [...sideLeft.children,...sideRight.children].forEach((a,k)=>a.classList.toggle('active',k===i));
       overlay.classList.remove('fade');void overlay.offsetWidth;overlay.classList.add('fade');
       document.getElementById('counter').textContent=String(i+1).padStart(2,'0')+' / '+String(projects.length).padStart(2,'0');

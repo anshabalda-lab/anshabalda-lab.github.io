@@ -1826,6 +1826,13 @@
       if(w > 0) pSub.style.width = w + 'px';
     }
     window.addEventListener('resize', syncSubWidthToTitle);
+    /* Шрифт Figtree вантажиться асинхронно (font-display:swap) — доки він не
+       підвантажився, заголовок рендериться системним шрифтом іншої ширини.
+       Як тільки реальний шрифт готовий, перераховуємо ширину підрядка ще раз,
+       щоб він точно збігався з фінальною шириною назви. */
+    if (document.fonts && document.fonts.ready){
+      document.fonts.ready.then(syncSubWidthToTitle);
+    }
 
     function setActive(i){
       pImgs.forEach((im,k)=>im.classList.toggle('active',k===i));

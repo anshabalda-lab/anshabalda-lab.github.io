@@ -286,6 +286,24 @@
     .btn:hover::after{ background:#fff; transform:scale(1.15); }
     .overlay.fade{animation:overlayFade .45s ease}
 
+    /* ===== Desktop (901px+): кнопка "View project" притиснута
+       в правий нижній кут екрана, трохи більша ===== */
+    @media (min-width:901px){
+      .p-actions{
+        position:absolute;
+        right:clamp(28px,4vw,64px);
+        bottom:clamp(28px,4.5vh,64px);
+        justify-content:flex-end;
+        z-index:5;
+      }
+      .btn{
+        font-size:15px;
+        gap:16px;
+        padding-bottom:9px;
+      }
+      .btn::after{ width:8px; height:8px; }
+    }
+
     /* ===== Mobile/tablet (до 900px): назва вгору, кнопка вниз ===== */
     @media (max-width:900px){
       .overlay{ display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding-top:16vh; padding-bottom:22vh; }

@@ -330,7 +330,7 @@
     .side{position:absolute;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:10px;z-index:30}
     .side.left{left:12px;align-items:flex-start}
     .side.right{right:12px;align-items:flex-end}
-    .side a{pointer-events:auto;color:#ffffff;text-decoration:none;opacity:.88;font-size:15px;letter-spacing:.06em;text-transform:uppercase;padding:4px 0}
+    .side a{pointer-events:auto;color:#ffffff;text-decoration:none;opacity:.88;font-size:13px;letter-spacing:.06em;text-transform:uppercase;padding:4px 0}
     .side a.active,.side a:hover{opacity:1;text-decoration:underline}
     @media (max-width:900px){.side{display:none}}
 
@@ -855,139 +855,169 @@
       .ac-card{ height:auto; min-height:820px; }
     }
 
-    /* ===== Refined CONTACT (Perfect Grid integrated from contacts_v8.html) */
-    #contact {
-      position: relative;
-      height: calc(var(--vh, 1vh) * 100);
-      min-height: calc(var(--vh, 1vh) * 100);
-      max-height: calc(var(--vh, 1vh) * 100);
-      overflow: hidden;
-      background: #ffffff; /* Тло секції контактів (сіре, як у About) */
-      color: #111;
-    }
-    .video-wrap-contact {
-      position: absolute;
-      z-index: 1;
-      overflow: hidden;
-    }
-    .video-wrap-contact video {
-      display: block;
-      position: absolute;
-      top: -4%;
-      left: -4%;
-      width: 108%;
-      height: 108%;
-      object-fit: cover;
-      filter: grayscale(100%) contrast(1.05);
-    }
-    #contact-knockout-svg {
-      position: absolute;
-      z-index: 2;
-      pointer-events: none;
-      display: block;
-      overflow: hidden;
-    }
-    .contact-info-block {
-      position: absolute;
-      z-index: 3;
-      transition: left .1s, top .1s;
-    }
-    .contact-info-block p { margin: 0; line-height: 1.6; }
-    .contact-info-block strong {
-      display: block; margin-bottom: 3px;
-      font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
-      font-size: clamp(10px, .85vw, 13px); color: rgba(0,0,0,.35);
-    }
-    .contact-info-block a {
-      color: rgba(0,0,0,.55); text-decoration: none; font-family:'Roboto';
-      font-size: clamp(15px, 1.5vw, 22px); font-weight: 500;
-    }
-    .contact-info-block a:hover { opacity: .55; }
-
-    .city-block-contact {
-      position: absolute;
-      z-index: 3;
-      display: flex;
-      gap: clamp(40px, 6vw, 100px);
-      transition: left .1s, top .1s;
-    }
-    .city-contact { display: flex; flex-direction: column; cursor: pointer; user-select: none; }
-    .city-name-contact {
-      font-family:'Figtree'; font-size: clamp(15px, 1.5vw, 22px); font-weight: 600; letter-spacing: .04em;
-      color: rgba(0,0,0,.45); display: flex; align-items: center; gap: .5em;
-      transition: color .2s, opacity .2s;
-    }
-    .city-contact:hover .city-name-contact { color: rgba(0,0,0,.7); }
-    .city-contact.inactive .city-name-contact { opacity: .25; }
-    .city-contact.active .city-name-contact { color: rgba(0,0,0,.75); }
-    .city-arrow-contact {
-      width: clamp(9px, .85vw, 13px); height: clamp(9px, .85vw, 13px);
-      border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
-      transform: rotate(45deg) translateY(-2px);
-      transition: transform .35s cubic-bezier(.22,.61,.36,1);
-      opacity: .6; flex-shrink: 0;
-    }
-    .city-contact.active .city-arrow-contact { transform: rotate(-135deg) translateY(2px); }
-    .city-data-contact {
-      overflow: hidden; max-height: 0; opacity: 0; transform: translateY(-4px);
-      transition: max-height .5s cubic-bezier(.22,.61,.36,1),
-                  opacity .35s ease .05s,
-                  transform .4s cubic-bezier(.22,.61,.36,1) .05s;
-    }
-    .city-contact.active .city-data-contact { max-height: 100px; opacity: 1; transform: translateY(0); }
-    .city-data-inner-contact {
-      padding-top: clamp(6px, .6vw, 10px);
-      font-size: clamp(13px, 1.2vw, 18px); color: rgba(0,0,0,.5);
-      line-height: 1.7; font-weight: 400;
-    }
-    .city-data-inner-contact a { color: rgba(0,0,0,.5); text-decoration: none; }
-    .city-data-inner-contact a:hover { opacity: .6; }
-
-    /* Футер усередині контактів */
-    .bottom-bar-contact {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      height: 56px;
-      display: flex; align-items: center; justify-content: flex-end;
-      padding: 0 clamp(20px, 3vw, 48px);
-      border-top: 1px solid rgba(0,0,0,.12); z-index: 10;
-      background: #ffffff;
-    }
-    .bottom-links-contact {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: clamp(20px, 3vw, 40px);
-    }
-    .bottom-bar-contact a {
-      font-size: clamp(10px, .85vw, 12px); letter-spacing: .14em;
-      text-transform: uppercase; font-weight: 600; color: rgba(0,0,0,.4);
-      text-decoration: none; transition: color .2s; cursor: pointer;
-    }
-    .bottom-bar-contact a:hover { color: rgba(0,0,0,.8); }
-    .bottom-bar-contact .copy-contact { font-size: clamp(9px, .75vw, 11px); letter-spacing: .08em; color: rgba(0,0,0,.3); }
-
-    #contact-measure-svg { position: fixed; top: -9999px; left: -9999px; visibility: hidden; }
-
-    /* ===== TABLET (768–1023px): Contact ===== */
-    @media (max-width:1023px) and (min-width:768px){
-      .city-block-contact{ gap:clamp(24px,5vw,60px); }
-      .bottom-links-contact{ gap:clamp(14px,2.5vw,28px); }
+    /* =====================================================================
+       CONTACT — десктоп/планшет версія (фінальний дизайн з мокапу)
+       Секція не розтягнута жорстко на 100vh — росте під контент, мінімум
+       один екран (min-height), нижній бар завжди прицвяхований до низу.
+    ===================================================================== */
+    #contact{
+      position:relative;
+      background:#fff;
+      display:flex; flex-direction:column;
+      min-height:calc(var(--vh, 1vh) * 100);
+      color:#111;
     }
 
-    /* ===== MOBILE (<768px): Contact — карта-фон + акордеон міст ===== */
+    /* ---- Фото-стрічка проєктів: горизонтальна, кольорова, з підписами під фото ---- */
+    .cm-photobar{
+      flex:0 0 auto;
+      height:clamp(200px, 33vh, 440px);
+      display:flex;
+    }
+    .cm-photo-item{
+      position:relative; flex:1 1 25%; overflow:hidden;
+      display:flex; flex-direction:column; background:#0b0b0b;
+    }
+    .cm-photo-img-wrap{ position:relative; flex:1 1 auto; overflow:hidden; }
+    .cm-photo-img-wrap img{
+      width:100%; height:100%; object-fit:cover; display:block;
+      transform:scale(1.02);
+      transition:transform .6s cubic-bezier(.22,.61,.36,1);
+    }
+    .cm-photo-item:hover img{ transform:scale(1.08); }
+    .cm-photo-caption{
+      flex:0 0 auto;
+      background:#fff;
+      padding:10px 14px;
+    }
+    .cm-photo-caption span{
+      font-family:'Figtree'; font-weight:700; letter-spacing:.02em;
+      text-transform:uppercase; font-size:clamp(11px,1vw,14px);
+      color:#111;
+    }
+
+    /* ---- Білий блок: ліва / права колонка, обмежені в 1440px (як navbar) ---- */
+    .cm-content-wrap{ flex:1 1 auto; display:flex; flex-direction:column; width:100%; max-width:1440px; margin:0 auto; padding:0 28px; }
+
+    .cm-white{
+      display:flex;
+      justify-content:space-between;
+      margin:auto 0; /* центрує весь блок вертикально між фото-стрічкою і нижнім баром */
+      padding:0;
+    }
+    .cm-left, .cm-right{
+      display:flex; flex-direction:column;
+      min-height:clamp(280px, 32vh, 380px);
+    }
+    .cm-left{ flex:0 0 auto; justify-content:space-between; max-width:520px; }
+    .cm-right{ flex:0 0 480px; align-items:flex-start; max-width:480px; }
+
+    /* Акордеон міст — закриті за замовчуванням, розкриваються по кліку */
+    .city-block-contact{ display:flex; flex-direction:column; gap:2px; }
+    .city-contact{ display:flex; flex-direction:column; cursor:pointer; user-select:none; }
+    .city-name-contact{
+      font-family:'Figtree'; font-size:clamp(36px,4.68vw,60px); font-weight:700;
+      line-height:1;
+      letter-spacing:.01em; text-transform:uppercase;
+      color:#111; display:flex; align-items:center; gap:.35em;
+      transition:opacity .2s;
+    }
+    .city-contact:hover .city-name-contact{ opacity:.75; }
+    .city-contact.inactive .city-name-contact{ opacity:.4; }
+    .city-arrow-contact{
+      width:clamp(10px,.9vw,14px); height:clamp(10px,.9vw,14px);
+      border-right:1.5px solid currentColor; border-bottom:1.5px solid currentColor;
+      transform:rotate(45deg) translateY(-2px);
+      transition:transform .35s cubic-bezier(.22,.61,.36,1);
+      opacity:.6; flex-shrink:0;
+    }
+    .city-contact.active .city-arrow-contact{ transform:rotate(-135deg) translateY(2px); }
+    .city-data-contact{
+      overflow:hidden; max-height:0; opacity:0; transform:translateY(-4px);
+      transition:max-height .5s cubic-bezier(.22,.61,.36,1), opacity .35s ease .05s, transform .4s cubic-bezier(.22,.61,.36,1) .05s;
+    }
+    .city-contact.active .city-data-contact{ max-height:100px; opacity:1; transform:translateY(0); }
+    .city-data-inner-contact{
+      padding-top:clamp(6px,.8vh,10px);
+      font-size:clamp(13px,1.2vw,17px); color:rgba(0,0,0,.5); line-height:1.7; font-weight:400;
+    }
+    .city-data-inner-contact a{ color:rgba(0,0,0,.5); text-decoration:none; }
+    .city-data-inner-contact a:hover{ opacity:.6; }
+
+    /* Instagram + стрілка "зовнішнє посилання" */
+    .cm-instagram{
+      display:inline-flex; align-items:center; gap:8px;
+      font-family:'Roboto'; font-weight:600; font-size:clamp(13px,1.1vw,16px);
+      letter-spacing:.08em; text-transform:uppercase; color:#111;
+      width:fit-content;
+    }
+    .cm-instagram svg{ width:.85em; height:.85em; flex-shrink:0; transition:transform .25s ease; }
+    .cm-instagram:hover svg{ transform:translate(2px,-2px); }
+
+    /* ---- Форма "написати нам" (макет — поки без реальної відправки) ---- */
+    .cm-form{ width:100%; flex:1 1 auto; display:flex; flex-direction:column; justify-content:space-between; }
+    .cm-form-intro{
+      margin:0 0 16px;
+      padding-top:.2em;
+      font-family:'Figtree'; font-weight:700; letter-spacing:.02em;
+      text-transform:uppercase; line-height:1.4;
+      font-size:clamp(11px,1vw,14px); color:#111;
+    }
+    .cm-form-fields{ display:flex; flex-direction:column; gap:20px; }
+    .cm-field-row{ display:flex; gap:20px; }
+    .cm-field-row .cm-field{ flex:1 1 0; min-width:0; }
+    .cm-field{ display:flex; flex-direction:column; gap:6px; }
+    .cm-field label{
+      font-family:'Roboto'; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+      font-size:10px; color:#111;
+    }
+    .cm-field input, .cm-field textarea{
+      border:none; border-bottom:1px solid rgba(0,0,0,.3);
+      background:transparent; padding:8px 0 10px;
+      font-family:'Roboto'; font-size:clamp(14px,1.1vw,16px); color:#111;
+      outline:none; resize:none; transition:border-color .2s ease;
+    }
+    .cm-field input:focus, .cm-field textarea:focus{ border-color:rgba(0,0,0,.8); }
+    .cm-submit-btn{
+      align-self:stretch; margin-top:4px;
+      border:1px solid rgba(0,0,0,.5); background:transparent; cursor:pointer;
+      padding:clamp(14px,1.6vw,18px) clamp(28px,2.8vw,38px);
+      font-family:'Roboto'; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+      font-size:clamp(12px,1vw,14px); color:#111;
+      transition:background .25s ease, color .25s ease;
+    }
+    .cm-submit-btn:hover{ background:#111; color:#fff; }
+
+    /* ---- Нижній бар: на всю ширину екрана, як фото зверху ---- */
+    .cm-bottom-bar{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:16px 20px;
+    }
+    .cm-status, .cm-copy, .cm-foot-link{
+      font-family:'Roboto'; font-weight:600; font-size:13px; letter-spacing:.1em; text-transform:uppercase;
+      color:#111;
+    }
+    @media (min-width:991px){
+      .cm-status, .cm-copy, .cm-foot-link{ font-size:15px; }
+    }
+    .cm-foot-link{ transition:opacity .2s; }
+    .cm-foot-link:hover{ opacity:.6; }
+
+    /* ===== MOBILE + TABLET (<1024px): Contact — карта-фон + акордеон міст.
+       Раніше тут був окремий "стиснутий десктоп" для планшетів (768-1023px),
+       але зручніше просто розтягнути мобільну версію до 1023px і перемикатись
+       на повний десктоп тільки з 1024px. ===== */
     .contact-mobile{ display:none; }
     .contact-mobile-footer{ display:none; }
-    @media (max-width:767px), (max-height:500px) and (orientation:landscape) and (max-width:1000px){
+    @media (max-width:1023px), (max-height:500px) and (orientation:landscape) and (max-width:1000px){
       #contact{
         min-height:calc((var(--vh, 1vh) * 100) + 200px); background:#ffffff;
         display:flex; flex-direction:column;
       }
-      .video-wrap-contact,
-      #contact-knockout-svg,
-      .contact-info-block,
-      .city-block-contact,
-      .bottom-bar-contact{ display:none !important; }
+      .cm-photobar,
+      .cm-content-wrap,
+      .cm-bottom-bar,
+      .city-block-contact{ display:none !important; }
 
       .contact-mobile{
         position:relative;
@@ -1318,62 +1348,72 @@
     <div class="after" aria-hidden="true"></div>
   </section>
 
-  <!-- Refined CONTACT (contacts_v8.html integrated seamlessly) -->
+  <!-- CONTACT — фінальна десктоп-версія (мобільна нижче не змінена) -->
   <section id="contact">
-    <div class="video-wrap-contact" id="contactVideoWrap">
-      <video autoplay loop muted playsinline src="loop_bw.mp4" id="contactVideo"></video>
-    </div>
 
-    <svg id="contact-knockout-svg" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <mask id="contact-km">
-          <rect id="contact-km-bg" fill="white"/>
-          <text id="contact-km-text"
-            text-anchor="middle"
-            dominant-baseline="middle"
-            font-weight="900"
-            fill="black">CONTACT</text>
-        </mask>
-      </defs>
-      <rect id="contact-km-fill" fill="#ffffff" mask="url(#contact-km)"/>
-    </svg>
+    <!-- Фото-стрічка: 4 рандомні проєкти з projects-data.js, клік → project.html?id=XX -->
+    <div class="cm-photobar" id="photoStrip"></div>
 
-    <svg id="contact-measure-svg" xmlns="http://www.w3.org/2000/svg" width="3000" height="600">
-      <text id="contact-measure-text" x="100" y="400" font-weight="900" fill="black">CONTACT</text>
-    </svg>
-
-    <div class="contact-info-block" id="contactInfoBlock">
-      <p>
-        <strong>General Inquiries</strong>
-        <a href="mailto:formula.bureau@gmail.com">formula.bureau@gmail.com</a>
-      </p>
-    </div>
-
-    <div class="city-block-contact" id="cityBlockContact">
-      <div class="city-contact" data-city="kyiv">
-        <div class="city-name-contact">KYIV <span class="city-arrow-contact"></span></div>
-        <div class="city-data-contact">
-          <div class="city-data-inner-contact">
-            <a href="tel:+380671234567">+380 67 123 4567</a><br>Kyiv, Ukraine
+    <div class="cm-content-wrap">
+      <div class="cm-white">
+        <div class="cm-left">
+          <div class="city-block-contact" id="cityBlockContact">
+            <div class="city-contact" data-city="kyiv">
+              <div class="city-name-contact">KYIV <span class="city-arrow-contact"></span></div>
+              <div class="city-data-contact">
+                <div class="city-data-inner-contact">
+                  <a href="tel:+380671234567">+380 67 123 4567</a><br>Kyiv, Ukraine
+                </div>
+              </div>
+            </div>
+            <div class="city-contact" data-city="bratislava">
+              <div class="city-name-contact">BRATISLAVA <span class="city-arrow-contact"></span></div>
+              <div class="city-data-contact">
+                <div class="city-data-inner-contact">
+                  <a href="tel:+421901123456">+421 901 123 456</a><br>Bratislava, Slovakia
+                </div>
+              </div>
+            </div>
           </div>
+
+          <a class="cm-instagram" href="https://instagram.com" target="_blank" rel="noopener">
+            Instagram
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 17L17 7M17 7H9M17 7V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+
+        <div class="cm-right">
+          <form class="cm-form" id="mockForm">
+            <div class="cm-form-fields">
+              <p class="cm-form-intro">If you'd like to get in touch, choose whatever's easiest for you: call, message us on your preferred messenger, or simply leave a request and we'll get back to you as soon as possible.</p>
+              <div class="cm-field-row">
+                <div class="cm-field">
+                  <label for="cmName">Name</label>
+                  <input type="text" id="cmName" name="name" placeholder="">
+                </div>
+                <div class="cm-field">
+                  <label for="cmPhone">Phone</label>
+                  <input type="tel" id="cmPhone" name="phone" placeholder="">
+                </div>
+              </div>
+              <div class="cm-field">
+                <label for="cmEmail">Email</label>
+                <input type="email" id="cmEmail" name="email" placeholder="">
+              </div>
+            </div>
+            <button type="button" class="cm-submit-btn">Send email</button>
+          </form>
         </div>
       </div>
-      <div class="city-contact" data-city="bratislava">
-        <div class="city-name-contact">BRATISLAVA <span class="city-arrow-contact"></span></div>
-        <div class="city-data-contact">
-          <div class="city-data-inner-contact">
-            <a href="tel:+421901123456">+421 901 123 456</a><br>Bratislava, Slovakia
-          </div>
-        </div>
-      </div>
     </div>
 
-    <div class="bottom-bar-contact">
-      <div class="bottom-links-contact">
-        <a href="#" target="_blank" rel="noopener">Instagram</a>
-        <a href="#" target="_blank" rel="noopener">Behance</a>
-      </div>
-      <span class="copy-contact">© 2026 FORM·A dsgn</span>
+    <div class="cm-bottom-bar">
+      <span class="cm-status" id="cmStatusDesktop">KYI 15:01 · BTS 14:01</span>
+      <span class="cm-copy">© 2026 FORM·A dsgn</span>
+      <a class="cm-foot-link" href="#">Privacy Policy</a>
+      <a class="cm-foot-link" href="#">Terms of Service</a>
     </div>
 
     <!-- MOBILE (<768px): карта-фон + міста зліва з тап-розкриттям + рядок лінків -->
@@ -2222,180 +2262,49 @@
       animate();
     })();
 
-    /* ===== REFINED CONTACT SCRIPT (Isolated with Perfect Grid) ===== */
+    /* ===== CONTACT — фото-стрічка (рандомні проєкти з projects-data.js) ===== */
     (function(){
-      const contactSection = document.getElementById('contact');
-      if (!contactSection) return;
+      const strip = document.getElementById('photoStrip');
+      if (!strip || typeof PROJECTS_DISPLAY === 'undefined' || !PROJECTS_DISPLAY.length) return;
 
-      const videoWrap   = document.getElementById('contactVideoWrap');
-      const video       = document.getElementById('contactVideo');
-      const svg         = document.getElementById('contact-knockout-svg');
-      const kmBg        = document.getElementById('contact-km-bg');
-      const kmText      = document.getElementById('contact-km-text');
-      const kmFill      = document.getElementById('contact-km-fill');
-      const mText       = document.getElementById('contact-measure-text');
-      const contactInfo = document.getElementById('contactInfoBlock');
-      const cityBlock   = document.getElementById('cityBlockContact');
-      const BAR_H       = 56;
+      const pool = PROJECTS_DISPLAY.slice();
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
 
-      const FONT = "'FormAaBrand','Arial Black','Helvetica Neue',Arial,sans-serif";
-      const MEASURE_FS = 300;
+      const chosen = [];
+      for (let i = 0; i < 4; i++) chosen.push(pool[i % pool.length]);
 
-      let videoRatio = 1312 / 218;
+      strip.innerHTML = chosen.map(p => {
+        const photo = (p.photos && p.photos.length)
+          ? p.photos[Math.floor(Math.random() * p.photos.length)]
+          : { file: p.hero, alt: p.title };
+        const src = p.folder + photo.file;
+        return `<a class="cm-photo-item" href="project.html?id=${p.id}">
+          <span class="cm-photo-img-wrap"><img src="${src}" alt="${photo.alt || p.title}" loading="lazy"></span>
+          <span class="cm-photo-caption"><span>${p.title}</span></span>
+        </a>`;
+      }).join('');
+    })();
 
-      kmText.setAttribute('font-family', FONT);
-      mText.setAttribute('font-family', FONT);
-      mText.setAttribute('font-size', MEASURE_FS);
-
-      function syncVideoRatio() {
-        if (video && video.videoWidth && video.videoHeight) {
-          videoRatio = video.videoWidth / video.videoHeight;
-          contactLayout();
+    /* ===== CONTACT — акордеон міст (закриті за замовчуванням, розкриваються по кліку) ===== */
+    document.querySelectorAll('.city-contact').forEach(city => {
+      city.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A') return;
+        const isActive = city.classList.contains('active');
+        document.querySelectorAll('.city-contact').forEach(c => c.classList.remove('active', 'inactive'));
+        if (!isActive) {
+          city.classList.add('active');
+          document.querySelectorAll('.city-contact').forEach(c => { if (c !== city) c.classList.add('inactive'); });
         }
-      }
-      if (video) {
-        video.addEventListener('loadedmetadata', syncVideoRatio);
-        video.addEventListener('canplay', syncVideoRatio);
-      }
-
-      function getBBox(){
-        try {
-          const bb = mText.getBBox();
-          if(bb && bb.width > 50) return bb;
-        } catch(e){}
-        return { x: 100, y: 400 - MEASURE_FS * 0.78, width: MEASURE_FS * 4.65, height: MEASURE_FS * 0.78 };
-      }
-
-      function contactLayout(){
-        if (window.innerWidth < 768) return; // мобільна версія — простий акордеон, video-маска прихована
-
-        const sw = contactSection.clientWidth;
-        const sh = contactSection.clientHeight;
-        const availH = sh - BAR_H;
-
-        const padH = sw * 0.04;
-        const padV = availH * 0.08;
-
-        // На вузьких екранах (планшет/мобільний) слово займає більше ширини,
-        // щоб під ним влізли email і міста
-        const wordWidthRatio = sw < 1024 ? 0.82 : 0.45;
-        const maxW = Math.min(sw * wordWidthRatio, sw - padH * 2);
-        const maxH = availH - padV * 2;
-
-        let vw, vh;
-        if(maxW / videoRatio <= maxH){ 
-          vw = maxW; 
-          vh = vw / videoRatio; 
-        } else { 
-          vh = maxH; 
-          vw = vh * videoRatio; 
-        }
-
-        const vx = (sw - vw) / 2;
-        const vy = padV + (maxH - vh) / 2;
-
-        videoWrap.style.cssText = `left:${vx}px; top:${vy}px; width:${vw}px; height:${vh}px;`;
-
-        // Беремо РЕАЛЬНІ, вже відрендерені браузером розміри відео-контейнера
-        // (а не окремо порахований vx/vy/vw/vh) і застосовуємо їх до SVG-маски.
-        // Це гарантує піксель-в-піксель збіг і прибирає "миготливу" лінію
-        // на краю, яка з'являлась через розходження в заокругленні пікселів
-        // між двома незалежно позиціонованими елементами.
-        const realRect = videoWrap.getBoundingClientRect();
-        const contactRect = contactSection.getBoundingClientRect();
-        const rLeft = realRect.left - contactRect.left;
-        const rTop = realRect.top - contactRect.top;
-        const rW = realRect.width;
-        const rH = realRect.height;
-
-        // невеликий запас (bleed), щоб маска завжди перекривала відео з надлишком
-        const BLEED = 2;
-
-        svg.style.cssText = `left:${rLeft - BLEED}px; top:${rTop - BLEED}px; width:${rW + BLEED * 2}px; height:${rH + BLEED * 2}px;`;
-
-        svg.setAttribute('width', rW + BLEED * 2);
-        svg.setAttribute('height', rH + BLEED * 2);
-        svg.setAttribute('viewBox', `0 0 ${rW + BLEED * 2} ${rH + BLEED * 2}`);
-
-        kmBg.setAttribute('x', 0);
-        kmBg.setAttribute('y', 0);
-        kmBg.setAttribute('width', rW + BLEED * 2);
-        kmBg.setAttribute('height', rH + BLEED * 2);
-        kmFill.setAttribute('x', 0);
-        kmFill.setAttribute('y', 0);
-        kmFill.setAttribute('width', rW + BLEED * 2);
-        kmFill.setAttribute('height', rH + BLEED * 2);
-
-
-        // текст-маска (CONTACT) центрується відносно самого відео (rW x rH),
-        // яке в системі координат розширеного (bleed) SVG-полотна починається
-        // з відступу BLEED з кожного боку.
-        const bb = getBBox();
-
-        const scale = (rW * 0.92) / bb.width;
-        const fs = MEASURE_FS * scale;
-
-        const cx = BLEED + rW / 2;
-        const cy = BLEED + rH / 2;
-
-        kmText.setAttribute('font-size', fs);
-        kmText.setAttribute('x', cx);
-        kmText.setAttribute('y', cy);
-
-        // Беремо реальний bbox самого тексту CONTACT (той, що фактично рендериться
-        // в масці) замість наближеного розрахунку — це усуває асиметрію відступів
-        // зверху/знизу, викликану різницею метрик шрифту.
-        let realWordW, realWordH, wordLeft, wordTop;
-        try {
-          const kb = kmText.getBBox();
-          if (kb && kb.width > 10 && kb.height > 10) {
-            realWordW = kb.width;
-            realWordH = kb.height;
-            wordLeft = (rLeft - BLEED) + kb.x;
-            wordTop = (rTop - BLEED) + kb.y;
-          }
-        } catch (e) {}
-
-        if (realWordW === undefined) {
-          realWordW = bb.width * scale;
-          realWordH = bb.height * scale;
-          wordLeft = rLeft + (rW - realWordW) / 2;
-          wordTop = rTop + (rH - realWordH) / 2;
-        }
-
-        const wordBot = wordTop + realWordH;
-
-        const gap = Math.max(vh * 0.25, 40);
-
-        contactInfo.style.cssText =
-          `left:${wordLeft}px;
-           top:${wordTop - gap}px;
-           transform: translateY(-100%);`;
-
-        cityBlock.style.cssText =
-          `top:${wordBot + gap}px;
-           left:${wordLeft}px; 
-           width:${realWordW}px;
-           justify-content:flex-start;`;
-      }
-
-      document.querySelectorAll('.city-contact').forEach(city => {
-        city.addEventListener('click', (e) => {
-          if (e.target.tagName === 'A') return;
-          const isActive = city.classList.contains('active');
-          document.querySelectorAll('.city-contact').forEach(c => c.classList.remove('active','inactive'));
-          if(!isActive){
-            city.classList.add('active');
-            document.querySelectorAll('.city-contact').forEach(c => { if(c!==city) c.classList.add('inactive'); });
-          }
-        });
       });
+    });
 
-      contactLayout();
-      window.addEventListener('resize', contactLayout);
-      if(document.fonts){
-        document.fonts.ready.then(()=>{ setTimeout(contactLayout, 50); });
-      }
+    /* ===== CONTACT — кнопка форми: поки що макет, нічого не відправляє ===== */
+    (function(){
+      const btn = document.querySelector('.cm-submit-btn');
+      if (btn) btn.addEventListener('click', () => { /* форма поки не підключена */ });
     })();
 
     /* ===== MOBILE Contact — великі назви міст (<768px) =====
@@ -2446,10 +2355,14 @@
       });
     })();
 
-    /* Футер Contact: табло як в аеропорту — код міста + місцевий час */
+    /* Футер Contact: табло як в аеропорту — код міста + місцевий час.
+       Тепер оновлює і десктопний, і мобільний напис (два різних id). */
     (function(){
-      const statusEl = document.getElementById('cmStatus');
-      if(!statusEl) return;
+      const statusEls = [
+        document.getElementById('cmStatusDesktop'),
+        document.getElementById('cmStatus')
+      ].filter(Boolean);
+      if(!statusEls.length) return;
 
       function timeIn(tz){
         return new Intl.DateTimeFormat('en-GB', {
@@ -2460,7 +2373,8 @@
       function update(){
         const kyiv = timeIn('Europe/Kyiv');
         const bratislava = timeIn('Europe/Bratislava');
-        statusEl.textContent = 'KYI ' + kyiv + '  ·  BTS ' + bratislava;
+        const text = 'KYI ' + kyiv + '  ·  BTS ' + bratislava;
+        statusEls.forEach(el => { el.textContent = text; });
       }
 
       update();
@@ -2475,7 +2389,7 @@
       if(!names.length || !row) return;
 
       function fitLinksRow(){
-        if(window.innerWidth >= 768) return;
+        if(window.innerWidth >= 1024) return;
         let maxW = 0;
         names.forEach(el=>{ maxW = Math.max(maxW, el.getBoundingClientRect().width); });
         if(maxW > 0) row.style.width = maxW + 'px';

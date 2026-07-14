@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="color-scheme" content="light">
+<title>Contact — FORM·A dsgn</title>
+<style>
+  /* ===== Custom fonts (ідентично index.html) ===== */
+  @font-face{
+    font-family:'Figtree';
+    src:url('Figtree-VariableFont_wght.ttf') format('truetype-variations'),
+        url('Figtree-VariableFont_wght.ttf') format('truetype');
+    font-weight:300 900; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Roboto';
+    src:url('Roboto-VariableFont_wdth,wght.ttf') format('truetype-variations'),
+        url('Roboto-VariableFont_wdth,wght.ttf') format('truetype');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+
+  :root{
+    --bg:#ffffff; --ink:#111; --wrap:1600px;
+    --side-pad: max(28px, calc((100vw - 1600px)/2 + 28px));
+  }
+  *{box-sizing:border-box} html{overflow-x:hidden}
+  @media (min-width:768px){ html{ overscroll-behavior-y:none; } body{ overscroll-behavior-y:none; } }
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:16px/1.55 'Roboto',system-ui,-apple-system,'Segoe UI',Inter,Arial;
+       -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  a{color:inherit;text-decoration:none}
+
+  /* ===== NAV — та ж структура, що на projects.html, темний текст (фон завжди білий) ===== */
+  .nav{position:fixed;top:0;left:0;width:100%;height:96px;display:flex;align-items:center;z-index:60;
+       background:#fff;
+       transition:transform .6s cubic-bezier(.22,.61,.36,1);will-change:transform}
+  .nav .brand, .nav .link{ color:var(--ink); opacity:.95; }
+  .nav .link:hover{ opacity:1; }
+  .nav.hide{ transform: translateY(-110%); }
+  .nav .wrap{width:100%;padding:0 28px;max-width:var(--wrap);margin:0 auto;}
+  .nav .inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;width:100%;gap:16px;}
+  .left,.right{display:flex;gap:28px;align-items:center;}
+  .right{justify-content:flex-end;}
+  .brand{font-family:'Figtree';font-weight:900;letter-spacing:.06em;color:var(--ink);font-size:34px;}
+  .nav .link{font-family:'Figtree';font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);opacity:.7;}
+  .nav .link.current{ opacity:1; }
+  .nav .link:hover{opacity:1;}
+
+  .burger{ display:none; position:relative; width:32px; height:22px;
+    background:none; border:none; cursor:pointer; padding:0; z-index:80; justify-self:end; }
+  .burger span{ position:absolute; left:0; right:0; height:2px; background:var(--ink); transition:transform .3s ease, opacity .3s ease; }
+  .burger span:first-child{ top:4px; } .burger span:last-child{ top:16px; }
+
+  .mobile-menu{ position:fixed; top:0; left:0; width:100%; height:100%; z-index:200; background:#000;
+    display:flex; flex-direction:column; align-items:flex-start; justify-content:center;
+    padding:0 clamp(24px,6vw,80px); pointer-events:none; transform:translateY(-100%); visibility:hidden;
+    transition:transform .75s cubic-bezier(.16,.84,.24,1), visibility 0s linear .75s; }
+  .mobile-menu.open{ pointer-events:auto; transform:translateY(0); visibility:visible;
+    transition:transform .75s cubic-bezier(.16,.84,.24,1), visibility 0s linear 0s; }
+
+  .menu-fab{ position:fixed; top:24px; right:28px; z-index:250; overflow:hidden; border-radius:999px; pointer-events:none; }
+  .menu-fab-btn{ display:inline-flex; align-items:center; justify-content:center; background:#111; color:#fff;
+    padding:12px 24px; border-radius:999px; font-family:'Figtree'; font-size:14px; font-weight:700;
+    letter-spacing:.1em; text-transform:uppercase; border:none; cursor:pointer;
+    transform:translateY(115%); transition:transform .55s cubic-bezier(.16,.84,.24,1); }
+  .menu-fab.show{ pointer-events:auto; } .menu-fab.show .menu-fab-btn{ transform:translateY(0); }
+  .menu-fab-btn .wm{ display:inline-block; overflow:hidden; vertical-align:top; }
+  .menu-fab-btn .wm-i{ display:inline-block; transform:translateY(120%); opacity:0;
+    transition:transform .5s cubic-bezier(.16,.84,.24,1), opacity .4s ease; }
+  .menu-fab-btn .wm-i.in{ transform:translateY(0); opacity:1; }
+  body.menu-active .nav.hide ~ .menu-fab{ pointer-events:auto; }
+  body.menu-active .nav.hide ~ .menu-fab .menu-fab-btn{ transform:translateY(0) !important; }
+  @media (max-width:999px){ .menu-fab{ top:18px; right:20px; } .menu-fab-btn{ padding:10px 20px; font-size:13px; } }
+
+  .mobile-menu-links{ display:flex; flex-direction:column; align-items:flex-start; gap:0; width:100%; }
+  .mobile-link{ font-family:'Figtree'; font-size:clamp(32px,5.5vw,64px); font-weight:400; line-height:0.95;
+    color:#fff; text-transform:uppercase; text-align:left; letter-spacing:.02em;
+    opacity:0; transform:translateY(16px); transition:opacity .4s ease, transform .4s ease; }
+  .mobile-menu.open .mobile-link{ opacity:1; transform:translateY(0); }
+  .mobile-menu.open .mobile-link:nth-child(1){ transition-delay:.05s; }
+  .mobile-menu.open .mobile-link:nth-child(2){ transition-delay:.10s; }
+  .mobile-menu.open .mobile-link:nth-child(3){ transition-delay:.15s; }
+  .mobile-menu.open .mobile-link:nth-child(4){ transition-delay:.20s; }
+  .mobile-menu.open .mobile-link:nth-child(5){ transition-delay:.25s; }
+  .mobile-instagram{ position:absolute; bottom:32px; left:clamp(24px,6vw,80px); color:#fff; font-family:'Figtree';
+    font-size:14px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; text-decoration:none;
+    opacity:0; transform:translateY(10px); transition:opacity .4s ease, transform .4s ease; }
+  .mobile-menu.open .mobile-instagram{ opacity:1; transform:translateY(0); transition-delay:.3s; }
+
+  @media (max-width:999px){
+    .nav .inner{grid-template-columns:1fr auto 1fr;}
+    .left{display:none;} .right{display:none;}
+    .brand{font-size:clamp(24px,4.6vw,42px); grid-column:2; justify-self:center;}
+    .nav .wrap{padding:0 20px;}
+    .burger{display:flex; align-items:center; grid-column:3; justify-self:end;}
+
+    .nav{ align-items:flex-start !important; padding-top:20px !important; height:84px !important; z-index:300 !important; }
+    .nav .inner{ grid-template-columns:auto 1fr !important; }
+    .brand{ font-size:22px !important; grid-column:1 !important; justify-self:start !important; transform:none !important; line-height:1 !important; }
+    .burger{ grid-column:2 !important; align-self:center !important; width:auto !important; height:auto !important; }
+    .burger span{ display:none !important; }
+    .burger::after{ content:"MENU"; font-size:14px !important; font-weight:700; letter-spacing:.1em; color:var(--ink); line-height:1 !important; }
+    body.menu-active .brand{ color:var(--ink) !important; }
+    body.menu-active .burger::after{ content:"CLOSE" !important; color:var(--ink) !important; }
+  }
+
+  /* ===== CONTACT — та сама верстка, що на index.html (десктоп/планшет + мобільна),
+     тільки як окрема самостійна сторінка. Додатковий padding-top:96px компенсує
+     фіксований nav, якого немає над Contact на index.html (там перед ним іде About). */
+  #contact{
+    position:relative;
+    background:#fff;
+    display:flex; flex-direction:column;
+    min-height:calc(var(--vh, 1vh) * 100);
+    padding-top:96px;
+    color:#111;
+  }
+
+  /* ---- Фото-стрічка проєктів: горизонтальна, кольорова, з підписами під фото ---- */
+  .cm-photobar{
+    flex:0 0 auto;
+    height:clamp(200px, 33vh, 440px);
+    display:flex;
+  }
+  .cm-photo-item{
+    position:relative; flex:1 1 25%; overflow:hidden;
+    display:flex; flex-direction:column; background:#0b0b0b;
+  }
+  .cm-photo-img-wrap{ position:relative; flex:1 1 auto; overflow:hidden; }
+  .cm-photo-img-wrap img{
+    width:100%; height:100%; object-fit:cover; display:block;
+    transform:scale(1.02);
+    transition:transform .6s cubic-bezier(.22,.61,.36,1);
+  }
+  .cm-photo-item:hover img{ transform:scale(1.08); }
+  .cm-photo-caption{
+    flex:0 0 auto;
+    background:#fff;
+    padding:10px 14px;
+  }
+  .cm-photo-caption span{
+    font-family:'Figtree'; font-weight:700; letter-spacing:.02em;
+    text-transform:uppercase; font-size:clamp(11px,1vw,14px);
+    color:#111;
+  }
+
+  /* ---- Білий блок: ліва / права колонка, обмежені в 1440px (як navbar) ---- */
+  .cm-content-wrap{ flex:1 1 auto; display:flex; flex-direction:column; width:100%; max-width:1440px; margin:0 auto; padding:0 28px; }
+
+  .cm-white{
+    display:flex;
+    justify-content:space-between;
+    margin:auto 0;
+    padding:0;
+  }
+  .cm-left, .cm-right{
+    display:flex; flex-direction:column;
+    min-height:clamp(280px, 32vh, 380px);
+  }
+  .cm-left{ flex:0 0 auto; justify-content:space-between; max-width:520px; }
+  .cm-right{ flex:0 0 480px; align-items:flex-start; max-width:480px; }
+
+  /* Акордеон міст — закриті за замовчуванням, розкриваються по кліку */
+  .city-block-contact{ display:flex; flex-direction:column; gap:2px; }
+  .city-contact{ display:flex; flex-direction:column; cursor:pointer; user-select:none; }
+  .city-name-contact{
+    font-family:'Figtree'; font-size:clamp(36px,4.68vw,60px); font-weight:700;
+    line-height:1;
+    letter-spacing:.01em; text-transform:uppercase;
+    color:#111; display:flex; align-items:center; gap:.35em;
+    transition:opacity .2s;
+  }
+  .city-contact:hover .city-name-contact{ opacity:.75; }
+  .city-contact.inactive .city-name-contact{ opacity:.4; }
+  .city-arrow-contact{
+    width:clamp(10px,.9vw,14px); height:clamp(10px,.9vw,14px);
+    border-right:1.5px solid currentColor; border-bottom:1.5px solid currentColor;
+    transform:rotate(45deg) translateY(-2px);
+    transition:transform .35s cubic-bezier(.22,.61,.36,1);
+    opacity:.6; flex-shrink:0;
+  }
+  .city-contact.active .city-arrow-contact{ transform:rotate(-135deg) translateY(2px); }
+  .city-data-contact{
+    overflow:hidden; max-height:0; opacity:0; transform:translateY(-4px);
+    transition:max-height .5s cubic-bezier(.22,.61,.36,1), opacity .35s ease .05s, transform .4s cubic-bezier(.22,.61,.36,1) .05s;
+  }
+  .city-contact.active .city-data-contact{ max-height:100px; opacity:1; transform:translateY(0); }
+  .city-data-inner-contact{
+    padding-top:clamp(6px,.8vh,10px);
+    font-size:clamp(13px,1.2vw,17px); color:rgba(0,0,0,.5); line-height:1.7; font-weight:400;
+  }
+  .city-data-inner-contact a{ color:rgba(0,0,0,.5); text-decoration:none; }
+  .city-data-inner-contact a:hover{ opacity:.6; }
+
+  /* Instagram + стрілка "зовнішнє посилання" */
+  .cm-instagram{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'Roboto'; font-weight:600; font-size:clamp(13px,1.1vw,16px);
+    letter-spacing:.08em; text-transform:uppercase; color:#111;
+    width:fit-content;
+  }
+  .cm-instagram svg{ width:.85em; height:.85em; flex-shrink:0; transition:transform .25s ease; }
+  .cm-instagram:hover svg{ transform:translate(2px,-2px); }
+
+  /* ---- Форма "написати нам" (макет — поки без реальної відправки) ---- */
+  .cm-form{ width:100%; flex:1 1 auto; display:flex; flex-direction:column; justify-content:space-between; }
+  .cm-form-intro{
+    margin:0 0 16px;
+    padding-top:.2em;
+    font-family:'Figtree'; font-weight:700; letter-spacing:.02em;
+    text-transform:uppercase; line-height:1.4;
+    font-size:clamp(11px,1vw,14px); color:#111;
+  }
+  .cm-form-fields{ display:flex; flex-direction:column; gap:20px; }
+  .cm-field-row{ display:flex; gap:20px; }
+  .cm-field-row .cm-field{ flex:1 1 0; min-width:0; }
+  .cm-field{ display:flex; flex-direction:column; gap:6px; }
+  .cm-field label{
+    font-family:'Roboto'; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+    font-size:10px; color:#111;
+  }
+  .cm-field input, .cm-field textarea{
+    border:none; border-bottom:1px solid rgba(0,0,0,.3);
+    background:transparent; padding:8px 0 10px;
+    font-family:'Roboto'; font-size:clamp(14px,1.1vw,16px); color:#111;
+    outline:none; resize:none; transition:border-color .2s ease;
+  }
+  .cm-field input:focus, .cm-field textarea:focus{ border-color:rgba(0,0,0,.8); }
+  .cm-submit-btn{
+    align-self:stretch; margin-top:4px;
+    border:1px solid rgba(0,0,0,.5); background:transparent; cursor:pointer;
+    padding:clamp(14px,1.6vw,18px) clamp(28px,2.8vw,38px);
+    font-family:'Roboto'; font-weight:600; letter-spacing:.1em; text-transform:uppercase;
+    font-size:clamp(12px,1vw,14px); color:#111;
+    transition:background .25s ease, color .25s ease;
+  }
+  .cm-submit-btn:hover{ background:#111; color:#fff; }
+
+  /* ---- Нижній бар: на всю ширину екрана, як фото зверху ---- */
+  .cm-bottom-bar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 20px;
+  }
+  .cm-status, .cm-copy, .cm-foot-link{
+    font-family:'Roboto'; font-weight:600; font-size:13px; letter-spacing:.1em; text-transform:uppercase;
+    color:#111;
+  }
+  @media (min-width:991px){
+    .cm-status, .cm-copy, .cm-foot-link{ font-size:15px; }
+  }
+  .cm-foot-link{ transition:opacity .2s; }
+  .cm-foot-link:hover{ opacity:.6; }
+
+  /* ===== MOBILE + TABLET (<1024px): Contact — карта-фон + акордеон міст ===== */
+  .contact-mobile{ display:none; }
+  .contact-mobile-footer{ display:none; }
+  @media (max-width:1023px), (max-height:500px) and (orientation:landscape) and (max-width:1000px){
+    #contact{
+      min-height:calc((var(--vh, 1vh) * 100) + 200px); background:#ffffff;
+      display:flex; flex-direction:column;
+      padding-top:84px;
+    }
+    .cm-photobar,
+    .cm-content-wrap,
+    .cm-bottom-bar,
+    .city-block-contact{ display:none !important; }
+
+    .contact-mobile{
+      position:relative;
+      display:flex; flex-direction:column; align-items:center;
+      justify-content:center; flex:1 1 auto; text-align:center;
+      padding:clamp(80px,18vw,120px) clamp(20px,5vw,32px) 40px;
+      overflow:hidden;
+    }
+    .cm-map-bg{
+      position:absolute; left:0; right:0; top:0; height:min(78%, 600px);
+      z-index:0; pointer-events:none;
+      -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 40%, transparent 92%);
+      mask-image:linear-gradient(to bottom, #000 0%, #000 40%, transparent 92%);
+    }
+    .cm-map-bg svg{ width:100%; height:100%; display:block; }
+    .cm-map-bg img{ width:100%; height:100%; object-fit:cover; display:block; opacity:.16; filter:grayscale(100%); }
+
+    .cm-cities{ position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; width:100%; }
+    .cm-city-name{
+      margin:0; padding:2px 0;
+      display:flex; align-items:center; gap:12px;
+      font-family:'Figtree'; font-weight:900; text-transform:uppercase;
+      font-size:clamp(40px,12.5vw,68px); line-height:1; letter-spacing:-.02em;
+      color:#111; cursor:pointer; user-select:none;
+      transition:color .45s ease; text-align:center;
+    }
+    .cm-dot{
+      width:9px; height:9px; border-radius:50%; flex-shrink:0;
+      background:transparent; border:1.5px solid rgba(0,0,0,.55);
+      transition:border-color .45s ease, background .3s ease, transform .3s ease;
+    }
+    .cm-cities.has-active .cm-city:not(.open) .cm-city-name{ color:rgba(0,0,0,.22); }
+    .cm-cities.has-active .cm-city:not(.open) .cm-dot{ border-color:rgba(0,0,0,.22); }
+    .cm-city.open .cm-city-name{ color:#111; }
+    .cm-city.open .cm-dot{ border-color:#111; background:#111; transform:scale(1.1); }
+
+    .cm-dot.hint-pulse{ animation:cmDotPulse 3s ease-in-out infinite; }
+    @keyframes cmDotPulse{
+      0%,100%{ background:transparent; border-color:rgba(0,0,0,.55); transform:scale(1); }
+      50%{ background:#111; border-color:#111; transform:scale(1.2); }
+    }
+
+    .cm-city-detail{
+      overflow:hidden; max-height:0; opacity:0;
+      display:flex; flex-direction:column; align-items:center;
+      transition:max-height .5s cubic-bezier(.22,.61,.36,1), opacity .35s ease .05s;
+    }
+    .cm-city.open .cm-city-detail{ max-height:120px; opacity:1; }
+    .cm-detail-line{
+      display:flex; gap:10px; align-items:baseline; justify-content:center;
+      font-family:'Roboto'; font-size:clamp(14px,3.9vw,16px); color:rgba(0,0,0,.6);
+      padding:5px 0 0;
+    }
+    .cm-detail-label{ font-weight:700; color:rgba(0,0,0,.32); width:16px; flex-shrink:0; text-align:right; }
+    .cm-detail-line a{ color:rgba(0,0,0,.78); text-decoration:none; }
+
+    .cm-links-row{
+      position:relative; z-index:1;
+      display:flex; align-items:center; justify-content:space-between;
+      width:auto; max-width:100%; margin:10px auto 0;
+    }
+    .cm-link{
+      font-family:'Roboto'; font-weight:600; font-size:clamp(11px,3vw,13px);
+      letter-spacing:.1em; text-transform:uppercase; color:#111; text-decoration:none;
+      white-space:nowrap;
+    }
+    .cm-link:active{ opacity:.6; }
+
+    .contact-mobile-footer{
+      display:flex; flex:0 0 auto;
+      align-items:flex-start; justify-content:space-between; gap:20px;
+      background:transparent;
+      padding:20px clamp(20px,5vw,32px) calc(24px + env(safe-area-inset-bottom, 0px));
+    }
+    .cm-footer-left, .cm-footer-right{
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .cm-footer-right{ align-items:flex-end; text-align:right; }
+    .cm-copy, .cm-status, .cm-footer-link{
+      font-family:'Roboto'; font-weight:600; font-size:clamp(11px,3vw,13px);
+      letter-spacing:.1em; text-transform:uppercase; color:#111;
+      text-decoration:none;
+    }
+    .cm-status{ color:rgba(0,0,0,.55); }
+  }
+
+  /* ===== Поява сторінки: контент "виїжджає" знизу вгору при заході.
+     Nav навмисно НЕ обгорнутий у цю трансформацію — CSS transform створює
+     новий containing block, через який position:fixed усередині перестав би
+     бути справді "прицвяхованим" до екрана. Тому їде тільки сам контент. */
+  .page-reveal{
+    transform:translateY(60px);
+    opacity:0;
+    transition:transform .7s cubic-bezier(.16,.84,.24,1), opacity .8s ease;
+    will-change:transform, opacity;
+  }
+  .page-reveal.in{ transform:translateY(0); opacity:1; }
+
+  /* ===== Cursor dot */
+  #cursor-dot{
+    position:fixed;top:0;left:0;width:7px;height:7px;background:#fff;border-radius:50%;
+    pointer-events:none;z-index:1000;transform:translate3d(-50%,-50%,0);
+    mix-blend-mode:difference;
+    transition:width .2s ease,height .2s ease;
+  }
+  @media (any-pointer: coarse){ #cursor-dot{ display:none !important; } }
+</style>
+</head>
+<body>
+  <!-- NAV -->
+  <div class="nav" role="navigation" aria-label="Primary">
+    <div class="wrap">
+      <div class="inner">
+        <div class="left">
+          <a class="link" href="projects.html">PROJECTS</a>
+          <a class="link" href="index.html#services">SERVICES</a>
+        </div>
+        <a class="brand" href="index.html" id="brandLink">FORM·A</a>
+        <div class="right">
+          <a class="link" href="index.html#about">ABOUT</a>
+          <a class="link current" href="contact.html">CONTACT</a>
+        </div>
+        <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="menu-fab" id="menuFab">
+    <button class="menu-fab-btn" id="menuFabBtn" aria-label="Open menu"><span class="wm"><span class="wm-i in" id="menuFabLabel">MENU</span></span></button>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <nav class="mobile-menu-links">
+      <a href="index.html#intro" class="mobile-link">HOME</a>
+      <a href="projects.html" class="mobile-link">PROJECTS</a>
+      <a href="index.html#services" class="mobile-link">SERVICES</a>
+      <a href="index.html#about" class="mobile-link">ABOUT</a>
+      <a href="contact.html" class="mobile-link">CONTACT</a>
+    </nav>
+    <a href="https://instagram.com" target="_blank" class="mobile-instagram">Instagram</a>
+  </div>
+
+  <!-- CONTACT — та сама верстка, що на index.html -->
+  <div class="page-reveal" id="pageReveal">
+  <section id="contact">
+
+    <!-- Фото-стрічка: 4 рандомні проєкти з projects-data.js, клік → project.html?id=XX -->
+    <div class="cm-photobar" id="photoStrip"></div>
+
+    <div class="cm-content-wrap">
+      <div class="cm-white">
+        <div class="cm-left">
+          <div class="city-block-contact" id="cityBlockContact">
+            <div class="city-contact" data-city="kyiv">
+              <div class="city-name-contact">KYIV <span class="city-arrow-contact"></span></div>
+              <div class="city-data-contact">
+                <div class="city-data-inner-contact">
+                  <a href="tel:+380671234567">+380 67 123 4567</a><br>Kyiv, Ukraine
+                </div>
+              </div>
+            </div>
+            <div class="city-contact" data-city="bratislava">
+              <div class="city-name-contact">BRATISLAVA <span class="city-arrow-contact"></span></div>
+              <div class="city-data-contact">
+                <div class="city-data-inner-contact">
+                  <a href="tel:+421901123456">+421 901 123 456</a><br>Bratislava, Slovakia
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <a class="cm-instagram" href="https://instagram.com" target="_blank" rel="noopener">
+            Instagram
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 17L17 7M17 7H9M17 7V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </a>
+        </div>
+
+        <div class="cm-right">
+          <form class="cm-form" id="mockForm">
+            <div class="cm-form-fields">
+              <p class="cm-form-intro">If you'd like to get in touch, choose whatever's easiest for you: call, message us on your preferred messenger, or simply leave a request and we'll get back to you as soon as possible.</p>
+              <div class="cm-field-row">
+                <div class="cm-field">
+                  <label for="cmName">Name</label>
+                  <input type="text" id="cmName" name="name" placeholder="">
+                </div>
+                <div class="cm-field">
+                  <label for="cmPhone">Phone</label>
+                  <input type="tel" id="cmPhone" name="phone" placeholder="">
+                </div>
+              </div>
+              <div class="cm-field">
+                <label for="cmEmail">Email</label>
+                <input type="email" id="cmEmail" name="email" placeholder="">
+              </div>
+            </div>
+            <button type="button" class="cm-submit-btn">Send email</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="cm-bottom-bar">
+      <span class="cm-status" id="cmStatusDesktop">KYI 15:01 · BTS 14:01</span>
+      <span class="cm-copy">© 2026 FORM·A dsgn</span>
+      <a class="cm-foot-link" href="#">Privacy Policy</a>
+      <a class="cm-foot-link" href="#">Terms of Service</a>
+    </div>
+
+    <!-- MOBILE (<1024px): карта-фон + міста зліва з тап-розкриттям + рядок лінків -->
+    <div class="contact-mobile" id="contactMobile">
+      <div class="cm-map-bg" aria-hidden="true">
+        <img src="bratislava-map.webp" alt="" loading="lazy">
+      </div>
+
+      <div class="cm-cities" id="cmCities">
+        <div class="cm-city" data-item="kyiv">
+          <h3 class="cm-city-name">KYIV<span class="cm-dot"></span></h3>
+          <div class="cm-city-detail">
+            <div class="cm-detail-line"><span class="cm-detail-label">P.</span><a href="tel:+380671234567">+380 67 123 4567</a></div>
+            <div class="cm-detail-line"><span class="cm-detail-label">A.</span><span>Kyiv, Ukraine</span></div>
+          </div>
+        </div>
+        <div class="cm-city" data-item="bratislava">
+          <h3 class="cm-city-name">BRATISLAVA<span class="cm-dot"></span></h3>
+          <div class="cm-city-detail">
+            <div class="cm-detail-line"><span class="cm-detail-label">P.</span><a href="tel:+421901123456">+421 901 123 456</a></div>
+            <div class="cm-detail-line"><span class="cm-detail-label">A.</span><span>Bratislava, Slovakia</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cm-links-row" id="cmLinksRow">
+        <a class="cm-link" href="mailto:formula.bureau@gmail.com">Contact us</a>
+        <a class="cm-link" href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
+      </div>
+    </div>
+
+    <div class="contact-mobile-footer">
+      <div class="cm-footer-left">
+        <span class="cm-status" id="cmStatus">KYI — · BTS —</span>
+        <span class="cm-copy">© 2026 FORM·A dsgn</span>
+      </div>
+      <div class="cm-footer-right">
+        <a class="cm-footer-link" href="#">Privacy Policy</a>
+        <a class="cm-footer-link" href="#">Terms of Service</a>
+      </div>
+    </div>
+  </section>
+  </div>
+
+  <!-- cursor dot -->
+  <div id="cursor-dot"></div>
+
+  <script src="projects-data.js"></script>
+  <script>
+    /* ===== Поява сторінки: контент "виїжджає" знизу вгору ===== */
+    (function(){
+      const reveal = document.getElementById('pageReveal');
+      if(!reveal) return;
+      // подвійний requestAnimationFrame — щоб браузер точно встиг
+      // відрендерити початковий стан (translateY(100%)) перед тим,
+      // як ми запустимо перехід, інакше анімація іноді "проковтується"
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => reveal.classList.add('in'));
+      });
+      // Прибираємо transform після завершення — про всяк випадок,
+      // щоб CSS transform не залишав по собі "новий containing block"
+      // для нащадків довше, ніж потрібно.
+      reveal.addEventListener('transitionend', () => {
+        reveal.style.transform = 'none';
+      }, { once: true });
+    })();
+
+    /* ===== Burger / MENU-fab ===== */
+    const burgerBtn = document.getElementById('burgerBtn');
+    const menuFab = document.getElementById('menuFab');
+    const menuFabBtn = document.getElementById('menuFabBtn');
+    const menuFabLabel = document.getElementById('menuFabLabel');
+    const mobileMenu = document.getElementById('mobileMenu');
+    function setFabLabel(text){
+      if (!menuFabLabel || menuFabLabel.textContent === text) { if(menuFabLabel) menuFabLabel.textContent = text; return; }
+      menuFabLabel.classList.remove('in'); menuFabLabel.textContent = text;
+      void menuFabLabel.offsetWidth;
+      requestAnimationFrame(()=> menuFabLabel.classList.add('in'));
+    }
+    function openMobileMenu(){
+      mobileMenu.classList.add('open'); document.body.classList.add('menu-active');
+      burgerBtn.setAttribute('aria-expanded','true'); menuFabBtn.setAttribute('aria-expanded','true');
+      setFabLabel('CLOSE');
+    }
+    function closeMobileMenu(){
+      mobileMenu.classList.remove('open'); document.body.classList.remove('menu-active');
+      burgerBtn.setAttribute('aria-expanded','false'); menuFabBtn.setAttribute('aria-expanded','false');
+      setFabLabel('MENU');
+    }
+    function toggleMobileMenu(){ mobileMenu.classList.contains('open') ? closeMobileMenu() : openMobileMenu(); }
+    burgerBtn.addEventListener('click', toggleMobileMenu);
+    menuFabBtn.addEventListener('click', toggleMobileMenu);
+
+    /* ===== NAV: ховається при скролі вниз ===== */
+    (function(){
+      const nav = document.querySelector('.nav');
+      const fab = document.getElementById('menuFab');
+      if(!nav || !fab) return;
+      let ticking = false;
+      const HIDE_AFTER = 140, FAB_AFTER = 220, NEAR_TOP = 80;
+      function update(){
+        if (document.body.classList.contains('menu-active')){ ticking = false; return; }
+        const y = window.pageYOffset || document.documentElement.scrollTop || 0;
+        if (y < NEAR_TOP){ nav.classList.remove('hide'); fab.classList.remove('show'); }
+        else if (y > HIDE_AFTER){ nav.classList.add('hide'); if (y > FAB_AFTER) fab.classList.add('show'); }
+        ticking = false;
+      }
+      function onScroll(){ if(!ticking){ ticking = true; requestAnimationFrame(update); } }
+      window.addEventListener('scroll', onScroll, {passive:true});
+      window.addEventListener('load', update, {once:true});
+      update();
+    })();
+
+    /* ===== Стабільна висота екрана для iOS Safari (та сама логіка, що на index.html) ===== */
+    (function(){
+      function setStableVH(){
+        document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+      }
+      setStableVH();
+      setTimeout(setStableVH, 300);
+      setTimeout(setStableVH, 700);
+      setTimeout(setStableVH, 1200);
+
+      let lastWidth = window.innerWidth;
+      let resizeTimer;
+      window.addEventListener('resize', function(){
+        if (window.innerWidth === lastWidth) return;
+        lastWidth = window.innerWidth;
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(setStableVH, 250);
+      }, {passive:true});
+
+      window.addEventListener('orientationchange', function(){
+        setTimeout(function(){
+          lastWidth = window.innerWidth;
+          setStableVH();
+        }, 300);
+      });
+    })();
+
+    /* ===== CONTACT — фото-стрічка (рандомні проєкти з projects-data.js) ===== */
+    (function(){
+      const strip = document.getElementById('photoStrip');
+      if (!strip || typeof PROJECTS_DISPLAY === 'undefined' || !PROJECTS_DISPLAY.length) return;
+
+      const pool = PROJECTS_DISPLAY.slice();
+      for (let i = pool.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pool[i], pool[j]] = [pool[j], pool[i]];
+      }
+
+      const chosen = [];
+      for (let i = 0; i < 4; i++) chosen.push(pool[i % pool.length]);
+
+      strip.innerHTML = chosen.map(p => {
+        const photo = (p.photos && p.photos.length)
+          ? p.photos[Math.floor(Math.random() * p.photos.length)]
+          : { file: p.hero, alt: p.title };
+        const src = p.folder + photo.file;
+        return `<a class="cm-photo-item" href="project.html?id=${p.id}">
+          <span class="cm-photo-img-wrap"><img src="${src}" alt="${photo.alt || p.title}" loading="lazy"></span>
+          <span class="cm-photo-caption"><span>${p.title}</span></span>
+        </a>`;
+      }).join('');
+    })();
+
+    /* ===== CONTACT — акордеон міст (закриті за замовчуванням, розкриваються по кліку) ===== */
+    document.querySelectorAll('.city-contact').forEach(city => {
+      city.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A') return;
+        const isActive = city.classList.contains('active');
+        document.querySelectorAll('.city-contact').forEach(c => c.classList.remove('active', 'inactive'));
+        if (!isActive) {
+          city.classList.add('active');
+          document.querySelectorAll('.city-contact').forEach(c => { if (c !== city) c.classList.add('inactive'); });
+        }
+      });
+    });
+
+    /* ===== CONTACT — кнопка форми: поки що макет, нічого не відправляє ===== */
+    (function(){
+      const btn = document.querySelector('.cm-submit-btn');
+      if (btn) btn.addEventListener('click', () => { /* форма поки не підключена */ });
+    })();
+
+    /* ===== MOBILE Contact — великі назви міст (<1024px) =====
+       Тап по місту: воно лишається чорним і розкриває телефон/адресу +
+       кнопку "Contact us" прямо під собою; решта міст тьмяніє (сірий). */
+    (function(){
+      const wrap = document.getElementById('cmCities');
+      if(!wrap) return;
+      const cities = wrap.querySelectorAll('.cm-city');
+
+      const firstDot = wrap.querySelector('.cm-city .cm-dot');
+      let hintTimer = null;
+      function startHint(){
+        if(firstDot) firstDot.classList.add('hint-pulse');
+      }
+      function stopHint(){
+        if(hintTimer){ clearTimeout(hintTimer); hintTimer = null; }
+        if(firstDot) firstDot.classList.remove('hint-pulse');
+      }
+      if(firstDot && 'IntersectionObserver' in window){
+        const io = new IntersectionObserver(entries=>{
+          entries.forEach(e=>{
+            if(e.isIntersecting && !hintTimer){
+              hintTimer = setTimeout(startHint, 2500);
+            }
+          });
+        }, {threshold:.6});
+        io.observe(wrap);
+      }
+
+      cities.forEach(city=>{
+        const head = city.querySelector('.cm-city-name');
+        if(!head) return;
+        head.addEventListener('click', ()=>{
+          stopHint();
+          const wasOpen = city.classList.contains('open');
+          cities.forEach(c=>c.classList.remove('open'));
+          if(!wasOpen){
+            city.classList.add('open');
+            wrap.classList.add('has-active');
+          } else {
+            wrap.classList.remove('has-active');
+          }
+        });
+      });
+    })();
+
+    /* Футер Contact: табло як в аеропорту — код міста + місцевий час.
+       Оновлює і десктопний, і мобільний напис (два різних id). */
+    (function(){
+      const statusEls = [
+        document.getElementById('cmStatusDesktop'),
+        document.getElementById('cmStatus')
+      ].filter(Boolean);
+      if(!statusEls.length) return;
+
+      function timeIn(tz){
+        return new Intl.DateTimeFormat('en-GB', {
+          timeZone:tz, hour:'2-digit', minute:'2-digit', hour12:false
+        }).format(new Date());
+      }
+
+      function update(){
+        const kyiv = timeIn('Europe/Kyiv');
+        const bratislava = timeIn('Europe/Bratislava');
+        const text = 'KYI ' + kyiv + '  ·  BTS ' + bratislava;
+        statusEls.forEach(el => { el.textContent = text; });
+      }
+
+      update();
+      setInterval(update, 30000);
+    })();
+
+    /* Рядок "Contact us / Instagram" підганяємо по ширині під найдовшу назву
+       міста (BRATISLAVA) — щоб лінки стояли рівно під її лівим і правим краєм */
+    (function(){
+      const names = document.querySelectorAll('.cm-city-name');
+      const row = document.getElementById('cmLinksRow');
+      if(!names.length || !row) return;
+
+      function fitLinksRow(){
+        if(window.innerWidth >= 1024) return;
+        let maxW = 0;
+        names.forEach(el=>{ maxW = Math.max(maxW, el.getBoundingClientRect().width); });
+        if(maxW > 0) row.style.width = maxW + 'px';
+      }
+
+      fitLinksRow();
+      if(document.fonts && document.fonts.ready){ document.fonts.ready.then(fitLinksRow); }
+      window.addEventListener('load', fitLinksRow);
+
+      let lastWidth = window.innerWidth;
+      let t;
+      window.addEventListener('resize', ()=>{
+        if(window.innerWidth === lastWidth) return;
+        lastWidth = window.innerWidth;
+        clearTimeout(t);
+        t = setTimeout(fitLinksRow, 200);
+      }, {passive:true});
+    })();
+
+    /* ===== Cursor dot follower ===== */
+    (function(){
+      const dot = document.getElementById('cursor-dot');
+      if(!dot || matchMedia('(any-pointer: coarse)').matches) return;
+      let x = window.innerWidth/2, y = window.innerHeight/2, targetX = x, targetY = y;
+      const speed = 0.2;
+      window.addEventListener('mousemove', (e)=>{ targetX = e.clientX; targetY = e.clientY; });
+      function animate() {
+        x += (targetX - x) * speed;
+        y += (targetY - y) * speed;
+        dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        requestAnimationFrame(animate);
+      }
+      animate();
+    })();
+
+    /* ===== Надійна обробка повороту екрану (orientationchange) ===== */
+    (function(){
+      function forceRecalc(){
+        window.dispatchEvent(new Event('resize'));
+      }
+      window.addEventListener('orientationchange', function(){
+        forceRecalc();
+        setTimeout(forceRecalc, 100);
+        setTimeout(forceRecalc, 300);
+        setTimeout(forceRecalc, 600);
+      });
+    })();
+  </script>
+</body>
+</html>

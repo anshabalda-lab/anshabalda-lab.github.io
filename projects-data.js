@@ -96,6 +96,44 @@ const PROJECTS = [
         text: 'The base palette stays restrained: graphite, light concrete, natural wood. Against this backdrop, accent materials speak boldly: cognac leather armchairs and sofa, terracotta velvet bedheads, copper-and-turquoise pendant lights shaped like boulders in the study. Marble inlays, plush rugs and live plants add tactility and warmth. The contrast between public zones (the column-lined living room) and private rooms reveals the layered character of the house.'
       }
     ]
+  },
+  {
+    id: '03',
+    title: 'H21 FIT HOME',
+    category: 'architecture',
+    year: '2021',
+    location: 'Kyiv',
+    folder: 'projects/03-h21-fit-home/',
+    hero: 'hero.webp',
+    photos: [
+      { file: '01.webp' },
+      { file: '02.webp' },
+      { file: '03.webp' },
+      { file: '04.webp' },
+      { file: '05.webp' },
+      { file: '06.webp' },
+      { file: '07.webp' },
+      { file: '08.webp' },
+      { file: '09.webp' },
+      { file: '10.webp' },
+      { file: '11.webp' },
+      { file: '12.webp' },
+      { file: '13.webp' },
+      { file: '14.webp' },
+      { file: '15.webp' },
+      { file: '16.webp' },
+      { file: '17.webp' }
+    ],
+    descriptions: [
+      {
+        afterPhoto: 0,
+        text: 'A 240 m² private house designed for a client with an active sports lifestyle. The home features a full-scale gym as a dedicated functional zone, not an addition to the living space. The house\'s architecture plays with volumes: a cantilevered wood roof and floor-to-ceiling glazing. A pool with a wood deck and a covered lounge area extend the house outward into the garden.'
+      },
+      {
+        afterPhoto: 3,
+        text: 'The interior stays in a restrained graphite-and-white palette warmed by wood accents: a living room with a fireplace and a marble kitchen island, a bedroom with a black marble bedhead and velvet textiles, a bathroom pairing concrete, marble and black fixtures. The home gym is the project\'s centerpiece and deliberately contrasts with the rest of the interior: warm orange lighting, a soft tatami platform, a mirrored wall and panoramic windows turn training into part of the everyday ritual rather than a separate "sports" room.'
+      }
+    ]
   }
 
   // Наступні проєкти додавай сюди тим самим блоком, наприклад:

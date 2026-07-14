@@ -51,7 +51,7 @@ const PROJECTS = [
     descriptions: [
       {
         afterPhoto: 0,
-        text: 'A contemporary healthcare interior that completely breaks the stereotype of the "cold, clinical" medical facility. At its core is a fusion of flawless functionality and an atmosphere of premium calm — one that eases patient tension from the very first moment.'
+        text: 'A contemporary healthcare interior that completely breaks the stereotype of the "cold, clinical" medical facility. At its core is a fusion of flawless functionality and an atmosphere of premium calm one that eases patient tension from the very first moment.'
       },
       {
         afterPhoto: 3,
@@ -89,11 +89,11 @@ const PROJECTS = [
     descriptions: [
       {
         afterPhoto: 0,
-        text: 'A 280 m² private residence where classical architecture enters into dialogue with a contemporary interior. Ionic columns and moulding in the living room coexist with minimalist furniture forms and a contrast of warm wood against cold stone. Each private space in the house carries its own character — from the restrained master bedroom to a teenager\'s room with a pop-art graffiti wall — while staying within a shared system of quality materials and considered lighting.'
+        text: 'A 280 m² private residence where classical architecture enters into dialogue with a contemporary interior. Ionic columns and moulding in the living room coexist with minimalist furniture forms and a contrast of warm wood against cold stone. Each private space in the house carries its own character, from the restrained master bedroom to a teenager\'s  room with a pop-art graffiti wall. Yet the whole house stays within a shared system of quality materials and considered lighting.'
       },
       {
         afterPhoto: 3,
-        text: 'The base palette stays restrained - graphite, light concrete, natural wood - against which accent materials speak boldly: cognac leather armchairs and sofa, terracotta velvet bedheads, copper-and-turquoise pendant lights shaped like boulders in the study. Marble inlays, plush rugs and live plants add tactility and warmth, while the contrast between public zones (the column-lined living room) and private rooms reveals the layered character of the house.'
+        text: 'The base palette stays restrained: graphite, light concrete, natural wood. Against this backdrop, accent materials speak boldly: cognac leather armchairs and sofa, terracotta velvet bedheads, copper-and-turquoise pendant lights shaped like boulders in the study. Marble inlays, plush rugs and live plants add tactility and warmth. The contrast between public zones (the column-lined living room) and private rooms reveals the layered character of the house.'
       }
     ]
   }

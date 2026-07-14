@@ -2,10 +2,10 @@
 <html lang="uk">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light">
-  <title>FORM·A dsgn — Home + Projects + Services + About + Contact</title>
+  <title>FORMULA — Home + Projects + Services + About + Contact</title>
   <meta name="description" content="Hero, pinned headline, projects stage, Services band, About section and refined Contacts.">
   <style>
     /* ===== Custom fonts ===== */
@@ -27,13 +27,7 @@
     }
 
     :root{ --ink:#ececec; --bg:#ffffff; --line:#242424; --wrap:1440px; }
-    *{box-sizing:border-box} html,body{height:100%} html{overflow-x:hidden}
-    /* Твердий стоп у кінці скролу — тільки на десктопі/планшеті.
-       На мобільному (<768px) навмисно лишаємо нативний "гумовий" відскок iOS/Android. */
-    @media (min-width:768px){
-      html{ overscroll-behavior-y:none; }
-      body{ overscroll-behavior-y:none; }
-    }
+    *{box-sizing:border-box} html,body{height:100%} html{scroll-behavior:smooth;overflow-x:hidden}
     body{margin:0;background:var(--bg);color:var(--ink);
          font:16px/1.55 'Roboto',system-ui,-apple-system,'Segoe UI',Inter,Arial;
          -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
@@ -57,9 +51,7 @@
       font-size:clamp(90px,15vw,170px); color:#fff; line-height:1;
       width:clamp(90px,15vw,170px); height:clamp(90px,15vw,170px);
       display:flex; align-items:center; justify-content:center;
-      opacity:0; transition:opacity .15s ease;
     }
-    .preloader-mark.font-ready{ opacity:1; }
 
     /* Тонка біла смужка завантаження прямо на нижньому краю екрана —
        реальний прогрес (не нескінченна анімація) */
@@ -248,24 +240,17 @@
     @media (max-width:900px){
       #projects-wrap{height:auto;}
     }
-    #projects{position:sticky;top:0;height:calc(var(--vh, 1vh) * 100);overflow:hidden;background:#ffffff;border-top:1px solid var(--line)}
+    #projects{position:sticky;top:0;height:calc(var(--vh, 1vh) * 100);overflow:hidden;background:#ffffff}
     @media (max-width:900px){
       #projects{position:relative;top:auto;}
     }
     .stage{position:absolute;inset:0}
     .stage img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.04);transition:opacity .8s ease, transform .8s ease;filter:brightness(.88)}
-    /* Підкладка під текст, незалежна від яскравості самого фото —
-       темніша по центру (де назва/підрядок/кнопка), майже прозора по краях. */
-    .stage-scrim{
-      position:absolute; inset:0; pointer-events:none;
-      background:radial-gradient(ellipse 70% 55% at 50% 52%, rgba(0,0,0,.42) 0%, rgba(0,0,0,.18) 55%, rgba(0,0,0,0) 78%);
-    }
     .stage img.active{opacity:1;transform:scale(1)}
     .overlay{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
     .center{text-align:center;padding:0 1rem}
-    .p-title{margin:0 0 6px 0;font-family:'Figtree';font-weight:900;letter-spacing:-.01em;line-height:1;font-size:clamp(28px,5.4vw,64px);text-shadow:0 0 18px rgba(0,0,0,.35);text-transform:uppercase}
-    .p-sub{margin:0 0 12px 0;font-family:'Roboto';color:#d0d0d0;opacity:.9;font-size:clamp(14px,2.2vw,16px);text-transform:uppercase;
-           display:flex;justify-content:space-between;align-items:center;width:auto;margin-left:auto;margin-right:auto;letter-spacing:.04em}
+    .p-title{margin:0 0 6px 0;font-family:'Figtree';font-weight:900;letter-spacing:-.01em;line-height:1;font-size:clamp(28px,5.4vw,64px);text-shadow:0 0 18px rgba(0,0,0,.35)}
+    .p-sub{margin:0 0 12px 0;font-family:'Roboto';color:#d0d0d0;opacity:.9;font-size:clamp(14px,2.2vw,16px)}
     .p-actions{display:flex;justify-content:center;gap:12px}
     .btn{
       pointer-events:auto;
@@ -291,33 +276,6 @@
     }
     .btn:hover::after{ background:#fff; transform:scale(1.15); }
     .overlay.fade{animation:overlayFade .45s ease}
-
-    /* ===== Mobile/tablet (до 900px): кнопка "View project" притиснута
-       внизу по центру — там, де раніше була підказка "SWIPE" ===== */
-    @media (max-width:900px){
-      .p-actions{
-        position:absolute;
-        left:50%; bottom:96px;
-        transform:translateX(-50%);
-        justify-content:center;
-        z-index:35;
-      }
-    }
-    @media (min-width:901px){
-      .p-actions{
-        position:absolute;
-        right:clamp(28px,4vw,64px);
-        bottom:clamp(28px,4.5vh,64px);
-        justify-content:flex-end;
-        z-index:5;
-      }
-      .btn{
-        font-size:15px;
-        gap:16px;
-        padding-bottom:9px;
-      }
-      .btn::after{ width:8px; height:8px; }
-    }
 
     /* ===== Mobile/tablet (до 900px): назва вгору, кнопка вниз ===== */
     @media (max-width:900px){
@@ -349,6 +307,39 @@
     .dots-nav .dot.active{ background:#fff; transform:scale(1.25); }
     @media (max-width:900px){
       .dots-nav{ display:flex; }
+    }
+
+    /* Підказка свайпу — постійна, з елегантною циклічною анімацією */
+    .swipe-hint{
+      display:none;
+      position:absolute; left:50%; bottom:96px; transform:translateX(-50%);
+      align-items:center; gap:12px; z-index:35; pointer-events:none;
+      color:rgba(255,255,255,.9); font-size:13px; font-weight:700; letter-spacing:.3em;
+      animation:swipeHintCycle 4s ease-in-out infinite;
+    }
+    .swipe-hint-arrow{ font-size:24px; line-height:1; display:inline-block; }
+    .swipe-hint-arrow.left{ animation:arrowLeft 4s ease-in-out infinite; }
+    .swipe-hint-arrow.right{ animation:arrowRight 4s ease-in-out infinite; }
+
+    /* Текст і загальна група — м'яко з'являється/тьмяніє по циклу, ніколи повністю не зникає */
+    @keyframes swipeHintCycle{
+      0%,100%{ opacity:.35; }
+      15%,45%{ opacity:1; }
+      65%{ opacity:.35; }
+    }
+    /* Стрілки "дихають" назустріч одна одній і назад */
+    @keyframes arrowLeft{
+      0%,100%{ transform:translateX(0); }
+      25%{ transform:translateX(4px); }
+      50%{ transform:translateX(-2px); }
+    }
+    @keyframes arrowRight{
+      0%,100%{ transform:translateX(0); }
+      25%{ transform:translateX(-4px); }
+      50%{ transform:translateX(2px); }
+    }
+    @media (max-width:900px){
+      .swipe-hint{ display:flex; }
     }
 
     /* Edge shadows */
@@ -792,7 +783,7 @@
         transition-delay: calc(.5s + var(--i, 0) * .07s);
       }
 
-      /* Заголовок "FORM·A dsgn" ховається під маскою і піднімається знизу вгору
+      /* Заголовок "FORMULA BUREAU" ховається під маскою і піднімається знизу вгору
          по слову, коли панель виїжджає — той самий ефект, що й на заголовку
          під Projects. Абзац під ним просто плавно проявляється і трохи піднімається,
          з невеликою затримкою після заголовка. */
@@ -845,22 +836,10 @@
       .ac-back-text p{ font-size:clamp(17px,2.2vw,20px); }
     }
 
-    /* ---- Телефон в landscape (коротка висота екрана): фіксована на var(--vh)
-       картка стає занадто короткою і фото обрізається до тонкої смужки.
-       Тут даємо картці мінімальну висоту з "запасом" замість жорсткого
-       "рівно один екран" — з'являється невеликий природний скрол, зате фото
-       залишається пропорційним. ---- */
-    @media (max-height:500px) and (orientation:landscape) and (max-width:1000px){
-      .about-compact{ height:auto; min-height:820px; overflow:hidden; }
-      .ac-card{ height:auto; min-height:820px; }
-    }
-
     /* ===== Refined CONTACT (Perfect Grid integrated from contacts_v8.html) */
     #contact {
       position: relative;
-      height: calc(var(--vh, 1vh) * 100);
-      min-height: calc(var(--vh, 1vh) * 100);
-      max-height: calc(var(--vh, 1vh) * 100);
+      min-height: 100vh;
       overflow: hidden;
       background: #ffffff; /* Тло секції контактів (сіре, як у About) */
       color: #111;
@@ -975,108 +954,6 @@
       .bottom-links-contact{ gap:clamp(14px,2.5vw,28px); }
     }
 
-    /* ===== MOBILE (<768px): Contact — карта-фон + акордеон міст ===== */
-    .contact-mobile{ display:none; }
-    .contact-mobile-footer{ display:none; }
-    @media (max-width:767px), (max-height:500px) and (orientation:landscape) and (max-width:1000px){
-      #contact{
-        min-height:calc((var(--vh, 1vh) * 100) + 200px); background:#ffffff;
-        display:flex; flex-direction:column;
-      }
-      .video-wrap-contact,
-      #contact-knockout-svg,
-      .contact-info-block,
-      .city-block-contact,
-      .bottom-bar-contact{ display:none !important; }
-
-      .contact-mobile{
-        position:relative;
-        display:flex; flex-direction:column; align-items:center;
-        justify-content:center; flex:1 1 auto; text-align:center;
-        padding:clamp(80px,18vw,120px) clamp(20px,5vw,32px) 40px;
-        overflow:hidden;
-      }
-      .cm-map-bg{
-        position:absolute; left:0; right:0; top:0; height:min(78%, 600px);
-        z-index:0; pointer-events:none;
-        -webkit-mask-image:linear-gradient(to bottom, #000 0%, #000 40%, transparent 92%);
-        mask-image:linear-gradient(to bottom, #000 0%, #000 40%, transparent 92%);
-      }
-      .cm-map-bg svg{ width:100%; height:100%; display:block; }
-      .cm-map-bg img{ width:100%; height:100%; object-fit:cover; display:block; opacity:.16; filter:grayscale(100%); }
-
-      .cm-cities{ position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; width:100%; }
-      .cm-city-name{
-        margin:0; padding:2px 0;
-        display:flex; align-items:center; gap:12px;
-        font-family:'Figtree'; font-weight:900; text-transform:uppercase;
-        font-size:clamp(40px,12.5vw,68px); line-height:1; letter-spacing:-.02em;
-        color:#111; cursor:pointer; user-select:none;
-        transition:color .45s ease; text-align:center;
-      }
-      .cm-dot{
-        width:9px; height:9px; border-radius:50%; flex-shrink:0;
-        background:transparent; border:1.5px solid rgba(0,0,0,.55);
-        transition:border-color .45s ease, background .3s ease, transform .3s ease;
-      }
-      .cm-cities.has-active .cm-city:not(.open) .cm-city-name{ color:rgba(0,0,0,.22); }
-      .cm-cities.has-active .cm-city:not(.open) .cm-dot{ border-color:rgba(0,0,0,.22); }
-      .cm-city.open .cm-city-name{ color:#111; }
-      .cm-city.open .cm-dot{ border-color:#111; background:#111; transform:scale(1.1); }
-
-      /* Легка підказка "натисни мене" — кружечок біля KYIV плавно "моргає"
-         заливкою (порожній → чорний → порожній), поки секція у полі зору
-         і поки людина ще жодного разу не тапала по місту */
-      .cm-dot.hint-pulse{ animation:cmDotPulse 3s ease-in-out infinite; }
-      @keyframes cmDotPulse{
-        0%,100%{ background:transparent; border-color:rgba(0,0,0,.55); transform:scale(1); }
-        50%{ background:#111; border-color:#111; transform:scale(1.2); }
-      }
-
-      .cm-city-detail{
-        overflow:hidden; max-height:0; opacity:0;
-        display:flex; flex-direction:column; align-items:center;
-        transition:max-height .5s cubic-bezier(.22,.61,.36,1), opacity .35s ease .05s;
-      }
-      .cm-city.open .cm-city-detail{ max-height:120px; opacity:1; }
-      .cm-detail-line{
-        display:flex; gap:10px; align-items:baseline; justify-content:center;
-        font-family:'Roboto'; font-size:clamp(14px,3.9vw,16px); color:rgba(0,0,0,.6);
-        padding:5px 0 0;
-      }
-      .cm-detail-label{ font-weight:700; color:rgba(0,0,0,.32); width:16px; flex-shrink:0; text-align:right; }
-      .cm-detail-line a{ color:rgba(0,0,0,.78); text-decoration:none; }
-
-      .cm-links-row{
-        position:relative; z-index:1;
-        display:flex; align-items:center; justify-content:space-between;
-        width:auto; max-width:100%; margin:10px auto 0;
-      }
-      .cm-link{
-        font-family:'Roboto'; font-weight:600; font-size:clamp(11px,3vw,13px);
-        letter-spacing:.1em; text-transform:uppercase; color:#111; text-decoration:none;
-        white-space:nowrap;
-      }
-      .cm-link:active{ opacity:.6; }
-
-      .contact-mobile-footer{
-        display:flex; flex:0 0 auto;
-        align-items:flex-start; justify-content:space-between; gap:20px;
-        background:transparent;
-        padding:20px clamp(20px,5vw,32px) calc(24px + env(safe-area-inset-bottom, 0px));
-      }
-      .cm-footer-left, .cm-footer-right{
-        display:flex; flex-direction:column; gap:6px;
-      }
-      .cm-footer-right{ align-items:flex-end; text-align:right; }
-      .cm-copy, .cm-status, .cm-footer-link{
-        font-family:'Roboto'; font-weight:600; font-size:clamp(11px,3vw,13px);
-        letter-spacing:.1em; text-transform:uppercase; color:#111;
-        text-decoration:none;
-      }
-      .cm-status{ color:rgba(0,0,0,.55); }
-    }
-
     /* ===== Cursor dot */
     #cursor-dot{
       position:fixed;top:0;left:0;width:7px;height:7px;background:#fff;border-radius:50%;
@@ -1137,10 +1014,10 @@
     <div class="wrap">
       <div class="inner">
         <div class="left">
-          <a class="link" href="projects.html">PROJECTS</a>
+          <a class="link" href="#projects">PROJECTS</a>
           <a class="link" href="#services">SERVICES</a>
         </div>
-        <a class="brand" href="#intro" id="brandLink">FORM·A</a>
+        <a class="brand" href="#intro" id="brandLink">FORMULA</a>
         <div class="right">
           <a class="link" href="#about">ABOUT</a>
           <a class="link" href="#contact">CONTACT</a>
@@ -1161,7 +1038,7 @@
   <div class="mobile-menu" id="mobileMenu">
     <nav class="mobile-menu-links">
       <a href="#intro" class="mobile-link">HOME</a>
-      <a href="projects.html" class="mobile-link">PROJECTS</a>
+      <a href="#projects" class="mobile-link">PROJECTS</a>
       <a href="#services" class="mobile-link">SERVICES</a>
       <a href="#about" class="mobile-link">ABOUT</a>
       <a href="#contact" class="mobile-link">CONTACT</a>
@@ -1171,7 +1048,7 @@
 
   <!-- HERO -->
   <header id="intro" class="hero" aria-label="Hero">
-      <img class="bg" src="hero.webp" alt="" aria-hidden="true" loading="eager" fetchpriority="high">
+      <img class="bg" src="hero.jpg" alt="" aria-hidden="true" loading="eager" fetchpriority="high">
     <h1 class="title">FORM FOLLOWS SILENCE</h1>
     <div class="scrollcue"><div class="ring"></div>scroll</div>
   </header>
@@ -1191,10 +1068,6 @@
   <section id="projects" aria-label="Projects">
     <div class="stage" id="stage"></div>
 
-    <!-- Темна підкладка під текст — не залежить від яскравості фото,
-         тримає контраст навіть на дуже світлих кадрах -->
-    <div class="stage-scrim" aria-hidden="true"></div>
-
     <!-- edge shadows -->
     <div class="edge-shadow left" aria-hidden="true"></div>
     <div class="edge-shadow right" aria-hidden="true"></div>
@@ -1203,7 +1076,7 @@
       <div class="center">
         <h3 class="p-title" id="pTitle"></h3>
         <p class="p-sub" id="pSub"></p>
-        <div class="p-actions"><a class="btn" id="viewBtn" href="#">View project</a></div>
+        <div class="p-actions"><a class="btn" id="viewBtn" href="#" target="_blank" rel="noopener">View project</a></div>
       </div>
     </div>
 
@@ -1212,6 +1085,13 @@
 
     <!-- Крапки-індикатори для mobile/tablet (свайп-навігація) -->
     <div class="dots-nav" id="dotsNav" aria-label="Project selector"></div>
+
+    <!-- Підказка "свайпни" для mobile/tablet -->
+    <div class="swipe-hint" id="swipeHint" aria-hidden="true">
+      <span class="swipe-hint-arrow left">‹</span>
+      <span class="swipe-hint-text">SWIPE</span>
+      <span class="swipe-hint-arrow right">›</span>
+    </div>
 
     <div class="counter" id="counter">01 / 05</div>
   </section>
@@ -1230,13 +1110,13 @@
       <div class="svc-mobile-grid">
         <div class="svc-mobile-item">
           <p class="svc-mobile-label">(ARCHITECTURE / FORM)</p>
-          <img class="ratio-cinema" src="service-architecture.webp" alt="Architecture" loading="lazy">
+          <img class="ratio-cinema" src="service-architecture.jpg" alt="Architecture" loading="lazy">
           <p class="svc-mobile-desc">Our work always begins with context - the landscape, the specific quality of light, the discipline of proportion. We study the site until the architecture starts to feel like a natural extension of it, rather than an interruption. Every volume and line is shaped to strike a balance between structural clarity and raw emotion, creating spaces that feel inevitable, not imposed. It is less about making a statement and more about how a building handles the sun throughout the day or frames a view. In the end, we aim for a form that simply belongs to its site - one that doesn't shout, but quietly defines its surroundings.</p>
         </div>
 
         <div class="svc-mobile-item">
           <p class="svc-mobile-label">(INTERIORS / ATMOSPHERE)</p>
-          <img class="ratio-tall" src="service-interiors.webp" alt="Interiors" loading="lazy">
+          <img class="ratio-tall" src="service-interiors.jpg" alt="Interiors" loading="lazy">
           <p class="svc-mobile-desc">Inside, we build rhythm and calm. Material transitions, shadows, and texture define the atmosphere more than decoration ever could. We treat interiors as emotional geometry — spaces that unfold through light and silence, inviting everyday rituals to feel meaningful.</p>
         </div>
       </div>
@@ -1255,15 +1135,15 @@
       <div class="about-compact" id="aboutCompact">
         <div class="ac-card" id="acCard">
           <div class="ac-face ac-front">
-            <img class="ac-photo" src="about-mobile.webp" alt="Architectural studio team, sketches and materials on the table." loading="eager" fetchpriority="high">
+            <img class="ac-photo" src="about-mobile.jpg" alt="Architectural studio team, sketches and materials on the table." loading="eager" fetchpriority="high">
             <div class="ac-photo-scrim" aria-hidden="true"></div>
             <button class="ac-flip-btn" id="acFlipBtn" type="button" aria-label="Show info about the studio">About</button>
           </div>
           <div class="ac-face ac-back">
             <div class="ac-back-text">
-              <h2>FORM·A dsgn</h2>
+              <h2>FORMULA BUREAU</h2>
               <p>
-                Founded in 2017 in Kyiv, FORM·A dsgn has evolved from a local architectural practice into an international design bureau.
+                Founded in 2017 in Kyiv, Formula Bureau has evolved from a local architectural practice into an international design bureau.
                 Our portfolio ranges from small cafés and private residences to large restaurants, medical facilities and full-scale architectural developments across Ukraine and beyond.
                 Every project begins with context — site, light, function, and the people who will inhabit it. With a team of architects, designers and engineers, we oversee every stage — from concept to realisation — guided by the same principle that started it all: to create spaces that feel essential, timeless and human.
               </p>
@@ -1290,15 +1170,15 @@
           <!-- фото -->
           <div class="center">
             <figure class="frame" aria-label="Studio photograph">
-              <img src="about-studio.webp" alt="Architectural studio team, sketches and materials on the table." loading="eager" fetchpriority="high">
+              <img src="about-studio.jpg" alt="Architectural studio team, sketches and materials on the table." loading="eager" fetchpriority="high">
             </figure>
           </div>
 
           <!-- текст ліворуч -->
           <div class="text-box" id="aboutText">
-            <h2>FORM·A dsgn</h2>
+            <h2>FORMULA BUREAU</h2>
             <p>
-              Founded in 2017 in Kyiv, FORM·A dsgn has evolved from a local architectural practice into an international design bureau.
+              Founded in 2017 in Kyiv, Formula Bureau has evolved from a local architectural practice into an international design bureau.
               Our portfolio ranges from small cafés and private residences to large restaurants, medical facilities and full-scale architectural developments across Ukraine and beyond.
             </p>
             <p>
@@ -1373,54 +1253,13 @@
         <a href="#" target="_blank" rel="noopener">Instagram</a>
         <a href="#" target="_blank" rel="noopener">Behance</a>
       </div>
-      <span class="copy-contact">© 2025 FORM·A dsgn</span>
-    </div>
-
-    <!-- MOBILE (<768px): карта-фон + міста зліва з тап-розкриттям + рядок лінків -->
-    <div class="contact-mobile" id="contactMobile">
-      <div class="cm-map-bg" aria-hidden="true">
-        <img src="bratislava-map.webp" alt="" loading="lazy">
-      </div>
-
-      <div class="cm-cities" id="cmCities">
-        <div class="cm-city" data-item="kyiv">
-          <h3 class="cm-city-name">KYIV<span class="cm-dot"></span></h3>
-          <div class="cm-city-detail">
-            <div class="cm-detail-line"><span class="cm-detail-label">P.</span><a href="tel:+380671234567">+380 67 123 4567</a></div>
-            <div class="cm-detail-line"><span class="cm-detail-label">A.</span><span>Kyiv, Ukraine</span></div>
-          </div>
-        </div>
-        <div class="cm-city" data-item="bratislava">
-          <h3 class="cm-city-name">BRATISLAVA<span class="cm-dot"></span></h3>
-          <div class="cm-city-detail">
-            <div class="cm-detail-line"><span class="cm-detail-label">P.</span><a href="tel:+421901123456">+421 901 123 456</a></div>
-            <div class="cm-detail-line"><span class="cm-detail-label">A.</span><span>Bratislava, Slovakia</span></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="cm-links-row" id="cmLinksRow">
-        <a class="cm-link" href="mailto:formula.bureau@gmail.com">Contact us</a>
-        <a class="cm-link" href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
-      </div>
-    </div>
-
-    <div class="contact-mobile-footer">
-      <div class="cm-footer-left">
-        <span class="cm-copy">© 2025 FORM·A dsgn</span>
-        <span class="cm-status" id="cmStatus">KYI — · BTS —</span>
-      </div>
-      <div class="cm-footer-right">
-        <a class="cm-footer-link" href="#">Privacy Policy</a>
-        <a class="cm-footer-link" href="#">Terms of Service</a>
-      </div>
+      <span class="copy-contact">© 2025 Formula Bureau</span>
     </div>
   </section>
 
   <!-- cursor dot -->
   <div id="cursor-dot"></div>
 
-  <script src="projects-data.js"></script>
   <script>
     /* ===== PRELOADER =====
        Блокуємо скрол, поки сторінка вантажиться (фото, шрифти тощо), і показуємо
@@ -1438,11 +1277,8 @@
       document.documentElement.classList.add('is-loading');
       document.body.style.overflow = 'hidden';
 
-      /* Літери лого по черзі, різкий свап без анімації, поки триває завантаження.
-         Спочатку літера прихована (opacity:0) — показуємо її лише коли шрифт
-         Figtree реально довантажився, інакше перша літера на мить блимає
-         системним шрифтом до підміни. */
-      const LETTERS = ['F','O','R','M','A'];
+      /* Літери лого по черзі, різкий свап без анімації, поки триває завантаження */
+      const LETTERS = ['F','O','R','M','U','L','A'];
       let letterIdx = 0;
       let letterTimer = null;
       if(mark){
@@ -1450,15 +1286,6 @@
           letterIdx = (letterIdx + 1) % LETTERS.length;
           mark.textContent = LETTERS[letterIdx];
         }, 250);
-
-        const revealMark = ()=> mark.classList.add('font-ready');
-        if(document.fonts && document.fonts.load){
-          document.fonts.load("900 170px Figtree").then(revealMark).catch(revealMark);
-          // запобіжник: якщо шрифт зависне, все одно показуємо за 600мс
-          setTimeout(revealMark, 600);
-        } else {
-          revealMark();
-        }
       }
 
       /* Реальний прогрес завантаження — рахуємо по кількості довантажених фото */
@@ -1661,18 +1488,11 @@
     burgerBtn.addEventListener('click', toggleMobileMenu);
     menuFabBtn.addEventListener('click', toggleMobileMenu);
 
-    /* Пункти мобільного меню — закрити меню і скролити до секції.
-       Посилання на іншу сторінку (напр. projects.html, не починається з "#")
-       не перехоплюємо — даємо браузеру перейти туди звичайним чином. */
+    /* Пункти мобільного меню — закрити меню і скролити до секції */
     document.querySelectorAll('.mobile-link').forEach(link=>{
       link.addEventListener('click', e=>{
-        const href = link.getAttribute('href') || '';
-        if(!href.startsWith('#')){
-          closeMobileMenu();
-          return; // звичайний перехід на іншу сторінку
-        }
         e.preventDefault();
-        const target = document.querySelector(href);
+        const target = document.querySelector(link.getAttribute('href'));
         closeMobileMenu();
         if(!target) return;
         setTimeout(()=>{
@@ -1768,16 +1588,14 @@
       onScroll();
     })();
 
-    /* PROJECTS data — тепер береться з projects-data.js (спільне джерело для index/projects/project.html) */
-    const CATEGORY_LABELS_HERO = { private:'Private', commercial:'Commercial', architecture:'Architecture' };
-    const projects = PROJECTS_DISPLAY.map(p => ({
-      title: p.title,
-      catLabel: CATEGORY_LABELS_HERO[p.category] || p.category,
-      year: p.year,
-      location: p.location,
-      file: p.folder + p.hero,
-      href: 'project.html?id=' + p.id
-    }));
+    /* PROJECTS data */
+    const projects=[
+      {title:'PV59 — Living',sub:'Interiors • 2024 • Germany',file:'project-01.jpg',href:'#'},
+      {title:'(01) Dental Clinic',sub:'Interiors • 2023 • Ukraine',file:'project-02.jpg',href:'#'},
+      {title:'(02) Eastern American',sub:'Interiors • 2023 • Germany',file:'project-03.jpg',href:'#'},
+      {title:' (03) Cottage Timber',sub:'Architecture • 2022 • Ukraine',file:'project-04.jpg',href:'#'},
+      {title:'Office — Concept',sub:'Office • 2021 • UAE',file:'project-05.jpg',href:'#'}
+    ];
     const stage=document.getElementById('stage'),
           overlay=document.getElementById('overlay'),
           pTitle=document.getElementById('pTitle'),
@@ -1817,29 +1635,9 @@
       dots.forEach((d,k)=>d.classList.toggle('active', k===i));
     }
 
-    /* Ширина підрядка (категорія/локація/рік) має точно відповідати
-       реальній відрендереній ширині заголовка над ним — вимірюємо через
-       getBoundingClientRect(), бо заголовок різної довжини і різного
-       розміру шрифту на різних екранах. */
-    function syncSubWidthToTitle(){
-      const w = pTitle.getBoundingClientRect().width;
-      if(w > 0) pSub.style.width = w + 'px';
-    }
-    window.addEventListener('resize', syncSubWidthToTitle);
-    /* Шрифт Figtree вантажиться асинхронно (font-display:swap) — доки він не
-       підвантажився, заголовок рендериться системним шрифтом іншої ширини.
-       Як тільки реальний шрифт готовий, перераховуємо ширину підрядка ще раз,
-       щоб він точно збігався з фінальною шириною назви. */
-    if (document.fonts && document.fonts.ready){
-      document.fonts.ready.then(syncSubWidthToTitle);
-    }
-
     function setActive(i){
       pImgs.forEach((im,k)=>im.classList.toggle('active',k===i));
-      pTitle.textContent=projects[i].title;
-      pSub.innerHTML = '<span>'+(projects[i].catLabel||'')+'</span><span>'+(projects[i].location||'')+'</span><span>'+(projects[i].year||'')+'</span>';
-      viewBtn.href=projects[i].href||'#';
-      requestAnimationFrame(syncSubWidthToTitle);
+      pTitle.textContent=projects[i].title;pSub.textContent=projects[i].sub||'';viewBtn.href=projects[i].href||'#';
       [...sideLeft.children,...sideRight.children].forEach((a,k)=>a.classList.toggle('active',k===i));
       overlay.classList.remove('fade');void overlay.offsetWidth;overlay.classList.add('fade');
       document.getElementById('counter').textContent=String(i+1).padStart(2,'0')+' / '+String(projects.length).padStart(2,'0');
@@ -2019,7 +1817,7 @@
       }
     })();
 
-    /* Заголовок "FORM·A dsgn" на звороті картки About — розбиваємо на слова
+    /* Заголовок "FORMULA BUREAU" на звороті картки About — розбиваємо на слова
        під маску (як і заголовок під Projects), анімація запускається CSS-ом
        автоматично при .ac-card.flipped */
     (function(){
@@ -2090,7 +1888,7 @@
           entries.forEach(e=>{
             compact.classList.toggle('show', e.isIntersecting);
           });
-        }, {threshold:.3});
+        }, {threshold:.65});
         io.observe(compact);
       } else {
         compact.classList.add('show');
@@ -2238,7 +2036,7 @@
       const cityBlock   = document.getElementById('cityBlockContact');
       const BAR_H       = 56;
 
-      const FONT = "'FormAaBrand','Arial Black','Helvetica Neue',Arial,sans-serif";
+      const FONT = "'FormulaBrand','Arial Black','Helvetica Neue',Arial,sans-serif";
       const MEASURE_FS = 300;
 
       let videoRatio = 1312 / 218;
@@ -2267,8 +2065,6 @@
       }
 
       function contactLayout(){
-        if (window.innerWidth < 768) return; // мобільна версія — простий акордеон, video-маска прихована
-
         const sw = contactSection.clientWidth;
         const sh = contactSection.clientHeight;
         const availH = sh - BAR_H;
@@ -2398,103 +2194,6 @@
       }
     })();
 
-    /* ===== MOBILE Contact — великі назви міст (<768px) =====
-       Тап по місту: воно лишається чорним і розкриває телефон/адресу +
-       кнопку "Contact us" прямо під собою; решта міст тьмяніє (сірий). */
-    (function(){
-      const wrap = document.getElementById('cmCities');
-      if(!wrap) return;
-      const cities = wrap.querySelectorAll('.cm-city');
-
-      /* Підказка "натисни мене": кружечок біля KYIV пульсує через ~2.5с
-         після того, як секція з'явилась у полі зору, і зупиняється
-         назавжди (для цієї сесії), щойно людина тапнула по будь-якому місту */
-      const firstDot = wrap.querySelector('.cm-city .cm-dot');
-      let hintTimer = null;
-      function startHint(){
-        if(firstDot) firstDot.classList.add('hint-pulse');
-      }
-      function stopHint(){
-        if(hintTimer){ clearTimeout(hintTimer); hintTimer = null; }
-        if(firstDot) firstDot.classList.remove('hint-pulse');
-      }
-      if(firstDot && 'IntersectionObserver' in window){
-        const io = new IntersectionObserver(entries=>{
-          entries.forEach(e=>{
-            if(e.isIntersecting && !hintTimer){
-              hintTimer = setTimeout(startHint, 2500);
-            }
-          });
-        }, {threshold:.6});
-        io.observe(wrap);
-      }
-
-      cities.forEach(city=>{
-        const head = city.querySelector('.cm-city-name');
-        if(!head) return;
-        head.addEventListener('click', ()=>{
-          stopHint();
-          const wasOpen = city.classList.contains('open');
-          cities.forEach(c=>c.classList.remove('open'));
-          if(!wasOpen){
-            city.classList.add('open');
-            wrap.classList.add('has-active');
-          } else {
-            wrap.classList.remove('has-active');
-          }
-        });
-      });
-    })();
-
-    /* Футер Contact: табло як в аеропорту — код міста + місцевий час */
-    (function(){
-      const statusEl = document.getElementById('cmStatus');
-      if(!statusEl) return;
-
-      function timeIn(tz){
-        return new Intl.DateTimeFormat('en-GB', {
-          timeZone:tz, hour:'2-digit', minute:'2-digit', hour12:false
-        }).format(new Date());
-      }
-
-      function update(){
-        const kyiv = timeIn('Europe/Kyiv');
-        const bratislava = timeIn('Europe/Bratislava');
-        statusEl.textContent = 'KYI ' + kyiv + '  ·  BTS ' + bratislava;
-      }
-
-      update();
-      setInterval(update, 30000);
-    })();
-
-    /* Рядок "Contact us / Instagram" підганяємо по ширині під найдовшу назву
-       міста (BRATISLAVA) — щоб лінки стояли рівно під її лівим і правим краєм */
-    (function(){
-      const names = document.querySelectorAll('.cm-city-name');
-      const row = document.getElementById('cmLinksRow');
-      if(!names.length || !row) return;
-
-      function fitLinksRow(){
-        if(window.innerWidth >= 768) return;
-        let maxW = 0;
-        names.forEach(el=>{ maxW = Math.max(maxW, el.getBoundingClientRect().width); });
-        if(maxW > 0) row.style.width = maxW + 'px';
-      }
-
-      fitLinksRow();
-      if(document.fonts && document.fonts.ready){ document.fonts.ready.then(fitLinksRow); }
-      window.addEventListener('load', fitLinksRow);
-
-      let lastWidth = window.innerWidth;
-      let t;
-      window.addEventListener('resize', ()=>{
-        if(window.innerWidth === lastWidth) return;
-        lastWidth = window.innerWidth;
-        clearTimeout(t);
-        t = setTimeout(fitLinksRow, 200);
-      }, {passive:true});
-    })();
-
     /* ===== Надійна обробка повороту екрану (orientationchange) =====
        На деяких мобільних/планшетних браузерах подія 'resize' після повороту
        спрацьовує із запізненням або з проміжними неправильними розмірами.
@@ -2514,3 +2213,5 @@
   </script>
 </body>
 </html>
+Cleaned_Finish_13.5.html
+Відображається "Cleaned_Finish_13.5.html".

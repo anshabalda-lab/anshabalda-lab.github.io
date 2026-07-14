@@ -611,6 +611,15 @@
 
     /* великі слова */
     #about .words{ position:absolute; inset:0; pointer-events:none; }
+    /* Тонка лінія над FOUNDATION — позиція виставляється через JS (виміряна
+       реальна верхня межа літер), бо line-height:.4 робить CSS-розрахунок
+       ненадійним для точного влучення "зверху над буквами". */
+    #about .word-anchor-line{
+      position:absolute; left:0; right:0; height:1px;
+      background:rgba(0,0,0,.15);
+      opacity:0; transition:opacity .3s ease;
+    }
+    #about .word-anchor-line.ready{ opacity:1; }
     #about .word{
       font-family:'Figtree',sans-serif;
       position:absolute; font-weight:500; line-height:.4; letter-spacing:-.09em;
@@ -1313,6 +1322,7 @@
         <div class="words" aria-hidden="true">
           <div class="word left">FOUNDATION</div>
           <div class="word right">ESSENCE</div>
+          <div class="word-anchor-line" id="wordAnchorLine"></div>
         </div>
 
         <!-- фото + текст: спільний flex-рядок, ніколи не перекриваються -->
@@ -1630,11 +1640,39 @@
         });
       }
 
-      fitWords();
-      if(document.fonts && document.fonts.ready){
-        document.fonts.ready.then(fitWords);
+      /* Лінія-опора над FOUNDATION: line-height:.4 робить layout-бокс слова
+         набагато меншим за реальні літери, тому getBoundingClientRect()
+         самого div дасть неправильну (стиснуту) висоту. Натомість міряємо
+         справжні межі тексту через Range — це завжди повертає реальний
+         "чорнильний" прямокутник гліфів, незалежно від line-height. */
+      function positionAnchorLine(){
+        const wordEl = document.querySelector('#about .word.left');
+        const wordsBox = document.querySelector('#about .words');
+        const line = document.getElementById('wordAnchorLine');
+        if(!wordEl || !wordsBox || !line) return;
+
+        const range = document.createRange();
+        range.selectNodeContents(wordEl);
+        const textRect = range.getBoundingClientRect();
+        if(!textRect || textRect.height === 0) return;
+
+        const boxRect = wordsBox.getBoundingClientRect();
+        line.style.top = (textRect.top - boxRect.top) + 'px';
+        line.classList.add('ready');
       }
-      window.addEventListener('load', fitWords);
+
+      function refresh(){
+        fitWords();
+        // чекаємо кадр, щоб браузер встиг застосувати новий font-size
+        // перед вимірюванням реальної позиції літер
+        requestAnimationFrame(positionAnchorLine);
+      }
+
+      refresh();
+      if(document.fonts && document.fonts.ready){
+        document.fonts.ready.then(refresh);
+      }
+      window.addEventListener('load', refresh);
 
       // Той самий принцип, що й для --vh: перераховуємо тільки при
       // реальній зміні ширини, ігноруючи "фейкові" resize від адресної
@@ -1645,7 +1683,7 @@
         if (window.innerWidth === lastWidth) return;
         lastWidth = window.innerWidth;
         clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(fitWords, 200);
+        resizeTimer = setTimeout(refresh, 200);
       }, {passive:true});
     })();
 

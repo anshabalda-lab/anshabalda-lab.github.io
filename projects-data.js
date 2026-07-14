@@ -32,7 +32,7 @@
 const PROJECTS = [
   {
     id: '01',
-    title: 'NN Dental Clinic',
+    title: 'NN Dental',
     category: 'commercial',
     year: '2021',
     location: 'Kyiv',

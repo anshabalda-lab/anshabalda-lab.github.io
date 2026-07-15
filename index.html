@@ -1049,19 +1049,13 @@
         position:absolute; inset:0;
         width:100%; height:100%; object-fit:cover;
         filter:grayscale(100%);
-        animation: cmMapFade 10s ease-in-out infinite;
+        opacity:0;
+        transition:opacity .7s ease;
       }
-      .cm-map-bg .cm-map-far{ animation-delay:0s; }
-      .cm-map-bg .cm-map-close{ animation-delay:-5s; }
-      @keyframes cmMapFade{
-        0%, 45%  { opacity:.16; }
-        50%, 95% { opacity:0; }
-        100%     { opacity:.16; }
-      }
-      @media (prefers-reduced-motion: reduce){
-        .cm-map-bg img{ animation:none; opacity:.16; }
-        .cm-map-bg .cm-map-close{ display:none; }
-      }
+      /* За замовчуванням — Європа. Коли обрано місто — показуємо його карту */
+      .cm-map-bg[data-active="europe"]      .cm-map-europe{ opacity:.16; }
+      .cm-map-bg[data-active="kyiv"]        .cm-map-kyiv{ opacity:.16; }
+      .cm-map-bg[data-active="bratislava"]  .cm-map-bratislava{ opacity:.16; }
 
       .cm-cities{ position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; width:100%; }
       .cm-city-name{
@@ -1447,9 +1441,10 @@
 
     <!-- MOBILE (<768px): карта-фон + міста зліва з тап-розкриттям + рядок лінків -->
     <div class="contact-mobile" id="contactMobile">
-      <div class="cm-map-bg" aria-hidden="true">
-        <img class="cm-map-far" src="contact-map-far.webp" alt="" loading="lazy">
-        <img class="cm-map-close" src="contact-map-close.webp" alt="" loading="lazy">
+      <div class="cm-map-bg" id="cmMapBg" data-active="europe" aria-hidden="true">
+        <img class="cm-map-europe" src="contact-map-europe.webp" alt="" loading="lazy">
+        <img class="cm-map-kyiv" src="contact-map-kyiv.webp" alt="" loading="lazy">
+        <img class="cm-map-bratislava" src="contact-map-bratislava.webp" alt="" loading="lazy">
       </div>
 
       <div class="cm-cities" id="cmCities">
@@ -2374,6 +2369,8 @@
         io.observe(wrap);
       }
 
+      const mapBg = document.getElementById('cmMapBg');
+
       cities.forEach(city=>{
         const head = city.querySelector('.cm-city-name');
         if(!head) return;
@@ -2384,8 +2381,10 @@
           if(!wasOpen){
             city.classList.add('open');
             wrap.classList.add('has-active');
+            if(mapBg) mapBg.setAttribute('data-active', city.dataset.item || 'europe');
           } else {
             wrap.classList.remove('has-active');
+            if(mapBg) mapBg.setAttribute('data-active', 'europe');
           }
         });
       });

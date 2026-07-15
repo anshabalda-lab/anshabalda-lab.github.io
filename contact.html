@@ -639,7 +639,7 @@
           : { file: p.hero, alt: p.title };
         const src = p.folder + photo.file;
         return `<a class="cm-photo-item" href="project.html?id=${p.id}">
-          <span class="cm-photo-img-wrap"><img src="${src}" alt="${photo.alt || p.title}" loading="lazy"></span>
+          <span class="cm-photo-img-wrap"><img src="${src}" alt="${photo.alt || p.title}" loading="eager"></span>
           <span class="cm-photo-caption"><span>${p.title}</span></span>
         </a>`;
       }).join('');

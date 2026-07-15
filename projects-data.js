@@ -130,7 +130,7 @@ const PROJECTS = [
         text: 'A 240 m² private house designed for a client with an active sports lifestyle. The home features a full-scale gym as a dedicated functional zone, not an addition to the living space. The house\'s architecture plays with volumes: a cantilevered wood roof and floor-to-ceiling glazing. A pool with a wood deck and a covered lounge area extend the house outward into the garden.'
       },
       {
-        afterPhoto: 4,
+        afterPhoto: 3,
         text: 'The interior stays in a restrained graphite-and-white palette warmed by wood accents: a living room with a fireplace and a marble kitchen island, a bedroom with a black marble bedhead and velvet textiles, a bathroom pairing concrete, marble and black fixtures. The home gym is the project\'s centerpiece and deliberately contrasts with the rest of the interior: warm orange lighting, a soft tatami platform, a mirrored wall and panoramic windows turn training into part of the everyday ritual rather than a separate "sports" room.'
       }
     ]
@@ -198,7 +198,7 @@ const PROJECTS = [
         text: 'A 400 m² private house. The project is built on the contrast of deep black, dark walnut wood and warm bronze, reinforced by a sculptural marble floor pattern and massive handcrafted brass fixtures. This is a residence where every detail, from the agate-inlay door handle to collectible sculptures, works toward the feel of a high-end private club.'
       },
       {
-        afterPhoto: 3,
+        afterPhoto: 4,
         text: 'A double-height hall with marble stairs, potted bamboo and a bronze sculpture on a pedestal sets the tone for the whole house: here architecture and decor carry equal weight. The dining room brings together dark walnut veneer, brass accents and a contrasting black-and-white rug beneath a massive mesh chandelier, while the kitchen shifts into an almost theatrical register: a black wall with baroque relief, a dramatic stone countertop and brass moldings. The entrance greets guests with a heavy walnut door featuring an inlaid stone handle and a sculptural wall composition of metallic "stones." The overall palette rests on a black-and-bronze duet with measured warm wood accents, giving the interior the feel of a closed, premium space considered down to the smallest detail.'
       }
     ]

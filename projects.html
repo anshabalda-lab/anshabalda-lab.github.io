@@ -390,6 +390,7 @@
       img.src = p.file;
       img.alt = p.title;
       img.loading = i < 4 ? 'eager' : 'lazy';
+      img.decoding = 'async';
       if(i === 0) img.fetchPriority = 'high'; // перше фото — найімовірніший LCP-елемент, вантажимо його першим
       img.onerror = function(){
         this.remove();
@@ -425,11 +426,24 @@
         }
         const img = el._img;
         if(!img){ reveal(); return; }
+
+        function whenDecoded(){
+          // decode() гарантує, що зображення вже повністю декодоване в пам'яті
+          // ДО старту анімації — без цього великий пріоритетний файл (перша
+          // картка) міг декодуватись саме в момент transition, що й давало
+          // помітний "ривок" на старті підняття.
+          if(img.decode){
+            img.decode().then(reveal).catch(reveal);
+          } else {
+            reveal();
+          }
+        }
+
         if(img.complete && img.naturalWidth){
-          reveal();
+          whenDecoded();
         } else {
           let done = false;
-          function onDone(){ if(done) return; done = true; reveal(); }
+          function onDone(){ if(done) return; done = true; whenDecoded(); }
           img.addEventListener('load', onDone, {once:true});
           img.addEventListener('error', onDone, {once:true});
         }

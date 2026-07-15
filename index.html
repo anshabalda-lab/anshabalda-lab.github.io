@@ -1060,9 +1060,9 @@
         transition:opacity .7s ease;
       }
       /* За замовчуванням — Європа. Коли обрано місто — показуємо його карту */
-      .cm-map-bg[data-active="europe"]      .cm-map-europe{ opacity:.60; }
-      .cm-map-bg[data-active="kyiv"]        .cm-map-kyiv{ opacity:.60; }
-      .cm-map-bg[data-active="bratislava"]  .cm-map-bratislava{ opacity:.60; }
+      .cm-map-bg[data-active="europe"]      .cm-map-europe{ opacity:.6; }
+      .cm-map-bg[data-active="kyiv"]        .cm-map-kyiv{ opacity:.6; }
+      .cm-map-bg[data-active="bratislava"]  .cm-map-bratislava{ opacity:.6; }
 
       .cm-cities{ position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; width:100%; }
       .cm-city-name{
@@ -1094,16 +1094,16 @@
 
       .cm-city-detail{
         overflow:hidden; max-height:0; opacity:0;
-        display:flex; flex-direction:column; align-items:center;
+        display:flex; flex-direction:column; align-items:flex-start;
         transition:max-height .5s cubic-bezier(.22,.61,.36,1), opacity .35s ease .05s;
       }
       .cm-city.open .cm-city-detail{ max-height:120px; opacity:1; }
       .cm-detail-line{
-        display:flex; gap:10px; align-items:baseline; justify-content:center;
-        font-family:'Roboto'; font-size:clamp(14px,3.9vw,16px); color:rgba(0,0,0,.6);
+        display:flex; gap:8px; align-items:baseline;
+        font-family:'Roboto'; font-size:clamp(15px,4.2vw,17px); color:rgba(0,0,0,.6);
         padding:5px 0 0;
       }
-      .cm-detail-label{ font-weight:700; color:rgba(0,0,0,.32); width:16px; flex-shrink:0; text-align:right; }
+      .cm-detail-label{ font-weight:700; color:rgba(0,0,0,.32); width:18px; flex-shrink:0; }
       .cm-detail-line a{ color:rgba(0,0,0,.78); text-decoration:none; }
 
       .cm-links-row{

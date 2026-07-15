@@ -171,6 +171,37 @@ const PROJECTS = [
         text: 'The house\'s palette moves between dark and light wood, graphite kitchen fronts and warm textiles. The kitchen is finished in deep graphite with a marble island and hidden lighting, the living room is anchored by a sculptural olive-green sofa and graphic black-and-white art in the hallway. The bedrooms carry different moods: one rests on dark wood paneling with focused spot lighting, the other, lighter one, gets a green throw, star-shaped fairy lights and a more intimate, homey tone. The bathroom is finished in terrazzo-like plaster with black fixtures and a double vanity, rounding off the calm, tactile atmosphere of the whole house.'
       }
     ]
+  },
+  {
+    id: '05',
+    title: 'LX residence',
+    category: 'private',
+    year: '2021',
+    location: 'UAE',
+    folder: 'projects/05-LX-residence/',
+    hero: 'hero.webp',
+    photos: [
+      { file: '01.webp' },
+      { file: '02.webp' },
+      { file: '03.webp' },
+      { file: '04.webp' },
+      { file: '05.webp' },
+      { file: '06.webp' },
+      { file: '07.webp' },
+      { file: '08.webp' },
+      { file: '09.webp' },
+      { file: '10.webp' }      
+     ],
+    descriptions: [
+      {
+        afterPhoto: 0,
+        text: 'A 400 m² private house. The project is built on the contrast of deep black, dark walnut wood and warm bronze, reinforced by a sculptural marble floor pattern and massive handcrafted brass fixtures. This is a residence where every detail, from the agate-inlay door handle to collectible sculptures, works toward the feel of a high-end private club.'
+      },
+      {
+        afterPhoto: 3,
+        text: 'A double-height hall with marble stairs, potted bamboo and a bronze sculpture on a pedestal sets the tone for the whole house: here architecture and decor carry equal weight. The dining room brings together dark walnut veneer, brass accents and a contrasting black-and-white rug beneath a massive mesh chandelier, while the kitchen shifts into an almost theatrical register: a black wall with baroque relief, a dramatic stone countertop and brass moldings. The entrance greets guests with a heavy walnut door featuring an inlaid stone handle and a sculptural wall composition of metallic "stones." The overall palette rests on a black-and-bronze duet with measured warm wood accents, giving the interior the feel of a closed, premium space considered down to the smallest detail.'
+      }
+    ]
   }
 
   // Наступні проєкти додавай сюди тим самим блоком, наприклад:

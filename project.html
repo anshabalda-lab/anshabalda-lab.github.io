@@ -120,7 +120,7 @@
   }
   .p-hero-scrim{
     position:absolute; inset:0;
-    background:linear-gradient(180deg, rgba(0,0,0,.15) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 60%, rgba(0,0,0,.55) 100%);
+    background:linear-gradient(180deg, rgba(0,0,0,.32) 0%, rgba(0,0,0,.05) 22%, rgba(0,0,0,0) 55%, rgba(0,0,0,.6) 100%);
   }
   .p-hero-content{
     position:absolute; left:0; right:0; bottom:0;
@@ -169,8 +169,8 @@
     display:inline-block;
     transform:translateY(115%) scale(.94);
     opacity:0;
-    transition:transform .8s cubic-bezier(.16,.84,.24,1), opacity .6s ease;
-    transition-delay: calc(var(--i, 0) * 0.035s);
+    transition:transform .5s cubic-bezier(.16,.84,.24,1), opacity .4s ease;
+    transition-delay: calc(var(--i, 0) * 0.02s);
   }
   .p-desc.reveal p .wm-i{
     transform:translateY(0) scale(1);
@@ -194,12 +194,11 @@
   .p-gallery figure{
     margin:0;
     overflow:hidden;
-    opacity:0; transform:translateY(24px);
-    transition:opacity .7s ease, transform .7s cubic-bezier(.16,.84,.24,1);
   }
   .p-gallery figure.wide{ grid-column:1 / -1; }
-  .p-gallery figure.in{ opacity:1; transform:translateY(0); }
-  .p-gallery img{ display:block; width:100%; height:100%; object-fit:cover; }
+  .p-gallery img{
+    display:block; width:100%; height:100%; object-fit:cover;
+  }
   .p-gallery figure.wide img{ aspect-ratio:3/2; }
   .p-gallery figure:not(.wide) img{ aspect-ratio:2/3; }
   @media (max-width:640px){
@@ -259,7 +258,7 @@
         <a class="brand" href="index.html">FORM·A</a>
         <div class="right">
           <a class="link" href="index.html#about">ABOUT</a>
-          <a class="link" href="contact.html">CONTACT</a>
+          <a class="link" href="index.html#contact">CONTACT</a>
         </div>
         <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false">
           <span></span><span></span>
@@ -278,14 +277,14 @@
       <a href="projects.html" class="mobile-link">PROJECTS</a>
       <a href="index.html#services" class="mobile-link">SERVICES</a>
       <a href="index.html#about" class="mobile-link">ABOUT</a>
-      <a href="contact.html" class="mobile-link">CONTACT</a>
+      <a href="index.html#contact" class="mobile-link">CONTACT</a>
     </nav>
     <a href="https://instagram.com" target="_blank" class="mobile-instagram">Instagram</a>
   </div>
 
   <!-- HERO -->
   <section class="p-hero" id="hero">
-    <img id="heroImg" src="" alt="">
+    <img id="heroImg" src="" alt="" loading="eager" fetchpriority="high">
     <div class="p-hero-scrim"></div>
     <div class="p-hero-content">
       <p class="p-meta" id="metaText"></p>
@@ -304,7 +303,7 @@
 
   <!-- FOOTER -->
   <div class="page-foot">
-    <span class="pf-copy">© 2025 FORM·A DSGN</span>
+    <span class="pf-copy">© 2026 FORM·A DSGN</span>
     <a class="pf-title" id="footerNextLink" href="#"></a>
   </div>
 
@@ -420,6 +419,7 @@
         const img = document.createElement('img');
         img.src = project.folder + photo.file;
         img.alt = photo.alt || project.title;
+        img.decoding = 'async';
         figure.appendChild(img);
         gallery.appendChild(figure);
       }
@@ -468,7 +468,7 @@
         footerLink.textContent = 'All projects';
       }
 
-      /* --- Автоматичне визначення орієнтації фото галереї --- */
+      /* --- Автоматичне визначення орієнтації фото галереї (без жодної анімації появи) --- */
       function markOrientation(img){
         const figure = img.closest('figure');
         if(!figure) return;
@@ -493,24 +493,10 @@
           entries.forEach(e=>{
             if(e.isIntersecting){ sec.classList.add('reveal'); io.unobserve(sec); }
           });
-        }, {threshold:.35});
+        }, {threshold:.2});
         io.observe(sec);
       });
 
-      /* --- Reveal фото галереї при появі (стагер) --- */
-      document.querySelectorAll('.p-gallery').forEach(grid=>{
-        const figs = Array.from(grid.querySelectorAll('figure'));
-        const io = new IntersectionObserver(entries=>{
-          entries.forEach(e=>{
-            if(e.isIntersecting){
-              const idx = figs.indexOf(e.target);
-              setTimeout(()=> e.target.classList.add('in'), idx * 90);
-              io.unobserve(e.target);
-            }
-          });
-        }, {threshold:.15});
-        figs.forEach(f=> io.observe(f));
-      });
     })();
   </script>
 </body>

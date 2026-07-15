@@ -209,9 +209,6 @@
   .pf-copy, .pf-status{
     font-family:'Roboto'; font-weight:600; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink);
   }
-  @media (min-width:991px){
-    .pf-copy, .pf-status{ font-size:15px; }
-  }
   .pf-status{ color:rgba(0,0,0,.5); }
   .pf-title{
     font-family:'Figtree'; font-weight:900; letter-spacing:-.01em; text-transform:uppercase;
@@ -399,14 +396,7 @@
         const fb = document.createElement('div');
         fb.className = 'ph-fallback';
         fb.textContent = String(i+1).padStart(2,'0');
-        // Заглушка додається асинхронно, вже ПІСЛЯ того, як картка могла
-        // отримати клас "in" — без цього вона просто миттєво з'явиться у
-        // фінальному стані (немає "попереднього" стану, щоб анімувати ВІД).
-        // Примусово стартуємо приховану, а наступним кадром знімаємо інлайн-
-        // стиль, щоб CSS-перехід спрацював як слід, з нуля.
-        fb.style.transform = 'translateY(100%)';
         media.appendChild(fb);
-        requestAnimationFrame(()=> requestAnimationFrame(()=> { fb.style.transform = ''; }));
       };
 
       const name = document.createElement('div');
@@ -416,6 +406,7 @@
       media.appendChild(img);
       a.appendChild(media);
       a.appendChild(name);
+      a._img = img;
       return a;
     }
 
@@ -428,7 +419,20 @@
       thumbs.forEach((el,i)=>{
         if(hasRevealed){ el.classList.add('in'); return; }
         el.style.setProperty('--stagger', (i*70)+'ms');
-        requestAnimationFrame(()=> requestAnimationFrame(()=> el.classList.add('in')));
+
+        function reveal(){
+          requestAnimationFrame(()=> requestAnimationFrame(()=> el.classList.add('in')));
+        }
+        const img = el._img;
+        if(!img){ reveal(); return; }
+        if(img.complete && img.naturalWidth){
+          reveal();
+        } else {
+          let done = false;
+          function onDone(){ if(done) return; done = true; reveal(); }
+          img.addEventListener('load', onDone, {once:true});
+          img.addEventListener('error', onDone, {once:true});
+        }
       });
       hasRevealed = true;
     }

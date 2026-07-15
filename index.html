@@ -2169,7 +2169,7 @@
         const y = clamp(-rect.top, 0, total);
         const p = y / total;
 
-        const revealEnd = 0.45;
+        const revealEnd = 0.25;
 
         // Якщо скролимо дуже швидко (навігація) — показуємо фото одразу
         const speed = Math.abs(rect.top - (onScroll._lastTop || rect.top));

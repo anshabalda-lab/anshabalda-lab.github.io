@@ -202,6 +202,53 @@ const PROJECTS = [
         text: 'A double-height hall with marble stairs, potted bamboo and a bronze sculpture on a pedestal sets the tone for the whole house: here architecture and decor carry equal weight. The dining room brings together dark walnut veneer, brass accents and a contrasting black-and-white rug beneath a massive mesh chandelier, while the kitchen shifts into an almost theatrical register: a black wall with baroque relief, a dramatic stone countertop and brass moldings. The entrance greets guests with a heavy walnut door featuring an inlaid stone handle and a sculptural wall composition of metallic "stones." The overall palette rests on a black-and-bronze duet with measured warm wood accents, giving the interior the feel of a closed, premium space considered down to the smallest detail.'
       }
     ]
+  },
+  {
+    id: '06',
+    title: 'gladiator',
+    category: 'private',
+    year: '2022',
+    location: 'Kyiv',
+    folder: 'projects/06-gladiator/',
+    hero: 'hero.webp',
+    photos: [
+      { file: '01.webp' },
+      { file: '02.webp' },
+      { file: '03.webp' },
+      { file: '04.webp' },
+      { file: '05.webp' },
+      { file: '06.webp' },
+      { file: '07.webp' },
+      { file: '08.webp' },
+      { file: '09.webp' },
+      { file: '10.webp' },
+      { file: '11.webp' },
+      { file: '12.webp' },
+      { file: '13.webp' },
+      { file: '14.webp' },
+      { file: '15.webp' },
+      { file: '16.webp' },
+      { file: '17.webp' },
+      { file: '18.webp' },
+      { file: '19.webp' },
+      { file: '20.webp' },
+      { file: '21.webp' },
+      { file: '22.webp' }       
+     ],
+    descriptions: [
+      {
+        afterPhoto: 0,
+        text: 'A 190 m² private house. The project brings several contrasting moods together under one roof: the restrained graphite-black tone of the adult living and private areas, and the warm, almost fairy-tale nook of the kids\' room. It\'s a house with room for both a strict minimalist aesthetic and a soft, playful space.'
+      },
+      {
+        afterPhoto: 4,
+        text: 'The main volume of the house stays in a deep graphite-black palette: a living room with a dark wood TV wall, a kitchen fully finished in black matte fronts with backlit shelving, a staircase with floating wood treads and a sculpture placed alongside it. The bedroom and dressing room continue the same restrained, near-monochrome mood, while the bathrooms play on the contrast of terracotta-toned marble and white stone against black fixtures.'
+      },
+      {
+        afterPhoto: 13,
+        text: 'The main volume of the house stays in a deep graphite-black palette: a living room with a dark wood TV wall, a kitchen fully finished in black matte fronts with backlit shelving, a staircase with floating wood treads and a sculpture placed alongside it. The bedroom and dressing room continue the same restrained, near-monochrome mood, while the bathrooms play on the contrast of terracotta-toned marble and white stone against black fixtures.'
+      }
+    ]
   }
 
   // Наступні проєкти додавай сюди тим самим блоком, наприклад:

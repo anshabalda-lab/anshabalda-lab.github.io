@@ -1045,7 +1045,23 @@
         mask-image:linear-gradient(to bottom, #000 0%, #000 40%, transparent 92%);
       }
       .cm-map-bg svg{ width:100%; height:100%; display:block; }
-      .cm-map-bg img{ width:100%; height:100%; object-fit:cover; display:block; opacity:.16; filter:grayscale(100%); }
+      .cm-map-bg img{
+        position:absolute; inset:0;
+        width:100%; height:100%; object-fit:cover;
+        filter:grayscale(100%);
+        animation: cmMapFade 10s ease-in-out infinite;
+      }
+      .cm-map-bg .cm-map-far{ animation-delay:0s; }
+      .cm-map-bg .cm-map-close{ animation-delay:-5s; }
+      @keyframes cmMapFade{
+        0%, 45%  { opacity:.16; }
+        50%, 95% { opacity:0; }
+        100%     { opacity:.16; }
+      }
+      @media (prefers-reduced-motion: reduce){
+        .cm-map-bg img{ animation:none; opacity:.16; }
+        .cm-map-bg .cm-map-close{ display:none; }
+      }
 
       .cm-cities{ position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; width:100%; }
       .cm-city-name{
@@ -1432,7 +1448,8 @@
     <!-- MOBILE (<768px): карта-фон + міста зліва з тап-розкриттям + рядок лінків -->
     <div class="contact-mobile" id="contactMobile">
       <div class="cm-map-bg" aria-hidden="true">
-        <img src="bratislava-map.webp" alt="" loading="lazy">
+        <img class="cm-map-far" src="contact-map-far.webp" alt="" loading="lazy">
+        <img class="cm-map-close" src="contact-map-close.webp" alt="" loading="lazy">
       </div>
 
       <div class="cm-cities" id="cmCities">

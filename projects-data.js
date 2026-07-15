@@ -130,7 +130,7 @@ const PROJECTS = [
         text: 'A 240 m² private house designed for a client with an active sports lifestyle. The home features a full-scale gym as a dedicated functional zone, not an addition to the living space. The house\'s architecture plays with volumes: a cantilevered wood roof and floor-to-ceiling glazing. A pool with a wood deck and a covered lounge area extend the house outward into the garden.'
       },
       {
-        afterPhoto: 3,
+        afterPhoto: 4,
         text: 'The interior stays in a restrained graphite-and-white palette warmed by wood accents: a living room with a fireplace and a marble kitchen island, a bedroom with a black marble bedhead and velvet textiles, a bathroom pairing concrete, marble and black fixtures. The home gym is the project\'s centerpiece and deliberately contrasts with the rest of the interior: warm orange lighting, a soft tatami platform, a mirrored wall and panoramic windows turn training into part of the everyday ritual rather than a separate "sports" room.'
       }
     ]

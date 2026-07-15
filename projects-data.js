@@ -134,6 +134,43 @@ const PROJECTS = [
         text: 'The interior stays in a restrained graphite-and-white palette warmed by wood accents: a living room with a fireplace and a marble kitchen island, a bedroom with a black marble bedhead and velvet textiles, a bathroom pairing concrete, marble and black fixtures. The home gym is the project\'s centerpiece and deliberately contrasts with the rest of the interior: warm orange lighting, a soft tatami platform, a mirrored wall and panoramic windows turn training into part of the everyday ritual rather than a separate "sports" room.'
       }
     ]
+  },
+  {
+    id: '04',
+    title: 'BH Pumpkin',
+    category: 'private',
+    year: '2021',
+    location: 'Kyiv',
+    folder: 'projects/04-B21-pumpkin/',
+    hero: 'hero.webp',
+    photos: [
+      { file: '01.webp' },
+      { file: '02.webp' },
+      { file: '03.webp' },
+      { file: '04.webp' },
+      { file: '05.webp' },
+      { file: '06.webp' },
+      { file: '07.webp' },
+      { file: '08.webp' },
+      { file: '09.webp' },
+      { file: '10.webp' },
+      { file: '11.webp' },
+      { file: '12.webp' },
+      { file: '13.webp' },
+      { file: '14.webp' },
+      { file: '15.webp' },
+      { file: '16.webp' }
+     ],
+    descriptions: [
+      {
+        afterPhoto: 0,
+        text: 'Pumpkin, a 161 m² two-storey private house. The project\'s name points to the warm, cozy mood of the interior: natural materials, soft lighting and seasonal touches (like the pumpkins on the dining table in one of the shots) create a home that feels genuinely lived in.'
+      },
+      {
+        afterPhoto: 3,
+        text: 'The house\'s palette moves between dark and light wood, graphite kitchen fronts and warm textiles. The kitchen is finished in deep graphite with a marble island and hidden lighting, the living room is anchored by a sculptural olive-green sofa and graphic black-and-white art in the hallway. The bedrooms carry different moods: one rests on dark wood paneling with focused spot lighting, the other, lighter one, gets a green throw, star-shaped fairy lights and a more intimate, homey tone. The bathroom is finished in terrazzo-like plaster with black fixtures and a double vanity, rounding off the calm, tactile atmosphere of the whole house.'
+      }
+    ]
   }
 
   // Наступні проєкти додавай сюди тим самим блоком, наприклад:

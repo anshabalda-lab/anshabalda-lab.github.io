@@ -246,7 +246,7 @@ const PROJECTS = [
       },
       {
         afterPhoto: 13,
-        text: 'The main volume of the house stays in a deep graphite-black palette: a living room with a dark wood TV wall, a kitchen fully finished in black matte fronts with backlit shelving, a staircase with floating wood treads and a sculpture placed alongside it. The bedroom and dressing room continue the same restrained, near-monochrome mood, while the bathrooms play on the contrast of terracotta-toned marble and white stone against black fixtures.'
+        text: 'The office stands out as a statement of its own: the wall features a street-art mural of a classical sculptural head reimagined in a graffiti style, giving the interior a sharp, contemporary edge. The kids\' room, by contrast, breaks completely from the graphite palette: a rounded nook, warm string lights, a hanging swing chair and soft pastel tones create a cozy, storybook corner for a child.'
       }
     ]
   }

@@ -899,13 +899,14 @@
     .cm-photo-item:hover img{ transform:scale(1.08); }
     .cm-photo-caption{
       flex:0 0 auto;
-      background:#fff;
-      padding:10px 14px;
+      background:transparent;
+      padding:10px 0 0;
     }
     .cm-photo-caption span{
-      font-family:'Figtree'; font-weight:700; letter-spacing:.02em;
-      text-transform:uppercase; font-size:clamp(11px,1vw,14px);
-      color:#111;
+      display:block;
+      font-family:'Roboto'; font-weight:500; letter-spacing:.04em;
+      text-transform:uppercase; font-size:clamp(11px,.85vw,14px);
+      color:#111; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
     }
 
     /* ---- Білий блок: ліва / права колонка, обмежені в 1440px (як navbar) ---- */
@@ -1015,6 +1016,12 @@
     .cm-foot-link{ transition:opacity .2s; }
     .cm-foot-link:hover{ opacity:.6; }
 
+    /* На вузькому "щойно-десктопі" (наприклад iPad Pro портрет, рівно 1024px)
+       4 вузькі фото поспіль виглядають затиснуто — показуємо тільки 2. */
+    @media (min-width:1024px) and (max-width:1200px){
+      .cm-photo-item:nth-child(3), .cm-photo-item:nth-child(4){ display:none; }
+    }
+
     /* ===== MOBILE + TABLET (<1024px): Contact — карта-фон + акордеон міст.
        Раніше тут був окремий "стиснутий десктоп" для планшетів (768-1023px),
        але зручніше просто розтягнути мобільну версію до 1023px і перемикатись
@@ -1053,9 +1060,9 @@
         transition:opacity .7s ease;
       }
       /* За замовчуванням — Європа. Коли обрано місто — показуємо його карту */
-      .cm-map-bg[data-active="europe"]      .cm-map-europe{ opacity:.55; }
-      .cm-map-bg[data-active="kyiv"]        .cm-map-kyiv{ opacity:.55; }
-      .cm-map-bg[data-active="bratislava"]  .cm-map-bratislava{ opacity:.55; }
+      .cm-map-bg[data-active="europe"]      .cm-map-europe{ opacity:.35; }
+      .cm-map-bg[data-active="kyiv"]        .cm-map-kyiv{ opacity:.35; }
+      .cm-map-bg[data-active="bratislava"]  .cm-map-bratislava{ opacity:.35; }
 
       .cm-cities{ position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; width:100%; }
       .cm-city-name{

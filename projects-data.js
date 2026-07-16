@@ -249,6 +249,31 @@ const PROJECTS = [
         text: 'The office stands out as a statement of its own: the wall features a street-art mural of a classical sculptural head reimagined in a graffiti style, giving the interior a sharp, contemporary edge. The kids\' room, by contrast, breaks completely from the graphite palette: a rounded nook, warm string lights, a hanging swing chair and soft pastel tones create a cozy, storybook corner for a child.'
       }
     ]
+  },
+  {
+    id: '07',
+    title: 'studio 5',
+    category: 'comercial',
+    year: '2022',
+    location: 'Kyiv',
+    folder: 'projects/07-studio-5/',
+    hero: 'hero.webp',
+    photos: [
+      { file: '01.webp' },
+      { file: '02.webp' },
+      { file: '03.webp' },
+      { file: '04.webp' }      
+     ],
+    descriptions: [
+      {
+        afterPhoto: 0,
+        text: 'A tailoring and clothing atelier. A compact commercial space designed more like an atmospheric lounge than a workroom: a warm sandy-beige palette, a sculptural black mannequin figure and armfuls of dried pampas grass immediately set the tone for a personal, near-couture client experience.'
+      },
+      {
+        afterPhoto: 2,
+        text: 'The interior rests on the contrast between matte warm surfaces and polished bronze metal: a wavy mirrored wall panel, a backlit brass console and round metal sconces reflect light and lend the space a sense of ease. A pendant composition of illuminated rings and dried grasses above the waiting area becomes the main focal point and an obvious photo spot for clients. Woven macramé wall art, potted grasses and rounded poufs create a soft, tactile atmosphere, while a round black-and-white graphic rug keeps the space from feeling overly soft, adding a note of precision. Altogether, the design works toward the feel of an intimate, stylish place where form and texture tell the brand\'s story before a client sees the first sketch of a garment..'
+      }
+    ]
   }
 
   // Наступні проєкти додавай сюди тим самим блоком, наприклад:

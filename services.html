@@ -23,6 +23,7 @@
 
   :root{
     --bg:#ffffff; --ink:#111; --wrap:1600px;
+    --side-pad: max(28px, calc((100vw - 1600px)/2 + 28px));
   }
   *{box-sizing:border-box} html{overflow-x:hidden; scrollbar-gutter:stable;}
   @media (min-width:768px){ html{ overscroll-behavior-y:none; } body{ overscroll-behavior-y:none; } }
@@ -31,7 +32,7 @@
        -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
   a{color:inherit;text-decoration:none}
 
-  /* ===== NAV — та ж структура, що на contact.html / projects.html, темний текст (фон завжди білий) ===== */
+  /* ===== NAV — та ж структура, що на contact.html / projects.html ===== */
   .nav{position:fixed;top:0;left:0;width:100%;height:96px;display:flex;align-items:center;z-index:60;
        background:#fff;
        transition:transform .6s cubic-bezier(.22,.61,.36,1);will-change:transform}
@@ -105,99 +106,196 @@
     body.menu-active .burger::after{ content:"CLOSE" !important; color:var(--ink) !important; }
   }
 
-  /* ===== SERVICES — сітка карток (фото + опис), той самий стиль, що на index.html.
-     grid auto-fit сам розкладає 2 колонки на десктопі й 1 на мобільному,
-     без потреби окремо описувати desktop/mobile — коли додамо всі 4 картки,
-     вони самі стануть у 2×2. ===== */
-  #services-page{
-    padding-top:96px;
-    background:#fff;
+  /* ===== Весь контент сторінки — один flex-стовпчик на всю висоту екрана.
+     Секція Services сама розтягується (flex:1) і центрує 3 колонки
+     рівно між нав-баром і футером — незалежно від висоти екрана. ===== */
+  .svc-page-flex{
+    display:flex; flex-direction:column;
     min-height:calc(var(--vh, 1vh) * 100);
+  }
+  #services-page{
+    flex:1 1 auto;
+    display:flex; flex-direction:column;
+    padding-top:96px;
   }
   @media (max-width:999px){ #services-page{ padding-top:84px; } }
 
-  .svc-page-title{
-    margin:0;
-    padding:clamp(40px,6vw,72px) clamp(24px,3vw,40px) 0;
-    text-align:center;
-    font-family:'Figtree'; font-weight:900; letter-spacing:.02em; text-transform:uppercase;
-    font-size:clamp(28px,5vw,56px); color:#111;
+  .svc-center-wrap{
+    flex:1 1 auto;
+    display:flex; align-items:center; justify-content:center;
+    padding:24px clamp(16px,1.8vw,32px);
   }
 
-  .svc-mobile{ display:block; padding:clamp(40px,6vw,64px) clamp(24px,3vw,40px) 120px; }
-
-  .svc-mobile-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
-    gap:20px clamp(60px, 14vw, 320px);
-    margin:0;
+  .svc-row{
+    display:flex;
+    gap:clamp(16px,1.8vw,32px);
+    justify-content:center;
+    align-items:flex-start;
+    width:100%;
   }
 
-  .svc-mobile-label{
-    margin:0 0 20px 0;
-    font-family:'Roboto'; font-size:clamp(16px, 1.5vw, 26px); font-weight:400; letter-spacing:-.02em;
+  .svc-col{
+    display:flex; flex-direction:column; align-items:flex-start;
+    flex:1 1 0; min-width:0;
+  }
+
+  .svc-title{
+    margin:0 0 14px;
+    font-family:'Roboto'; font-weight:400; letter-spacing:-.02em;
+    font-size:clamp(16px, 1.5vw, 26px);
     color:#111;
   }
 
-  .svc-mobile-item{ margin-bottom:0; }
-  .svc-mobile-item img{
-    display:block; width:100%; height:auto;
-    object-fit:cover;
-    margin-bottom:20px;
+  /* ---- Фото + гортання (кожна картка незалежна, вручну, слайд-перехід) ---- */
+  .svc-photo-wrap{
+    position:relative;
+    width:100%;
+    aspect-ratio:3/2;
+    overflow:hidden;
+    background:#0b0b0b;
   }
-  .svc-mobile-item img.ratio-square{ aspect-ratio:1/1; }
-  .svc-mobile-item img.ratio-narrow{ aspect-ratio:2/3; }
-  .svc-mobile-item img.ratio-cinema{ aspect-ratio:16/9; }
-  .svc-mobile-item img.ratio-tall{ aspect-ratio:3/4; }
-  .svc-mobile-item img.ratio-wide{ aspect-ratio:16/10; }
+  .svc-track{
+    display:flex;
+    width:100%; height:100%;
+    transition:transform .55s cubic-bezier(.22,.61,.36,1);
+    will-change:transform;
+  }
+  .svc-slide{
+    flex:0 0 100%; width:100%; height:100%;
+    object-fit:cover; display:block;
+  }
+  .svc-ph-fallback{
+    flex:0 0 100%; width:100%; height:100%;
+    display:flex; align-items:center; justify-content:center;
+    background:linear-gradient(135deg,#3a3a3a,#151515);
+    color:rgba(255,255,255,.18); font-family:'Figtree'; font-weight:900;
+    font-size:clamp(16px,2vw,28px);
+  }
 
-  .svc-mobile-desc{
+  .svc-arrow{
+    position:absolute; top:50%; transform:translateY(-50%);
+    width:44px; height:44px;
+    background:none; border:none;
+    color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; padding:0;
+    opacity:.55;
+    filter:drop-shadow(0 1px 3px rgba(0,0,0,.5));
+    transition:opacity .25s ease, transform .25s ease;
+  }
+  .svc-arrow svg{ width:22px; height:22px; display:block; }
+  .svc-arrow-left{ left:10px; }
+  .svc-arrow-right{ right:10px; }
+  .svc-photo-wrap:hover .svc-arrow{ opacity:.85; }
+  .svc-arrow:hover{ opacity:1 !important; }
+  .svc-arrow:active{ transform:translateY(-50%) scale(.92); }
+  @media (any-hover:none){
+    .svc-arrow{ opacity:.7; }
+  }
+
+  .svc-desc-wrap{
+    position:relative;
+    overflow:hidden;
+    width:100%;
+    margin-top:14px;
+  }
+  .svc-desc{
+    position:absolute;
+    top:0; left:0; width:100%;
     margin:0;
     font-family:"Helvetica Neue", Helvetica, Arial, sans-serif;
     font-weight:500;
     letter-spacing:-0.04em;
-    line-height:1.25;
+    line-height:1.3;
     color:#000000;
-    font-size:clamp(16px,1.5vw,26px);
+    font-size:clamp(16px, 1.5vw, 26px);
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
   }
+  /* Маска: кожне слово ховане і піднімається знизу вгору — той самий
+     принцип, що в .p-desc на project.html, тільки швидше. */
+  .svc-desc .wm{ display:inline-block; overflow:hidden; vertical-align:top; }
+  .svc-desc .wm-i{
+    display:inline-block;
+    transform:translateY(115%) scale(.96);
+    opacity:0;
+    transition:transform .48s cubic-bezier(.16,.84,.24,1), opacity .38s ease;
+    transition-delay:calc(var(--i, 0) * 0.09s);
+  }
+  .svc-desc.active .wm-i{
+    transform:translateY(0) scale(1);
+    opacity:1;
+  }
 
-  /* ===== Нижній бар: як на contact.html (десктоп) ===== */
-  .cm-bottom-bar{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:16px 20px;
-  }
-  .cm-status, .cm-copy, .cm-foot-link{
-    font-family:'Roboto'; font-weight:600; font-size:13px; letter-spacing:.1em; text-transform:uppercase;
-    color:#111;
-  }
-  @media (min-width:991px){
-    .cm-status, .cm-copy, .cm-foot-link{ font-size:15px; }
-  }
-  .cm-foot-link{ transition:opacity .2s; }
-  .cm-foot-link:hover{ opacity:.6; }
-
-  /* ===== Той самий футер, тільки мобільна верстка (<1024px) ===== */
-  .contact-mobile-footer{ display:none; }
-  @media (max-width:1023px){
-    .cm-bottom-bar{ display:none; }
-    .contact-mobile-footer{
-      display:flex; flex:0 0 auto;
-      align-items:flex-start; justify-content:space-between; gap:20px;
-      background:transparent;
-      padding:20px clamp(20px,5vw,32px) calc(24px + env(safe-area-inset-bottom, 0px));
+  @media (max-width:1439px){
+    .svc-center-wrap{
+      display:block;
+      padding:clamp(40px,6vw,64px) clamp(24px,3vw,40px) 100px;
     }
-    .cm-footer-left, .cm-footer-right{ display:flex; flex-direction:column; gap:6px; }
-    .cm-footer-right{ align-items:flex-end; text-align:right; }
-    .cm-copy, .cm-status, .cm-footer-link{
-      font-family:'Roboto'; font-weight:600; font-size:clamp(11px,3vw,13px);
-      letter-spacing:.1em; text-transform:uppercase; color:#111; text-decoration:none;
-    }
-    .cm-status{ color:rgba(0,0,0,.55); }
+    .svc-row{ flex-direction:column; align-items:stretch; gap:clamp(56px,12vw,80px); max-width:none; }
+    .svc-col{ flex:none; width:100%; max-width:none; align-items:flex-start; }
+    .svc-title{ text-align:left; width:100%; }
+
+    /* На мобільному/планшеті фото знову різних пропорцій під кожен напрямок,
+       як було у старій версії — на великих моніторах лишається однакове 3:2. */
+    .svc-photo-wrap.mob-wide{ aspect-ratio:16/9; }
+    .svc-photo-wrap.mob-tall{ aspect-ratio:3/4; }
+    .svc-photo-wrap.mob-square{ aspect-ratio:1/1; }
   }
 
-  /* ===== Поява сторінки: контент "виїжджає" знизу вгору при заході ===== */
+  /* ===== Планшети (портретна і горизонтальна орієнтація, включно з iPad Pro):
+     картки не на всю ширину, а притиснуті по черзі то до лівого, то до правого
+     краю — зигзаг-ритм. В ряд (3 картки поруч) — тільки на справді великих
+     моніторах, від 1440px. Телефони (<600px) лишаються на всю ширину. ===== */
+  @media (min-width:600px) and (max-width:1439px){
+    .svc-row{ align-items:flex-start; }
+    .svc-col{ width:min(66%, 480px); }
+    .svc-col:nth-child(1){ align-self:flex-start; }
+    .svc-col:nth-child(2){ align-self:flex-end; }
+    .svc-col:nth-child(3){ align-self:flex-start; }
+  }
+
+  /* iPad Air (вертикально) і подібні — трохи більший розмір фото й тексту
+     за базовий планшет, прив'язка до країв (зигзаг) та сама. */
+  @media (min-width:744px) and (max-width:1023px){
+    .svc-col{ width:min(72%, 560px); }
+    .svc-title{ font-size:clamp(17px, 1.7vw, 27px); }
+    .svc-desc{ font-size:clamp(17px, 1.7vw, 29px); }
+  }
+
+  /* iPad Pro і подібні великі планшети — трохи більший розмір фото й тексту,
+     прив'язка до країв (зигзаг) та сама. */
+  @media (min-width:1024px) and (max-width:1439px){
+    .svc-col{ width:min(78%, 620px); }
+    .svc-title{ font-size:clamp(18px, 1.8vw, 28px); }
+    .svc-desc{ font-size:clamp(18px, 1.8vw, 30px); }
+  }
+
+  /* ===== Футер — той самий, що на projects.html: велика назва сторінки
+     праворуч, статус міст + copyright ліворуч. margin-top:auto в
+     .svc-page-flex притискає його до низу, якщо контенту мало. ===== */
+  .page-foot{
+    margin-top:auto;
+    display:flex; align-items:flex-end; justify-content:space-between; gap:20px;
+    padding:clamp(24px,4vh,48px) var(--side-pad) clamp(28px,4.5vh,56px);
+  }
+  .pf-left{ display:flex; flex-direction:column; gap:6px; }
+  .pf-copy, .pf-status{
+    font-family:'Roboto'; font-weight:600; font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:#111;
+  }
+  .pf-status{ color:rgba(0,0,0,.5); }
+  .pf-title{
+    font-family:'Figtree'; font-weight:900; letter-spacing:-.01em; text-transform:uppercase;
+    font-size:clamp(32px,5vw,64px); color:#111; line-height:1;
+  }
+  @media (max-width:740px), (max-height:500px){
+    .page-foot{
+      flex-direction:row; padding:28px 20px calc(28px + env(safe-area-inset-bottom,0px));
+    }
+    .pf-title{ font-size:clamp(28px,9vw,44px); }
+  }
+
+  /* ===== Поява сторінки ===== */
   .page-reveal{
     transform:translateY(60px);
     opacity:0;
@@ -253,56 +351,101 @@
   </div>
 
   <div class="page-reveal" id="pageReveal">
-  <section id="services-page">
+   <div class="svc-page-flex">
 
-    <h1 class="svc-page-title">Services</h1>
+    <section id="services-page">
+      <div class="svc-center-wrap">
+        <div class="svc-row">
 
-    <div class="svc-mobile">
-      <div class="svc-mobile-grid">
+          <!-- ARCHITECTURE -->
+          <div class="svc-col">
+            <h3 class="svc-title">(ARCHITECTURE / FORM)</h3>
+            <div class="svc-photo-wrap mob-wide" data-carousel>
+              <div class="svc-track">
+                <img class="svc-slide" src="service-architecture-01.webp" alt="Architecture — drawing" loading="lazy">
+                <img class="svc-slide" src="service-architecture-02.webp" alt="Architecture — construction" loading="lazy">
+                <img class="svc-slide" src="service-architecture-03.webp" alt="Architecture — finish" loading="lazy">
+              </div>
+              <button class="svc-arrow svc-arrow-left" aria-label="Previous photo" data-dir="-1">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="svc-arrow svc-arrow-right" aria-label="Next photo" data-dir="1">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <div class="svc-desc-wrap">
+              <p class="svc-desc active">Every project starts as a line on paper: proportion, orientation and light considered before a single wall exists.</p>
+              <p class="svc-desc">On site, drawings become volume: concrete, timber and glass are assembled with the same discipline as the plan.</p>
+              <p class="svc-desc">The final layer defines how a building is experienced: texture, shadow and detail brought into balance.</p>
+            </div>
+          </div>
 
-        <div class="svc-mobile-item">
-          <p class="svc-mobile-label">(ARCHITECTURE / FORM)</p>
-          <img class="ratio-cinema" src="service-architecture.webp" alt="Architecture" loading="lazy">
-          <p class="svc-mobile-desc">Our work always begins with context - the landscape, the specific quality of light, the discipline of proportion. We study the site until the architecture starts to feel like a natural extension of it, rather than an interruption. Every volume and line is shaped to strike a balance between structural clarity and raw emotion, creating spaces that feel inevitable, not imposed. It is less about making a statement and more about how a building handles the sun throughout the day or frames a view. In the end, we aim for a form that simply belongs to its site - one that doesn't shout, but quietly defines its surroundings.</p>
+          <!-- INTERIOR DESIGN -->
+          <div class="svc-col">
+            <h3 class="svc-title">(INTERIOR / ATMOSPHERE)</h3>
+            <div class="svc-photo-wrap mob-tall" data-carousel>
+              <div class="svc-track">
+                <img class="svc-slide" src="service-interior-01.webp" alt="Interior Design — concept" loading="lazy">
+                <img class="svc-slide" src="service-interior-02.webp" alt="Interior Design — visualization" loading="lazy">
+                <img class="svc-slide" src="service-interior-03.webp" alt="Interior Design — result" loading="lazy">
+              </div>
+              <button class="svc-arrow svc-arrow-left" aria-label="Previous photo" data-dir="-1">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="svc-arrow svc-arrow-right" aria-label="Next photo" data-dir="1">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <div class="svc-desc-wrap">
+              <p class="svc-desc active">A space begins as an idea: mood, material and movement sketched before anything is built.</p>
+              <p class="svc-desc">Visualization lets us test light and atmosphere in detail, refining the feel of a room before construction starts.</p>
+              <p class="svc-desc">The finished interior carries that original idea through, quiet and considered in every corner.</p>
+            </div>
+          </div>
+
+          <!-- TURNKEY -->
+          <div class="svc-col">
+            <h3 class="svc-title">(TURNKEY / DETAIL)</h3>
+            <div class="svc-photo-wrap mob-square" data-carousel>
+              <div class="svc-track">
+                <img class="svc-slide" src="service-turnkey-01.webp" alt="Turnkey — materials" loading="lazy">
+                <img class="svc-slide" src="service-turnkey-02.webp" alt="Turnkey — paint" loading="lazy">
+                <img class="svc-slide" src="service-turnkey-03.webp" alt="Turnkey — specifications" loading="lazy">
+              </div>
+              <button class="svc-arrow svc-arrow-left" aria-label="Previous photo" data-dir="-1">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button class="svc-arrow svc-arrow-right" aria-label="Next photo" data-dir="1">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+            <div class="svc-desc-wrap">
+              <p class="svc-desc active">We start by selecting materials that suit both the architecture and how the space will be lived in.</p>
+              <p class="svc-desc">Paint, texture and finish are chosen together, tested against real light before anything is applied.</p>
+              <p class="svc-desc">Every specification is documented precisely, so execution matches the design without compromise.</p>
+            </div>
+          </div>
+
         </div>
-
-        <div class="svc-mobile-item">
-          <p class="svc-mobile-label">(INTERIORS / ATMOSPHERE)</p>
-          <img class="ratio-tall" src="service-interiors.webp" alt="Interiors" loading="lazy">
-          <p class="svc-mobile-desc">Inside, we build rhythm and calm. Material transitions, shadows, and texture define the atmosphere more than decoration ever could. We treat interiors as emotional geometry — spaces that unfold through light and silence, inviting everyday rituals to feel meaningful.</p>
-        </div>
-
-        <!-- Сюди додамо 3-тю і 4-ту картку, коли визначишся з текстом і фото -->
-
       </div>
+    </section>
+
+    <div class="page-foot">
+      <div class="pf-left">
+        <span class="pf-status" id="pfStatus">KYI — · BTS —</span>
+        <span class="pf-copy">© 2026 FORM·A DSGN</span>
+      </div>
+      <div class="pf-title">Services</div>
     </div>
 
-    <div class="cm-bottom-bar">
-      <span class="cm-status" id="cmStatusDesktop">KYI — · BTS —</span>
-      <span class="cm-copy">© 2026 FORM·A dsgn</span>
-      <a class="cm-foot-link" href="#">Privacy Policy</a>
-      <a class="cm-foot-link" href="#">Terms of Service</a>
-    </div>
-
-    <div class="contact-mobile-footer">
-      <div class="cm-footer-left">
-        <span class="cm-status" id="cmStatus">KYI — · BTS —</span>
-        <span class="cm-copy">© 2026 FORM·A dsgn</span>
-      </div>
-      <div class="cm-footer-right">
-        <a class="cm-footer-link" href="#">Privacy Policy</a>
-        <a class="cm-footer-link" href="#">Terms of Service</a>
-      </div>
-    </div>
-
-  </section>
+   </div>
   </div>
 
   <!-- cursor dot -->
   <div id="cursor-dot"></div>
 
   <script>
-    /* ===== Поява сторінки: контент "виїжджає" знизу вгору ===== */
+    /* ===== Поява сторінки ===== */
     (function(){
       const reveal = document.getElementById('pageReveal');
       if(!reveal) return;
@@ -387,11 +530,10 @@
       });
     })();
 
-    /* Футер: код міста + місцевий час, як на contact.html */
+    /* Футер: код міста + місцевий час (як на projects.html) */
     (function(){
       const statusEls = [
-        document.getElementById('cmStatusDesktop'),
-        document.getElementById('cmStatus')
+        document.getElementById('pfStatus')
       ].filter(Boolean);
       if(!statusEls.length) return;
 
@@ -410,6 +552,126 @@
 
       update();
       setInterval(update, 30000);
+    })();
+
+    /* ===== Плейсхолдер для відсутніх фото (як на projects.html),
+       тільки з написом SERVICES замість номера — працює і на мобільному, і на десктопі ===== */
+    (function(){
+      document.querySelectorAll('.svc-slide').forEach(img => {
+        img.addEventListener('error', function(){
+          const fb = document.createElement('div');
+          fb.className = 'svc-ph-fallback';
+          fb.textContent = 'SERVICES';
+          this.replaceWith(fb);
+        }, {once:true});
+      });
+    })();
+
+    /* ===== Розбити текст під фото на слова під маску (як на project.html),
+       але групуємо слова по РЯДКАХ — весь рядок піднімається одночасно,
+       за ним наступний, а не слово за словом. ===== */
+    (function(){
+      function wrapWords(el){
+        const words = el.textContent.trim().split(/\s+/);
+        el.innerHTML = words.map((w)=>
+          `<span class="wm"><span class="wm-i">${w}</span></span> `
+        ).join('');
+      }
+      const descEls = document.querySelectorAll('.svc-desc-wrap .svc-desc');
+      descEls.forEach(wrapWords);
+
+      /* визначаємо, які слова стоять на одному рядку (за їхньою вертикальною
+         позицією), і присвоюємо їм спільний індекс рядка для затримки анімації */
+      function groupLines(el){
+        const wms = el.querySelectorAll('.wm');
+        if(!wms.length) return;
+        let baseTop = null, lastTop = null, lineIndex = -1;
+        wms.forEach(wm => {
+          const top = wm.getBoundingClientRect().top;
+          if (baseTop === null) baseTop = top;
+          if (lastTop === null || Math.abs(top - lastTop) > 4){
+            lineIndex++; lastTop = top;
+          }
+          const inner = wm.querySelector('.wm-i');
+          if (inner) inner.style.setProperty('--i', lineIndex);
+        });
+      }
+      function regroupAll(){ descEls.forEach(groupLines); }
+
+      regroupAll();
+      window.addEventListener('load', regroupAll, {once:true});
+
+      let resizeT;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeT);
+        resizeT = setTimeout(regroupAll, 200);
+      }, {passive:true});
+    })();
+
+    /* ===== Кожна картка Services — незалежна карусель фото.
+       Гортання вручну (стрілки або свайп), слайд "наїжджає" збоку. ===== */
+    (function(){
+      document.querySelectorAll('[data-carousel]').forEach(wrap => {
+        const track = wrap.querySelector('.svc-track');
+        const slides = wrap.querySelectorAll('.svc-slide');
+        const total = slides.length;
+        let index = 0;
+
+        /* текст під цим самим фото (той самий .svc-col) */
+        const col = wrap.closest('.svc-col');
+        const descWrap = col ? col.querySelector('.svc-desc-wrap') : null;
+        const descs = descWrap ? descWrap.querySelectorAll('.svc-desc') : [];
+
+        /* резервуємо висоту блока під найдовший варіант тексту,
+           щоб фото над ним ніколи не зсувалось при перемиканні.
+           Перераховуємо і при resize — розмір тексту міняється на
+           ширших планшетах (iPad Pro), тож висота має оновлюватись. */
+        function measureDescHeight(){
+          if (!descWrap || !descs.length) return;
+          descs.forEach(d => { d.style.position = 'static'; });
+          const maxH = Math.max(...Array.from(descs).map(d => d.scrollHeight));
+          descs.forEach(d => { d.style.position = ''; });
+          descWrap.style.height = maxH + 'px';
+        }
+        measureDescHeight();
+        let descResizeT;
+        window.addEventListener('resize', () => {
+          clearTimeout(descResizeT);
+          descResizeT = setTimeout(measureDescHeight, 220);
+        }, {passive:true});
+
+        function render(){
+          track.style.transform = `translateX(${index * -100}%)`;
+        }
+
+        function go(dir){
+          const prevIndex = index;
+          index = (index + dir + total) % total;
+          render();
+          if (descs.length){
+            if (descs[prevIndex]) descs[prevIndex].classList.remove('active');
+            if (descs[index]) descs[index].classList.add('active');
+          }
+        }
+
+        wrap.querySelectorAll('.svc-arrow').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            go(parseInt(btn.dataset.dir, 10));
+          });
+        });
+
+        /* свайп на тач-екранах */
+        let startX = 0, isTouch = false;
+        wrap.addEventListener('touchstart', (e) => {
+          startX = e.touches[0].clientX; isTouch = true;
+        }, {passive:true});
+        wrap.addEventListener('touchend', (e) => {
+          if(!isTouch) return; isTouch = false;
+          const dx = e.changedTouches[0].clientX - startX;
+          if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+        }, {passive:true});
+      });
     })();
 
     /* ===== Cursor dot follower ===== */

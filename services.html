@@ -226,6 +226,12 @@
     transform:translateY(0) scale(1);
     opacity:1;
   }
+  /* Старий текст ховаємо швидко і без "хвилі" по рядках — щоб він не висів
+     на екрані одночасно з новим, який ще піднімається. */
+  .svc-desc.leaving .wm-i{
+    transition:transform .2s ease, opacity .16s ease;
+    transition-delay:0s;
+  }
 
   @media (max-width:1439px){
     .svc-center-wrap{
@@ -642,8 +648,14 @@
           index = (index + dir + total) % total;
           render();
           if (descs.length){
-            if (descs[prevIndex]) descs[prevIndex].classList.remove('active');
-            if (descs[index]) descs[index].classList.add('active');
+            const prevEl = descs[prevIndex];
+            const nextEl = descs[index];
+            if (prevEl && prevEl !== nextEl){
+              prevEl.classList.remove('active');
+              prevEl.classList.add('leaving');
+              setTimeout(() => prevEl.classList.remove('leaving'), 220);
+            }
+            if (nextEl) nextEl.classList.add('active');
           }
         }
 

@@ -255,20 +255,13 @@
     .svc-col:nth-child(3){ align-self:flex-start; }
   }
 
-  /* iPad Air (вертикально) і подібні — трохи більший розмір фото й тексту
-     за базовий планшет, прив'язка до країв (зигзаг) та сама. */
-  @media (min-width:744px) and (max-width:1023px){
-    .svc-col{ width:min(72%, 560px); }
-    .svc-title{ font-size:clamp(17px, 1.7vw, 27px); }
-    .svc-desc{ font-size:clamp(17px, 1.7vw, 29px); }
-  }
-
-  /* iPad Pro і подібні великі планшети — трохи більший розмір фото й тексту,
-     прив'язка до країв (зигзаг) та сама. */
-  @media (min-width:1024px) and (max-width:1439px){
-    .svc-col{ width:min(78%, 620px); }
-    .svc-title{ font-size:clamp(18px, 1.8vw, 28px); }
-    .svc-desc{ font-size:clamp(18px, 1.8vw, 30px); }
+  /* Планшети (744-1439px): один плавний розмір через vw замість окремих
+     "сходинок" — фото/текст масштабуються без стрибка, коли той самий iPad
+     повертається з портретної в горизонтальну орієнтацію. */
+  @media (min-width:744px) and (max-width:1439px){
+    .svc-col{ width:min(60vw, 620px); }
+    .svc-title{ font-size:clamp(18px, 2vw, 30px); }
+    .svc-desc{ font-size:clamp(19px, 2vw, 33px); }
   }
 
   /* ===== Футер — той самий, що на projects.html: велика назва сторінки
@@ -362,9 +355,9 @@
             <h3 class="svc-title">(ARCHITECTURE / FORM)</h3>
             <div class="svc-photo-wrap mob-wide" data-carousel>
               <div class="svc-track">
-                <img class="svc-slide" src="service-architecture-01.webp" alt="Architecture — drawing" loading="lazy">
-                <img class="svc-slide" src="service-architecture-02.webp" alt="Architecture — construction" loading="lazy">
                 <img class="svc-slide" src="service-architecture-03.webp" alt="Architecture — finish" loading="lazy">
+                <img class="svc-slide" src="service-architecture-02.webp" alt="Architecture — construction" loading="lazy">
+                <img class="svc-slide" src="service-architecture-01.webp" alt="Architecture — drawing" loading="lazy">
               </div>
               <button class="svc-arrow svc-arrow-left" aria-label="Previous photo" data-dir="-1">
                 <svg viewBox="0 0 24 24" fill="none"><path d="M15 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -374,9 +367,9 @@
               </button>
             </div>
             <div class="svc-desc-wrap">
-              <p class="svc-desc active">Every project starts as a line on paper: proportion, orientation and light considered before a single wall exists.</p>
-              <p class="svc-desc">On site, drawings become volume: concrete, timber and glass are assembled with the same discipline as the plan.</p>
-              <p class="svc-desc">The final layer defines how a building is experienced: texture, shadow and detail brought into balance.</p>
+              <p class="svc-desc active">The final layer defines how a building is experienced: texture, shadow and detail brought into balance. This is where the architecture stops being a diagram and starts behaving like a place someone actually lives in. Handrails, thresholds and the way a door meets its frame are treated with the same seriousness as the overall form, because these small moments are what people notice every single day.</p>
+              <p class="svc-desc">On site, drawings become volume: concrete, timber and glass are assembled with the same discipline as the plan. Every junction and structural decision is checked against the original intent, so nothing is lost between paper and reality. We stay closely involved through this stage, visiting the site regularly to resolve details as they come up, rather than leaving that judgement entirely to the build team.</p>
+              <p class="svc-desc">Every project starts as a line on paper: proportion, orientation and light considered long before a single wall exists. We study the site, the sun path and the surrounding context until the plan feels inevitable rather than imposed. Early sketches are tested against orientation, privacy and how the building will be approached, long before floor plans are finalised.</p>
             </div>
           </div>
 
@@ -397,9 +390,9 @@
               </button>
             </div>
             <div class="svc-desc-wrap">
-              <p class="svc-desc active">A space begins as an idea: mood, material and movement sketched before anything is built.</p>
-              <p class="svc-desc">Visualization lets us test light and atmosphere in detail, refining the feel of a room before construction starts.</p>
-              <p class="svc-desc">The finished interior carries that original idea through, quiet and considered in every corner.</p>
+              <p class="svc-desc active">A space begins as an idea: mood, material and movement sketched before anything is built. We think through how light will move across a room at different times of day, long before any furniture is chosen.</p>
+              <p class="svc-desc">Visualization lets us test light and atmosphere in detail before construction starts, so surprises are resolved on screen rather than on site.</p>
+              <p class="svc-desc">The finished interior carries that original idea through, quiet and considered in every corner. Nothing is decorative for its own sake, every choice still serves the same atmosphere we set out to create.</p>
             </div>
           </div>
 
@@ -420,9 +413,9 @@
               </button>
             </div>
             <div class="svc-desc-wrap">
-              <p class="svc-desc active">We start by selecting materials that suit both the architecture and how the space will be lived in.</p>
-              <p class="svc-desc">Paint, texture and finish are chosen together, tested against real light before anything is applied.</p>
-              <p class="svc-desc">Every specification is documented precisely, so execution matches the design without compromise.</p>
+              <p class="svc-desc active">We start by selecting materials that suit both the architecture and how the space will be lived in. Durability, maintenance and feel are weighed together, so every choice holds up well beyond the first year. We also account for how each material will age, since a finish that looks good on day one but wears poorly ends up costing more in the long run.</p>
+              <p class="svc-desc">Paint, texture and finish are chosen together, tested against real light before anything is applied. Samples are reviewed on site, in the actual room, so what looks right on a board also looks right in daylight. We track every decision against a shared reference so nothing is left to memory once work is underway.</p>
+              <p class="svc-desc">Every specification is documented precisely, so execution matches the design without compromise. Contractors work from a single clear reference, which keeps the finished result faithful to what was originally agreed. If a substitution is ever needed on site, it's checked against the same standard before it's approved, so the final result never quietly drifts from the plan.</p>
             </div>
           </div>
 

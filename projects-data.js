@@ -253,7 +253,7 @@ const PROJECTS = [
   {
     id: '07',
     title: 'studio 5',
-    category: 'comercial',
+    category: 'commercial',
     year: '2022',
     location: 'Kyiv',
     folder: 'projects/07-studio-5/',

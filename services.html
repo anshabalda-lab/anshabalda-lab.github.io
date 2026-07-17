@@ -193,6 +193,15 @@
     .svc-arrow{ opacity:.7; }
   }
 
+  .svc-counter{
+    position:absolute; left:50%; bottom:12px; transform:translateX(-50%);
+    font-family:'Roboto'; font-weight:600; font-size:12px; letter-spacing:.08em;
+    color:#fff;
+    filter:drop-shadow(0 1px 3px rgba(0,0,0,.6));
+    pointer-events:none;
+    z-index:1;
+  }
+
   .svc-desc-wrap{
     position:relative;
     overflow:hidden;
@@ -240,7 +249,7 @@
     }
     .svc-row{ flex-direction:column; align-items:stretch; gap:clamp(56px,12vw,80px); max-width:none; }
     .svc-col{ flex:none; width:100%; max-width:none; align-items:flex-start; }
-    .svc-title{ text-align:left; width:100%; }
+    .svc-title{ text-align:left; width:100%; margin-bottom:8px; }
 
     /* На мобільному/планшеті фото знову різних пропорцій під кожен напрямок,
        як було у старій версії — на великих моніторах лишається однакове 3:2. */
@@ -371,6 +380,7 @@
               <button class="svc-arrow svc-arrow-right" aria-label="Next photo" data-dir="1">
                 <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
+              <span class="svc-counter">01/03</span>
             </div>
             <div class="svc-desc-wrap">
               <p class="svc-desc active">The final layer defines how a building is experienced: texture, shadow and detail brought into balance. This is where the architecture stops being a diagram and starts behaving like a place someone actually lives in. Handrails, thresholds and the way a door meets its frame are treated with the same seriousness as the overall form, because these small moments are what people notice every single day.</p>
@@ -394,6 +404,7 @@
               <button class="svc-arrow svc-arrow-right" aria-label="Next photo" data-dir="1">
                 <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
+              <span class="svc-counter">01/03</span>
             </div>
             <div class="svc-desc-wrap">
               <p class="svc-desc active">A space begins as an idea: mood, material and movement sketched before anything is built. We think through how light will move across a room at different times of day, long before any furniture is chosen.</p>
@@ -417,6 +428,7 @@
               <button class="svc-arrow svc-arrow-right" aria-label="Next photo" data-dir="1">
                 <svg viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
               </button>
+              <span class="svc-counter">01/03</span>
             </div>
             <div class="svc-desc-wrap">
               <p class="svc-desc active">We start by selecting materials that suit both the architecture and how the space will be lived in. Durability, maintenance and feel are weighed together, so every choice holds up well beyond the first year. We also account for how each material will age, since a finish that looks good on day one but wears poorly ends up costing more in the long run.</p>
@@ -639,8 +651,11 @@
           descResizeT = setTimeout(measureDescHeight, 220);
         }, {passive:true});
 
+        const counter = wrap.querySelector('.svc-counter');
+
         function render(){
           track.style.transform = `translateX(${index * -100}%)`;
+          if (counter) counter.textContent = String(index + 1).padStart(2,'0') + '/' + String(total).padStart(2,'0');
         }
 
         function go(dir){

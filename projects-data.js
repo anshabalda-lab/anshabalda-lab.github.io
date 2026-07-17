@@ -280,6 +280,31 @@ const PROJECTS = [
         text: 'The interior rests on the contrast between matte warm surfaces and polished bronze metal: a wavy mirrored wall panel, a backlit brass console and round metal sconces reflect light and lend the space a sense of ease. A pendant composition of illuminated rings and dried grasses above the waiting area becomes the main focal point and an obvious photo spot for clients. Woven macramé wall art, potted grasses and rounded poufs create a soft, tactile atmosphere, while a round black-and-white graphic rug keeps the space from feeling overly soft, adding a note of precision. Altogether, the design works toward the feel of an intimate, stylish place where form and texture tell the brand\'s story before a client sees the first sketch of a garment..'
       }
     ]
+  },
+  {
+    id: '08',
+    title: 'hod gym',
+    category: 'private',
+    year: '2022',
+    location: 'Kyiv',
+    folder: 'projects/08-hod-gym/',
+    hero: 'hero.webp',
+    photos: [
+      { file: '01.webp' },
+      { file: '02.webp' },
+      { file: '03.webp' },
+      { file: '04.webp' }      
+     ],
+    descriptions: [
+      {
+        afterPhoto: 0,
+        text: 'A private training room. A compact fitness space built on the contrast between professional equipment and a warm, almost hotel-like interior: a slatted wood ceiling, panoramic glazing overlooking greenery and light stone flooring take away the usual coldness of a gym and make it feel like part of the living space.'
+      },
+      {
+        afterPhoto: 2,
+        text: 'Wood carries the entire mood: a slatted ceiling with hidden spot lighting, wood columns and panels set a warm, muted tone against which the black metal equipment (a power rack, machines, a dumbbell stand) reads as a sculptural accent in its own right. Panoramic sliding glass doors open onto greenery just outside, turning a workout into something close to training outdoors. Light floor tiles and warm leather upholstery on the machines soften the equipment\'s industrial edge, while considered spot lighting brings out the texture of wood and metal without harshness. The result is a private gym that reads more like part of a spa or boutique hotel than a technical room.'
+      }
+    ]
   }
 
   // Наступні проєкти додавай сюди тим самим блоком, наприклад:

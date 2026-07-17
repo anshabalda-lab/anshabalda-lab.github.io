@@ -122,7 +122,13 @@ const PROJECTS = [
       { file: '14.webp' },
       { file: '15.webp' },
       { file: '16.webp' },
-      { file: '17.webp' }
+      { file: '17.webp' },
+      { file: '18.webp' },
+      { file: '19.webp' },
+      { file: '20.webp' },
+      { file: '21.webp' },
+      { file: '22.webp' },
+      { file: '23.webp' }
     ],
     descriptions: [
       {

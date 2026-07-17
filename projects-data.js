@@ -305,6 +305,34 @@ const PROJECTS = [
         text: 'Wood carries the entire mood: a slatted ceiling with hidden spot lighting, wood columns and panels set a warm, muted tone against which the black metal equipment (a power rack, machines, a dumbbell stand) reads as a sculptural accent in its own right. Panoramic sliding glass doors open onto greenery just outside, turning a workout into something close to training outdoors. Light floor tiles and warm leather upholstery on the machines soften the equipment\'s industrial edge, while considered spot lighting brings out the texture of wood and metal without harshness. The result is a private gym that reads more like part of a spa or boutique hotel than a technical room.'
       }
     ]
+  },
+  {
+    id: '09',
+    title: 'milenium',
+    category: 'commercial',
+    year: '2023',
+    location: 'Kyiv',
+    folder: 'projects/09-milenium/',
+    hero: 'hero.webp',
+    photos: [
+      { file: '01.webp' },
+      { file: '02.webp' },
+      { file: '03.webp' },
+      { file: '04.webp' },
+      { file: '05.webp' },
+      { file: '06.webp' },
+      { file: '07.webp' }       
+     ],
+    descriptions: [
+      {
+        afterPhoto: 0,
+        text: 'A small café. A compact commercial space built around a rich green as the core brand color: it runs through the bar counter, the walls, and even the restroom, tying every zone together in one consistent mood. The green here works both as a brand identity and as a tool for a cozy, slightly intimate café atmosphere.'
+      },
+      {
+        afterPhoto: 4,
+        text: 'The main area rests on the contrast between warm light wood, white subway tile and emerald-green tile on the bar counter. A metal frame with glass shelving and hanging planters marks the visual boundary between the bar and the seating area while staying light and see-through. The waiting or checkout zone takes on a bolder contrast: dark green walls, a display shelving unit for retail products and a round terracotta table give the space character and a slightly curated, gallery-like feel. The restroom continues the brand\'s green palette, now expressed through ceramic tile and graphic wallpaper, showing that the brand color was carried through to the last room. Altogether, the interior works toward the feel of a small, stylish spot people want to return to precisely because of its recognizable, consistent aesthetic.'
+      }
+    ]
   }
 
   // Наступні проєкти додавай сюди тим самим блоком, наприклад:

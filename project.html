@@ -142,13 +142,19 @@
   .p-meta{
     font-family:'Figtree'; font-size:13px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
     color:rgba(255,255,255,.75); margin:0 0 14px;
+    opacity:0; transform:translateY(16px);
+    transition:opacity .5s ease, transform .5s cubic-bezier(.16,.84,.24,1);
   }
+  .p-meta.in{ opacity:1; transform:translateY(0); transition-delay:.15s; }
   .p-meta span{ margin:0 10px; opacity:.5; }
   .p-hero-title{
     margin:0; font-family:'Figtree'; font-weight:900; letter-spacing:-.02em; line-height:.98;
     font-size:clamp(38px,7vw,96px); text-transform:uppercase;
     text-shadow:0 0 24px rgba(0,0,0,.25);
+    opacity:0; transform:translateY(24px);
+    transition:opacity .6s ease, transform .6s cubic-bezier(.16,.84,.24,1);
   }
+  .p-hero-title.in{ opacity:1; transform:translateY(0); transition-delay:.25s; }
 
   /* ===== DESCRIPTION BLOCKS (текст на зразок Services — слово-за-словом знизу вгору) ===== */
   .p-desc{
@@ -253,7 +259,7 @@
       <div class="inner">
         <div class="left">
           <a class="link current" href="projects.html">PROJECTS</a>
-          <a class="link" href="services.html">SERVICES</a>
+          <a class="link" href="index.html#services">SERVICES</a>
         </div>
         <a class="brand" href="index.html">FORM·A</a>
         <div class="right">
@@ -275,7 +281,7 @@
     <nav class="mobile-menu-links">
       <a href="index.html#intro" class="mobile-link">HOME</a>
       <a href="projects.html" class="mobile-link">PROJECTS</a>
-      <a href="services.html" class="mobile-link">SERVICES</a>
+      <a href="index.html#services" class="mobile-link">SERVICES</a>
       <a href="index.html#about" class="mobile-link">ABOUT</a>
       <a href="contact.html" class="mobile-link">CONTACT</a>
     </nav>
@@ -390,6 +396,11 @@
       document.getElementById('metaText').innerHTML =
         (CATEGORY_LABELS[project.category] || project.category) +
         ' <span>•</span> ' + project.location + ' <span>•</span> ' + project.year;
+
+      requestAnimationFrame(()=> requestAnimationFrame(()=>{
+        document.getElementById('metaText').classList.add('in');
+        document.getElementById('heroTitle').classList.add('in');
+      }));
 
       /* --- ОПИС + ГАЛЕРЕЯ: інтерлівінг фото і текстових блоків за полем afterPhoto --- */
       const flow = document.getElementById('contentFlow');

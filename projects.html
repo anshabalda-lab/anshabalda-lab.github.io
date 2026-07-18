@@ -432,23 +432,27 @@
       const stagger = 70;
       thumbs.forEach((el,i)=> el.style.setProperty('--stagger', (i*stagger)+'ms'));
 
-      // Гейт готовності: чекаємо декодування ЛИШЕ перших видимих карток (щоб перший
-      // кадр анімації не збігся з важким decode), але старт усієї хвилі — синхронний,
-      // тому stagger лишається рівним і картки не "наздоганяють" одна одну.
+      // Гейт готовності: чекаємо РЕАЛЬНЕ декодування перших видимих карток. Саме
+      // важке decode на головному потоці збігалося зі стартом transition і давало
+      // ривок на холодному оновленні сторінки (при перемиканні вкладок фото вже в
+      // кеші — тому там завжди плавно). Старт усієї хвилі синхронний, тому stagger
+      // лишається рівним.
       const GATE = Math.min(thumbs.length, 6);
-      const gate = thumbs.slice(0, GATE).map(el=>{
+      function decoded(el){
         const img = el._img;
-        if(!img) return Promise.resolve();
-        if(img.decode){
-          if(img.complete && img.naturalWidth) return img.decode().catch(()=>{});
-          return new Promise(res=>{
-            let done=false; const fin=()=>{ if(done)return; done=true; img.decode().then(res).catch(res); };
-            img.addEventListener('load', fin, {once:true});
-            img.addEventListener('error', ()=>res(), {once:true});
-          });
-        }
-        return Promise.resolve();
-      });
+        if(!img || !img.decode) return Promise.resolve();
+        // Дочекатись завантаження, потім гарантовано decode.
+        if(img.complete && img.naturalWidth) return img.decode().catch(()=>{});
+        return new Promise(res=>{
+          let done=false; const fin=()=>{ if(done)return; done=true; img.decode().then(res).catch(res); };
+          img.addEventListener('load', fin, {once:true});
+          img.addEventListener('error', ()=>res(), {once:true});
+        });
+      }
+      const gate = thumbs.slice(0, GATE).map(decoded);
+      // Решту карток декодуємо у фоні заздалегідь, щоб їхнє decode не збіглося з рухом
+      // хвилі, коли черга дійде до них.
+      thumbs.slice(GATE).forEach(decoded);
 
       function launch(){
         // 1) Армуємо композитний шар (will-change) і даємо Chrome час його
@@ -466,11 +470,13 @@
         }));
       }
 
-      // Не чекаємо вічно: якщо decode затягнувся — запускаємо максимум через 600мс.
+      // Чекаємо декодування перших карток. Стеля 3с — лише на випадок стало́го/битого
+      // ресурсу, а не як "перегони" з decode (попередні 600мс часто стріляли раніше,
+      // ніж фото декодувалось, саме в найгірший момент — звідси ривок на оновленні).
       let launched = false;
       const go = ()=>{ if(launched) return; launched = true; launch(); };
       Promise.allSettled(gate).then(go);
-      setTimeout(go, 600);
+      setTimeout(go, 3000);
 
       hasRevealed = true;
     }

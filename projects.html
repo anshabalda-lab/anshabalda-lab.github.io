@@ -167,14 +167,19 @@
   .thumb-media img,
   .thumb-media .ph-fallback{
     position:absolute; inset:0; width:100%; height:100%;
-    transform:translateY(100%); /* сховане під маскою знизу, поки картка не "in" */
+    transform:translate3d(0,100%,0); /* translate3d → примусовий GPU-шар, без ривка першого кадру */
+    backface-visibility:hidden;
     transition:transform .8s cubic-bezier(.16,.84,.24,1);
     transition-delay:var(--stagger, 0ms);
   }
   .thumb-media img{ object-fit:cover; }
+  /* will-change вмикається лише на час підняття (клас .arming), потім знімається —
+     щоб не тримати GPU-шари всіх карток постійно. */
+  .thumb.arming .thumb-media img,
+  .thumb.arming .thumb-media .ph-fallback{ will-change:transform; }
   .thumb.in .thumb-media img,
-  .thumb.in .thumb-media .ph-fallback{ transform:translateY(0); }
-  .thumb.in:hover .thumb-media img{ transform:translateY(0) scale(1.045); }
+  .thumb.in .thumb-media .ph-fallback{ transform:translate3d(0,0,0); }
+  .thumb.in:hover .thumb-media img{ transform:translate3d(0,0,0) scale(1.045); }
   .thumb-media .ph-fallback{
     display:flex; align-items:center; justify-content:center;
     background:linear-gradient(135deg,#3a3a3a,#151515);
@@ -191,7 +196,7 @@
   /* Поява карток: фото "спливає" з-під маски знизу вгору (як MENU/CLOSE) */
   .thumb.out .thumb-media img,
   .thumb.out .thumb-media .ph-fallback{
-    transform:translateY(-100%); /* продовжує рух вгору і зникає під маскою зверху */
+    transform:translate3d(0,-100%,0); /* продовжує рух вгору і зникає під маскою зверху */
     transition:transform .45s cubic-bezier(.7,0,.84,0);
   }
   .thumb.out .name{ opacity:0; transition:opacity .2s ease; }
@@ -417,37 +422,50 @@
       list.forEach((p,i)=> rows.appendChild(buildThumb(p,i)));
 
       const thumbs = Array.from(rows.querySelectorAll('.thumb'));
-      thumbs.forEach((el,i)=>{
-        if(hasRevealed){ el.classList.add('in'); return; }
-        el.style.setProperty('--stagger', (i*70)+'ms');
 
-        function reveal(){
-          requestAnimationFrame(()=> requestAnimationFrame(()=> el.classList.add('in')));
-        }
+      if(hasRevealed){
+        thumbs.forEach(el=> el.classList.add('in'));
+        return;
+      }
+
+      // Тривалість найдовшого transition (0.8s) + найбільший stagger — коли знімати will-change.
+      const stagger = 70;
+      thumbs.forEach((el,i)=> el.style.setProperty('--stagger', (i*stagger)+'ms'));
+
+      // Гейт готовності: чекаємо декодування ЛИШЕ перших видимих карток (щоб перший
+      // кадр анімації не збігся з важким decode), але старт усієї хвилі — синхронний,
+      // тому stagger лишається рівним і картки не "наздоганяють" одна одну.
+      const GATE = Math.min(thumbs.length, 6);
+      const gate = thumbs.slice(0, GATE).map(el=>{
         const img = el._img;
-        if(!img){ reveal(); return; }
-
-        function whenDecoded(){
-          // decode() гарантує, що зображення вже повністю декодоване в пам'яті
-          // ДО старту анімації — без цього великий пріоритетний файл (перша
-          // картка) міг декодуватись саме в момент transition, що й давало
-          // помітний "ривок" на старті підняття.
-          if(img.decode){
-            img.decode().then(reveal).catch(reveal);
-          } else {
-            reveal();
-          }
+        if(!img) return Promise.resolve();
+        if(img.decode){
+          if(img.complete && img.naturalWidth) return img.decode().catch(()=>{});
+          return new Promise(res=>{
+            let done=false; const fin=()=>{ if(done)return; done=true; img.decode().then(res).catch(res); };
+            img.addEventListener('load', fin, {once:true});
+            img.addEventListener('error', ()=>res(), {once:true});
+          });
         }
-
-        if(img.complete && img.naturalWidth){
-          whenDecoded();
-        } else {
-          let done = false;
-          function onDone(){ if(done) return; done = true; whenDecoded(); }
-          img.addEventListener('load', onDone, {once:true});
-          img.addEventListener('error', onDone, {once:true});
-        }
+        return Promise.resolve();
       });
+
+      function launch(){
+        thumbs.forEach(el=> el.classList.add('arming'));
+        requestAnimationFrame(()=> requestAnimationFrame(()=>{
+          thumbs.forEach(el=> el.classList.add('in'));
+          // Знімаємо will-change після завершення найпізнішої картки.
+          const total = 800 + (thumbs.length-1)*stagger + 200;
+          setTimeout(()=> thumbs.forEach(el=> el.classList.remove('arming')), total);
+        }));
+      }
+
+      // Не чекаємо вічно: якщо decode затягнувся — запускаємо максимум через 600мс.
+      let launched = false;
+      const go = ()=>{ if(launched) return; launched = true; launch(); };
+      Promise.allSettled(gate).then(go);
+      setTimeout(go, 600);
+
       hasRevealed = true;
     }
 

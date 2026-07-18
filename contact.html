@@ -62,6 +62,7 @@
     background:#111;
     transition:width .25s ease;
   }
+  html.is-loading{ overflow:hidden; }
   @media (min-width:768px){ html{ overscroll-behavior-y:none; } body{ overscroll-behavior-y:none; } }
   body{margin:0;background:var(--bg);color:var(--ink);
        font:16px/1.55 'Roboto',system-ui,-apple-system,'Segoe UI',Inter,Arial;
@@ -153,6 +154,7 @@
     padding-top:96px;
     color:#111;
   }
+  @supports (min-height:100dvh){ #contact{ min-height:100dvh; } }
 
   /* ---- Фото-стрічка проєктів: горизонтальна, кольорова, з підписами під фото ---- */
   .cm-photobar{
@@ -607,7 +609,6 @@
       if(!preloader) return;
 
       document.documentElement.classList.add('is-loading');
-      document.body.style.overflow = 'hidden';
 
       const LETTERS = ['F','O','R','M','A'];
       let letterIdx = 0;
@@ -635,7 +636,6 @@
         preloader.classList.add('hide');
         if(edgeBar) edgeBar.classList.add('hide');
         document.documentElement.classList.remove('is-loading');
-        document.body.style.overflow = '';
       }
 
       const photoStripReady = window.__photoStripReady || Promise.resolve();
@@ -731,10 +731,12 @@
       }, {passive:true});
 
       window.addEventListener('orientationchange', function(){
-        setTimeout(function(){
+        // Кілька перерахунків після повороту: iOS Safari віддає коректний
+        // innerHeight не одразу. Поворот лінк-рядка обробляє окремий блок нижче.
+        [100, 300, 600].forEach(delay => setTimeout(function(){
           lastWidth = window.innerWidth;
           setStableVH();
-        }, 300);
+        }, delay));
       });
     })();
 
@@ -753,13 +755,16 @@
       const chosen = [];
       for (let i = 0; i < 4; i++) chosen.push(pool[i % pool.length]);
 
-      strip.innerHTML = chosen.map(p => {
+      strip.innerHTML = chosen.map((p, idx) => {
         const photo = (p.photos && p.photos.length)
           ? p.photos[Math.floor(Math.random() * p.photos.length)]
           : { file: p.hero, alt: p.title };
         const src = p.folder + photo.file;
+        // Перше фото стрічки — найважливіше для першого показу: високий пріоритет.
+        // Решта — низький, щоб не конкурували з ним за канал. decoding=async всім.
+        const prio = idx === 0 ? 'high' : 'low';
         return `<a class="cm-photo-item" href="project.html?id=${p.id}">
-          <span class="cm-photo-img-wrap"><img src="${src}" alt="${photo.alt || p.title}" loading="eager"></span>
+          <span class="cm-photo-img-wrap"><img src="${src}" alt="${photo.alt || p.title}" loading="eager" decoding="async" fetchpriority="${prio}"></span>
           <span class="cm-photo-caption"><span>${p.title}</span></span>
         </a>`;
       }).join('');
@@ -890,6 +895,7 @@
         names.forEach(el=>{ maxW = Math.max(maxW, el.getBoundingClientRect().width); });
         if(maxW > 0) row.style.width = maxW + 'px';
       }
+      window.__fitLinksRow = fitLinksRow; // для спільного orientationchange-обробника
 
       fitLinksRow();
       if(document.fonts && document.fonts.ready){ document.fonts.ready.then(fitLinksRow); }
@@ -911,26 +917,31 @@
       if(!dot || matchMedia('(any-pointer: coarse)').matches) return;
       let x = window.innerWidth/2, y = window.innerHeight/2, targetX = x, targetY = y;
       const speed = 0.2;
-      window.addEventListener('mousemove', (e)=>{ targetX = e.clientX; targetY = e.clientY; });
+      let running = false;
       function animate() {
         x += (targetX - x) * speed;
         y += (targetY - y) * speed;
         dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        // Зупиняємо цикл, коли dot практично догнав ціль — не крутимо rAF вічно
+        // в спокої (економія CPU/GPU і батареї на ноуті).
+        if (Math.abs(targetX - x) < 0.1 && Math.abs(targetY - y) < 0.1) {
+          running = false;
+          return;
+        }
         requestAnimationFrame(animate);
       }
-      animate();
+      function kick(){ if(!running){ running = true; requestAnimationFrame(animate); } }
+      window.addEventListener('mousemove', (e)=>{ targetX = e.clientX; targetY = e.clientY; kick(); });
     })();
 
-    /* ===== Надійна обробка повороту екрану (orientationchange) ===== */
+    /* ===== Поворот екрана: підганяємо рядок лінків напряму (VH-перерахунок
+       робить власний обробник вище). Раніше тут диспатчився синтетичний
+       'resize' — тепер викликаємо цільову функцію без зайвих подій. ===== */
     (function(){
-      function forceRecalc(){
-        window.dispatchEvent(new Event('resize'));
-      }
       window.addEventListener('orientationchange', function(){
-        forceRecalc();
-        setTimeout(forceRecalc, 100);
-        setTimeout(forceRecalc, 300);
-        setTimeout(forceRecalc, 600);
+        const fit = window.__fitLinksRow;
+        if(!fit) return;
+        [100, 300, 600].forEach(delay => setTimeout(fit, delay));
       });
     })();
   </script>

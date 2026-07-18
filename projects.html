@@ -75,6 +75,14 @@
     will-change:transform, opacity;
   }
   .page-reveal.in{ transform:translateY(0); opacity:1; }
+  /* Вихід на сторінку проєкту: контент плавно зникає перед навігацією —
+     замість різкого стрибка на нову сторінку. */
+  .page-reveal.exit{
+    opacity:0;
+    transform:translateY(-24px);
+    transition:transform .32s cubic-bezier(.6,0,.82,.2), opacity .32s ease;
+    pointer-events:none;
+  }
 
   @media (min-width:768px){ html{ overscroll-behavior-y:none; } body{ overscroll-behavior-y:none; } }
   body{margin:0;background:var(--bg);color:var(--ink);
@@ -221,7 +229,16 @@
     transition:transform .8s cubic-bezier(.16,.84,.24,1);
   }
   .thumb-media img{ object-fit:cover; }
-  .thumb:hover .thumb-media img{ transform:translateY(0) scale(1.045); }
+  /* Десктоп (є hover): наведення злегка збільшує фото. */
+  @media (hover:hover){
+    .thumb:hover .thumb-media img{ transform:translateY(0) scale(1.045); }
+  }
+  /* Тач (немає hover): scale під пальцем лише мигає, тому замість нього —
+     легкий "втиск" усієї картки на момент натиску. Дає відчуття кліку. */
+  @media (hover:none){
+    .thumb{ transition:transform .12s ease, opacity .12s ease; }
+    .thumb:active{ transform:scale(.98); opacity:.9; }
+  }
   .thumb-media .ph-fallback{
     display:flex; align-items:center; justify-content:center;
     background:linear-gradient(135deg,#3a3a3a,#151515);
@@ -587,6 +604,31 @@
         }
       });
     });
+
+    /* ===== Плавний вихід на сторінку проєкту =====
+       По кліку контент коротко зникає (page-exit), і лише потім браузер
+       переходить на project.html — замість різкого стрибка. */
+    (function(){
+      const pageReveal = document.getElementById('pageReveal');
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      rows.addEventListener('click', function(e){
+        const link = e.target.closest('a.thumb');
+        if(!link) return;
+        // Не перехоплюємо відкриття в новій вкладці / іншій кнопкою миші.
+        if(e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+        const href = link.getAttribute('href');
+        if(!href) return;
+        if(reduce || !pageReveal) return; // без анімації — стандартний перехід
+
+        e.preventDefault();
+        pageReveal.classList.remove('in');
+        pageReveal.classList.add('exit');
+        let navigated = false;
+        const go = ()=>{ if(navigated) return; navigated = true; window.location.href = href; };
+        pageReveal.addEventListener('transitionend', go, {once:true});
+        setTimeout(go, 380); // страховка, якщо transitionend не спрацює
+      });
+    })();
 
     render(true);
   </script>

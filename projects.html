@@ -26,42 +26,6 @@
     --side-pad: max(28px, calc((100vw - 1600px)/2 + 28px));
   }
   *{box-sizing:border-box} html{overflow-x:hidden; scrollbar-gutter:stable;}
-
-  /* ===== PRELOADER — коротка версія (як на contact.html): білий фон,
-     чорні букви, без штучної мінімальної затримки. Ховається одразу,
-     як тільки готові перші фото сітки проєктів + шрифти. */
-  .preloader{
-    position:fixed; inset:0; z-index:9999;
-    background:#fff;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:22px;
-    transition:opacity .5s ease, visibility 0s linear 0s;
-  }
-  .preloader.hide{
-    opacity:0; visibility:hidden;
-    transition:opacity .5s ease, visibility 0s linear .5s;
-    pointer-events:none;
-  }
-  .preloader-mark{
-    font-family:'Figtree'; font-weight:900; letter-spacing:0; text-transform:uppercase;
-    font-size:clamp(90px,15vw,170px); color:#111; line-height:1;
-    width:clamp(90px,15vw,170px); height:clamp(90px,15vw,170px);
-    display:flex; align-items:center; justify-content:center;
-    opacity:0; transition:opacity .15s ease;
-  }
-  .preloader-mark.font-ready{ opacity:1; }
-  .preloader-edge-bar{
-    position:fixed; bottom:0; left:0; width:100%; height:2px;
-    background:rgba(0,0,0,.12);
-    z-index:9999; overflow:hidden;
-    transition:opacity .35s ease;
-  }
-  .preloader-edge-bar.hide{ opacity:0; }
-  .preloader-edge-bar span{
-    display:block; height:100%; width:0%;
-    background:#111;
-    transition:width .25s ease;
-  }
   @media (min-width:768px){ html{ overscroll-behavior-y:none; } body{ overscroll-behavior-y:none; } }
   body{margin:0;background:var(--bg);color:var(--ink);
        font:16px/1.55 'Roboto',system-ui,-apple-system,'Segoe UI',Inter,Arial;
@@ -276,11 +240,6 @@
 </style>
 </head>
 <body>
-  <div class="preloader" id="preloader">
-    <div class="preloader-mark" id="preloaderMark">F</div>
-  </div>
-  <div class="preloader-edge-bar" id="preloaderEdgeBar"><span></span></div>
-
   <!-- NAV -->
   <div class="nav" role="navigation" aria-label="Primary">
     <div class="wrap">
@@ -344,61 +303,6 @@
 
   <script src="projects-data.js"></script>
   <script>
-    /* Проміс, який резолвиться, коли перші фото сітки проєктів реально
-       довантажились — заповнюється нижче, одразу після першого render(). */
-    window.__gridReady = new Promise(resolve => { window.__resolveGrid = resolve; });
-
-    /* ===== PRELOADER — коротка версія для внутрішніх сторінок:
-       без штучної мінімальної затримки, ховається одразу, як тільки
-       готові перші фото сітки + шрифти. Страховка — 3с. */
-    (function(){
-      const preloader = document.getElementById('preloader');
-      const mark = document.getElementById('preloaderMark');
-      const edgeBar = document.getElementById('preloaderEdgeBar');
-      const edgeFill = edgeBar ? edgeBar.querySelector('span') : null;
-      if(!preloader) return;
-
-      document.documentElement.classList.add('is-loading');
-      document.body.style.overflow = 'hidden';
-
-      const LETTERS = ['F','O','R','M','A'];
-      let letterIdx = 0;
-      let letterTimer = setInterval(()=>{
-        letterIdx = (letterIdx + 1) % LETTERS.length;
-        if(mark) mark.textContent = LETTERS[letterIdx];
-      }, 250);
-
-      if(mark){
-        const revealMark = ()=> mark.classList.add('font-ready');
-        if(document.fonts && document.fonts.load){
-          document.fonts.load("900 170px Figtree").then(revealMark).catch(revealMark);
-          setTimeout(revealMark, 600);
-        } else {
-          revealMark();
-        }
-      }
-
-      let done = false;
-      function reallyHide(){
-        if(done) return;
-        done = true;
-        clearInterval(letterTimer);
-        if(edgeFill) edgeFill.style.width = '100%';
-        preloader.classList.add('hide');
-        if(edgeBar) edgeBar.classList.add('hide');
-        document.documentElement.classList.remove('is-loading');
-        document.body.style.overflow = '';
-      }
-
-      const gridReady = window.__gridReady || Promise.resolve();
-      const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
-
-      Promise.all([gridReady, fontsReady]).then(reallyHide);
-
-      // Страховка: не чекаємо довше 3с, навіть якщо щось не довантажилось.
-      setTimeout(reallyHide, 3000);
-    })();
-
     /* ===== Burger / MENU-fab ===== */
     const burgerBtn = document.getElementById('burgerBtn');
     const menuFab = document.getElementById('menuFab');
@@ -571,26 +475,6 @@
     });
 
     render();
-
-    /* Preloader чекає тільки перші (eager) фото першого рендера —
-       ті, що реально видно одразу на екрані, без прокрутки. */
-    (function(){
-      const resolveReady = window.__resolveGrid || function(){};
-      const firstImgs = Array.from(rows.querySelectorAll('img')).slice(0, 4);
-      if (!firstImgs.length) { resolveReady(); return; }
-      let loadedCount = 0;
-      function bump(){
-        loadedCount++;
-        if (loadedCount >= firstImgs.length) resolveReady();
-      }
-      firstImgs.forEach(img => {
-        if (img.complete) bump();
-        else {
-          img.addEventListener('load', bump, { once:true });
-          img.addEventListener('error', bump, { once:true });
-        }
-      });
-    })();
   </script>
 </body>
 </html>

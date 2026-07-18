@@ -628,6 +628,24 @@
         pageReveal.addEventListener('transitionend', go, {once:true});
         setTimeout(go, 380); // страховка, якщо transitionend не спрацює
       });
+
+      /* Повернення "назад" (свайп) віддає сторінку з bfcache у тому ж стані,
+         в якому вона пішла — з класом .exit (контент прихований), тому був
+         білий екран. JS повторно не виконується, тож ловимо pageshow і
+         повертаємо видимий стан. */
+      window.addEventListener('pageshow', function(e){
+        if(!pageReveal) return;
+        if(e.persisted || pageReveal.classList.contains('exit')){
+          pageReveal.classList.remove('exit');
+          pageReveal.style.transform = 'none';
+          pageReveal.style.opacity = '1';
+          pageReveal.classList.add('in');
+          // Якщо повернулись дуже швидко і preloader ще висів — прибираємо його.
+          document.documentElement.classList.remove('is-loading');
+          const pl = document.getElementById('preloader');
+          if(pl) pl.classList.add('hide');
+        }
+      });
     })();
 
     render(true);

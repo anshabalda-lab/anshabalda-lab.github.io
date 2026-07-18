@@ -451,7 +451,13 @@
       });
 
       function launch(){
+        // 1) Армуємо композитний шар (will-change) і даємо Chrome час його
+        //    реально створити. Якщо додати .in у тому ж кадрі — шар створюється
+        //    прямо на першому кадрі transition, і перший кадр перестрибує (ривок).
         thumbs.forEach(el=> el.classList.add('arming'));
+        // Форсуємо reflow, щоб .arming застосувався до наступного кроку.
+        void rows.offsetHeight;
+        // 2) Через два кадри (шар уже готовий) — піднімаємо.
         requestAnimationFrame(()=> requestAnimationFrame(()=>{
           thumbs.forEach(el=> el.classList.add('in'));
           // Знімаємо will-change після завершення найпізнішої картки.

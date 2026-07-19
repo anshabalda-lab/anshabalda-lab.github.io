@@ -468,6 +468,7 @@
         img.src = project.folder + photo.file;
         img.alt = photo.alt || project.title;
         img.decoding = 'async';
+        img.loading = 'lazy'; // галерейні фото вантажаться при наближенні, не всі одразу
         figure.appendChild(img);
         gallery.appendChild(figure);
       }
@@ -533,16 +534,18 @@
           `<span class="wm"><span class="wm-i" style="--i:${i}">${w}</span></span> `
         ).join('');
       }
-      document.querySelectorAll('.p-desc p').forEach(wrapWords);
 
-      /* --- Reveal опису при появі в кадрі --- */
+      /* --- Reveal опису при появі в кадрі: ОДИН спільний observer на всі описи
+         (замість окремого на кожен), і за той самий прохід готуємо слова. --- */
+      const descIO = new IntersectionObserver((entries, obs)=>{
+        entries.forEach(e=>{
+          if(e.isIntersecting){ e.target.classList.add('reveal'); obs.unobserve(e.target); }
+        });
+      }, {threshold:.2});
       document.querySelectorAll('.p-desc').forEach(sec=>{
-        const io = new IntersectionObserver(entries=>{
-          entries.forEach(e=>{
-            if(e.isIntersecting){ sec.classList.add('reveal'); io.unobserve(sec); }
-          });
-        }, {threshold:.2});
-        io.observe(sec);
+        const p = sec.querySelector('p');
+        if(p) wrapWords(p);
+        descIO.observe(sec);
       });
 
     })();

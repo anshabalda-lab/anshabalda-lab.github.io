@@ -38,6 +38,7 @@
          font:16px/1.55 'Roboto',system-ui,-apple-system,'Segoe UI',Inter,Arial;
          -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
     a{color:inherit;text-decoration:none}
+    html.is-loading{ overflow:hidden; }
 
     /* ===== PRELOADER ===== */
     .preloader{
@@ -1508,7 +1509,6 @@
       if(!preloader) return;
 
       document.documentElement.classList.add('is-loading');
-      document.body.style.overflow = 'hidden';
 
       /* Літери лого по черзі, різкий свап без анімації, поки триває завантаження.
          Спочатку літера прихована (opacity:0) — показуємо її лише коли шрифт
@@ -1561,7 +1561,6 @@
         preloader.classList.add('hide');
         if(edgeBar) edgeBar.classList.add('hide');
         document.documentElement.classList.remove('is-loading');
-        document.body.style.overflow = '';
         // Саме зараз браузер нарешті показує реальний сайт користувачу — це
         // найточніший момент, щоб перезахопити висоту екрана (адресна панель
         // на цей час вже встигла усістись у свій справжній стан).
@@ -2282,16 +2281,19 @@
       let x = window.innerWidth / 2, y = window.innerHeight / 2;
       let targetX = x, targetY = y;
       const speed = 0.15;
-      document.addEventListener("mousemove", e => {
-        targetX = e.clientX; targetY = e.clientY;
-      });
+      let running = false;
       function animate() {
         x += (targetX - x) * speed;
         y += (targetY - y) * speed;
         dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        // Зупиняємо цикл у спокої — не крутимо rAF даремно (батарея/CPU).
+        if (Math.abs(targetX - x) < 0.1 && Math.abs(targetY - y) < 0.1){ running = false; return; }
         requestAnimationFrame(animate);
       }
-      animate();
+      document.addEventListener("mousemove", e => {
+        targetX = e.clientX; targetY = e.clientY;
+        if(!running){ running = true; requestAnimationFrame(animate); }
+      });
     })();
 
     /* ===== CONTACT — фото-стрічка (рандомні проєкти з projects-data.js) ===== */

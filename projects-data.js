@@ -403,6 +403,32 @@ const PROJECTS = [
         text: 'A 40 m² apartment. A compact space built on the interplay of minimalist white surfaces, light warm wood and terrazzo. The kitchen and dining area are combined into one zone with slim black chairs and a round mirror on the wall instead of conventional decor, while the living room rests on a neutral grey sofa with bright orange and white side tables as the space\'s single color accent. The bathroom is finished in warm terracotta terrazzo with wood fronts and glass blocks in place of a conventional window, letting in natural light without sacrificing privacy. Overall, the interior shows that even a small footprint can feel spacious through a light palette, restrained furniture forms and carefully placed pops of color.'
       }
     ]
+  },
+  {
+    id: '12',
+    title: 'slova b110',
+    category: 'private',
+    year: '2024',
+    location: 'Bratislava',
+    folder: 'projects/12-slova-b110/',
+    hero: 'hero.webp',
+    photos: [
+      { file: '01.webp' },
+      { file: '02.webp' },
+      { file: '03.webp' },
+      { file: '04.webp' },
+      { file: '05.webp' },
+      { file: '06.webp' },
+      { file: '07.webp' },
+      { file: '08.webp' },
+      { file: '09.webp' }  
+     ],
+    descriptions: [
+      {
+        afterPhoto: 0,
+        text: 'A 110 m² apartment. The space is built on a warm duet of light and dark wood, complemented by terracotta and brown accents in the furniture textiles. The kitchen, living and dining areas are combined into one open zone: cinnamon-toned bar stools, a sculptural round wall composition and contemporary artwork featuring a striped figure create a light gallery-like mood without excessive formality. The bedroom continues the same wood palette but in a more restrained, almost spa-like register: hidden contour lighting around the ceiling perimeter, a textured headboard panel and symmetrical lamps add coziness. The corridors and passageways tie all the rooms together: warm wood flooring, accent art pieces on the walls and soft side lighting make even the transitional spaces part of one considered story of the home.'
+      }
+    ]
   }
 
   // Наступні проєкти додавай сюди тим самим блоком, наприклад:

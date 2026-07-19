@@ -734,7 +734,7 @@
       }
 
       /* Кнопка "About" — з'являється із затримкою, поки секція тримається на
-         екрані, і миттєво ховається, коли починає виїжджати чорна панель */
+         екрані, тепер веде на окрему сторінку about.html */
       .ac-flip-btn{
         position:absolute; left:50%; bottom:clamp(28px,6vh,56px);
         z-index:2;
@@ -751,109 +751,17 @@
         opacity:1;
         transform:translate(-50%, 0);
       }
-      .ac-card.flipped .ac-flip-btn{
-        opacity:0 !important;
-        pointer-events:none;
-        transition:opacity .3s ease;
-      }
       .ac-flip-btn::after{
         content:''; width:7px; height:7px; border-radius:50%;
         border:1.5px solid rgba(255,255,255,.7); flex-shrink:0;
         transition:transform .3s ease, background .3s ease;
       }
       .ac-flip-btn:active{ transform:translate(-50%, 0) scale(.97); }
-
-      /* Чорна панель — виїжджає знизу вгору і повністю закриває фото */
-      .ac-back{
-        background:#000; color:#fff;
-        z-index:3;
-        transform:translateY(100%);
-        transition:transform .75s cubic-bezier(.16,.84,.24,1);
-        display:flex; flex-direction:column; justify-content:center;
-        padding:clamp(28px,7vh,56px) clamp(24px,6vw,40px) clamp(100px,22vh,140px);
-        pointer-events:none;
-      }
-      .ac-card.flipped .ac-back{
-        transform:translateY(0);
-        pointer-events:auto;
-      }
-
-      .ac-back-text h2{
-        margin:0 0 16px; font-family:'Figtree'; font-weight:600; text-transform:uppercase;
-        letter-spacing:-.01em; font-size:clamp(24px,7vw,32px); color:#fff;
-      }
-      .ac-back-text p{
-        margin:0;
-        font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-weight:500;
-        letter-spacing:-0.02em; line-height:1.4; color:rgba(255,255,255,.88);
-        font-size:clamp(15px,4vw,18px);
-      }
-      /* Абзац теж ховається під маскою і піднімається рядок за рядком — той
-         самий "схід сонця", тільки по рядках (не по словах — їх забагато). */
-      .ac-back-text p .ln-mask{ display:block; overflow:hidden; }
-      .ac-back-text p .ln-inner{
-        display:block;
-        transform:translateY(115%);
-        opacity:0;
-        transition:transform .6s cubic-bezier(.16,.84,.24,1), opacity .5s ease;
-      }
-      .ac-card.flipped .ac-back-text p .ln-inner{
-        transform:translateY(0);
-        opacity:1;
-        transition-delay: calc(.5s + var(--i, 0) * .07s);
-      }
-
-      /* Заголовок "FORM·A dsgn" ховається під маскою і піднімається знизу вгору
-         по слову, коли панель виїжджає — той самий ефект, що й на заголовку
-         під Projects. Абзац під ним просто плавно проявляється і трохи піднімається,
-         з невеликою затримкою після заголовка. */
-      .ac-back-text h2 .wm{ display:inline-block; overflow:hidden; vertical-align:top; }
-      .ac-back-text h2 .wm-i{
-        display:inline-block;
-        transform:translateY(115%);
-        opacity:0;
-        transition:transform .6s cubic-bezier(.16,.84,.24,1), opacity .5s ease;
-        transition-delay:0s;
-      }
-      .ac-card.flipped .ac-back-text h2 .wm-i{
-        transform:translateY(0);
-        opacity:1;
-        transition-delay: calc(.35s + var(--i, 0) * .09s);
-      }
-
-      /* Нижня кнопка "Back" — та ж форма, що і "About", лише інверсія кольорів */
-      .ac-back-btn{
-        position:absolute; left:50%; bottom:clamp(28px,6vh,56px);
-        z-index:2;
-        display:inline-flex; align-items:center; justify-content:center; gap:14px;
-        background:#fff; color:#111;
-        padding:16px 40px; border-radius:999px;
-        font-family:'Roboto'; font-size:14px; font-weight:700; letter-spacing:.06em; text-transform:uppercase;
-        border:none; cursor:pointer;
-        opacity:0;
-        transform:translate(-50%, 12px);
-        transition:opacity .5s ease .3s, transform .5s ease .3s, background .25s ease;
-      }
-      .ac-card.flipped .ac-back-btn{
-        opacity:1;
-        transform:translate(-50%, 0);
-      }
-      .ac-back-btn::after{
-        content:''; width:7px; height:7px; border-radius:50%;
-        border:1.5px solid rgba(0,0,0,.55); flex-shrink:0;
-        transition:transform .3s ease, background .3s ease;
-      }
-      .ac-back-btn:active{ transform:translate(-50%, 0) scale(.97); }
     }
 
-    /* ---- Планшет-портрет: та ж flip-логіка, просто просторіше ---- */
+    /* ---- Планшет-портрет: та ж кнопка, просто просторіше ---- */
     @media (min-width:768px) and (max-width:999px), (min-width:768px) and (max-width:1400px) and (orientation:portrait){
       .ac-flip-btn{ bottom:clamp(40px,7vh,64px); padding:18px 48px; font-size:15px; }
-      .ac-back{ padding:64px 64px 140px; }
-      .ac-back-btn{ bottom:clamp(40px,7vh,64px); padding:18px 48px; font-size:15px; }
-      .ac-back-text{ max-width:70%; }
-      .ac-back-text h2{ font-size:clamp(30px,4.5vw,40px); }
-      .ac-back-text p{ font-size:clamp(17px,2.2vw,20px); }
     }
 
     /* ---- Телефон в landscape (коротка висота екрана): фіксована на var(--vh)
@@ -1202,7 +1110,7 @@
         </div>
         <a class="brand" href="#intro" id="brandLink">FORM·A</a>
         <div class="right">
-          <a class="link" href="#about">ABOUT</a>
+          <a class="link" href="about.html">ABOUT</a>
           <a class="link" href="contact.html">CONTACT</a>
         </div>
         <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false">
@@ -1223,7 +1131,7 @@
       <a href="#intro" class="mobile-link">HOME</a>
       <a href="projects.html" class="mobile-link">PROJECTS</a>
       <a href="services.html" class="mobile-link">SERVICES</a>
-      <a href="#about" class="mobile-link">ABOUT</a>
+      <a href="about.html" class="mobile-link">ABOUT</a>
       <a href="contact.html" class="mobile-link">CONTACT</a>
     </nav>
     <a href="https://instagram.com" target="_blank" class="mobile-instagram">Instagram</a>
@@ -1310,25 +1218,14 @@
   <!-- ABOUT -->
   <section id="about" role="region" aria-label="About — Photo and Text Reveal" data-nav-ink="dark"> 
 
-    <!-- ABOUT COMPACT: flip-card на телефоні/планшеті (<1000px) -->
+    <!-- ABOUT COMPACT: фото + кнопка-посилання на about.html (мобільна/планшетна версія) -->
     <div class="ac-pin-wrap" id="acPinWrap">
       <div class="about-compact" id="aboutCompact">
         <div class="ac-card" id="acCard">
           <div class="ac-face ac-front">
             <img class="ac-photo" src="about-mobile.webp" alt="Architectural studio team, sketches and materials on the table." loading="eager" fetchpriority="high">
             <div class="ac-photo-scrim" aria-hidden="true"></div>
-            <button class="ac-flip-btn" id="acFlipBtn" type="button" aria-label="Show info about the studio">About</button>
-          </div>
-          <div class="ac-face ac-back">
-            <div class="ac-back-text">
-              <h2>FORM·A dsgn</h2>
-              <p>
-                Founded in 2017 in Kyiv, FORM·A dsgn has evolved from a local architectural practice into an international design bureau.
-                Our portfolio ranges from small cafés and private residences to large restaurants, medical facilities and full-scale architectural developments across Ukraine and beyond.
-                Every project begins with context — site, light, function, and the people who will inhabit it. With a team of architects, designers and engineers, we oversee every stage — from concept to realisation — guided by the same principle that started it all: to create spaces that feel essential, timeless and human.
-              </p>
-            </div>
-            <button class="ac-back-btn" id="acBackBtn" type="button" aria-label="Back to photo">Back</button>
+            <a class="ac-flip-btn" id="acFlipBtn" href="about.html" aria-label="Go to About page">About</a>
           </div>
         </div>
       </div>
@@ -2090,71 +1987,11 @@
       }
     })();
 
-    /* Заголовок "FORM·A dsgn" на звороті картки About — розбиваємо на слова
-       під маску (як і заголовок під Projects), анімація запускається CSS-ом
-       автоматично при .ac-card.flipped */
+    /* ABOUT COMPACT: кнопка "About" з'являється, коли фото в зоні видимості (<1000px) */
     (function(){
-      const heading = document.querySelector('.ac-back-text h2');
-      if(!heading) return;
-      const words = heading.textContent.trim().split(/\s+/);
-      heading.innerHTML = words.map((w,i)=>
-        `<span class="wm"><span class="wm-i" style="--i:${i}">${w}</span></span> `
-      ).join('');
-    })();
-
-    /* Абзац під заголовком — розбиваємо на РЯДКИ (за фактичною висотою верстки,
-       а не по словах — щоб не було задовго) і обгортаємо кожен рядок у маску */
-    (function(){
-      const p = document.querySelector('.ac-back-text p');
-      if(!p) return;
-
-      function splitIntoLines(){
-        const text = p.textContent.trim();
-        const words = text.split(/\s+/);
-        // Спочатку розкладаємо звичайними словами, щоб виміряти реальні рядки
-        p.innerHTML = words.map(w=>`<span class="ln-word">${w}</span>`).join(' ');
-        const wordEls = Array.from(p.querySelectorAll('.ln-word'));
-        const lines = [];
-        let currentTop = null, currentLine = [];
-        wordEls.forEach(el=>{
-          const top = el.offsetTop;
-          if(currentTop === null || Math.abs(top - currentTop) < 2){
-            currentLine.push(el.textContent);
-            currentTop = top;
-          } else {
-            lines.push(currentLine);
-            currentLine = [el.textContent];
-            currentTop = top;
-          }
-        });
-        if(currentLine.length) lines.push(currentLine);
-
-        // Тепер перебудовуємо вже готовими рядками під маску
-        p.innerHTML = lines.map((line,i)=>
-          `<span class="ln-mask"><span class="ln-inner" style="--i:${i}">${line.join(' ')}</span></span>`
-        ).join('');
-      }
-      splitIntoLines();
-
-      // Перерахунок рядків при реальній зміні ширини (як і --vh фікс раніше)
-      let lastW = window.innerWidth;
-      window.addEventListener('resize', ()=>{
-        if(window.innerWidth === lastW) return;
-        lastW = window.innerWidth;
-        splitIntoLines();
-      }, {passive:true});
-    })();
-
-    /* ABOUT COMPACT: flip-card interaction (<1000px) + затримка появи кнопки під час піну */
-    (function(){
-      const card = document.getElementById('acCard');
       const flipBtn = document.getElementById('acFlipBtn');
-      const backBtn = document.getElementById('acBackBtn');
       const compact = document.getElementById('aboutCompact');
-      if(!card || !flipBtn || !backBtn || !compact) return;
-
-      flipBtn.addEventListener('click', ()=> card.classList.add('flipped'));
-      backBtn.addEventListener('click', ()=> card.classList.remove('flipped'));
+      if(!flipBtn || !compact) return;
 
       if('IntersectionObserver' in window){
         const io = new IntersectionObserver(entries=>{

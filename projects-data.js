@@ -429,6 +429,43 @@ const PROJECTS = [
         text: 'A 110 m² apartment. The space is built on a warm duet of light and dark wood, complemented by terracotta and brown accents in the furniture textiles. The kitchen, living and dining areas are combined into one open zone: cinnamon-toned bar stools, a sculptural round wall composition and contemporary artwork featuring a striped figure create a light gallery-like mood without excessive formality. The bedroom continues the same wood palette but in a more restrained, almost spa-like register: hidden contour lighting around the ceiling perimeter, a textured headboard panel and symmetrical lamps add coziness. The corridors and passageways tie all the rooms together: warm wood flooring, accent art pieces on the walls and soft side lighting make even the transitional spaces part of one considered story of the home.'
       }
     ]
+  },
+  {
+    id: '13',
+    title: 'STONEVEIN',
+    category: 'private',
+    year: '2024',
+    location: 'Kyiv',
+    folder: 'projects/13-stonevein/',
+    hero: 'hero.webp',
+    photos: [
+      { file: '01.webp' },
+      { file: '02.webp' },
+      { file: '03.webp' },
+      { file: '04.webp' },
+      { file: '05.webp' },
+      { file: '06.webp' },
+      { file: '07.webp' },
+      { file: '08.webp' },
+      { file: '09.webp' },
+      { file: '10.webp' },
+      { file: '11.webp' },
+      { file: '12.webp' },
+      { file: '13.webp' },
+      { file: '14.webp' },
+      { file: '15.webp' },
+      { file: '16.webp' }         
+     ],
+    descriptions: [
+      {
+        afterPhoto: 0,
+        text: 'A 150 m² townhouse. The project is built on a warm duet of wood paneling and natural stone, with a wood-burning fireplace as the living room\'s emotional center. A sculptural vertical accent of raw, textured stone runs through several levels of the house, from the living room to the staircase and bedroom, tying the spaces together with one consistent material motif. The open kitchen-living room, anchored by a large corner sofa and dark brass light fixtures, flows into a wood-paneled passage with a mirrored wall that visually expands the compact hallway.'
+      },
+      {
+        afterPhoto: 7,
+        text: 'The private areas of the house continue the same warm wood palette but in a more restrained register: bedrooms with soft velvet headboards, hidden contour lighting and the same stone accent carried up from the ground floor. The bathrooms take on a bolder contrast, finished in dark marble with bronze veining and warm-lit niches, giving even the utilitarian rooms a sense of considered, almost hotel-like luxury.'
+      }
+    ]
   }
 
   // Наступні проєкти додавай сюди тим самим блоком, наприклад:

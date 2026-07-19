@@ -142,12 +142,20 @@
   .p-meta{
     font-family:'Figtree'; font-size:13px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
     color:rgba(255,255,255,.75); margin:0 0 14px;
+    opacity:0; transform:translateY(28px);
+    transition:opacity .9s cubic-bezier(.19,.74,.24,1), transform .9s cubic-bezier(.19,.74,.24,1);
   }
   .p-meta span{ margin:0 10px; opacity:.5; }
   .p-hero-title{
     margin:0; font-family:'Figtree'; font-weight:900; letter-spacing:-.02em; line-height:.98;
     font-size:clamp(38px,7vw,96px); text-transform:uppercase;
     text-shadow:0 0 24px rgba(0,0,0,.25);
+    opacity:0; transform:translateY(32px);
+    transition:opacity .9s cubic-bezier(.19,.74,.24,1) .12s, transform .9s cubic-bezier(.19,.74,.24,1) .12s;
+  }
+  .p-hero.ready .p-meta,
+  .p-hero.ready .p-hero-title{
+    opacity:1; transform:translateY(0);
   }
 
   /* ===== DESCRIPTION BLOCKS (текст на зразок Services — слово-за-словом знизу вгору) ===== */
@@ -390,6 +398,10 @@
       document.getElementById('metaText').innerHTML =
         (CATEGORY_LABELS[project.category] || project.category) +
         ' <span>•</span> ' + project.location + ' <span>•</span> ' + project.year;
+      requestAnimationFrame(()=> requestAnimationFrame(()=>{
+        const heroEl = document.querySelector('.p-hero');
+        if(heroEl) heroEl.classList.add('ready');
+      }));
 
       /* --- ОПИС + ГАЛЕРЕЯ: інтерлівінг фото і текстових блоків за полем afterPhoto --- */
       const flow = document.getElementById('contentFlow');

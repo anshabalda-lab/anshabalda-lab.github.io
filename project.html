@@ -143,11 +143,27 @@
     font-family:'Figtree'; font-size:13px; font-weight:700; letter-spacing:.18em; text-transform:uppercase;
     color:rgba(255,255,255,.75); margin:0 0 14px;
   }
-  .p-meta span{ margin:0 10px; opacity:.5; }
+  /* Крапки-роздільники тепер на рівень глибше (усередині маски .hero-line > span). */
+  .p-meta .hero-line > span > span{ margin:0 10px; opacity:.5; }
   .p-hero-title{
     margin:0; font-family:'Figtree'; font-weight:900; letter-spacing:-.02em; line-height:.98;
     font-size:clamp(38px,7vw,96px); text-transform:uppercase;
     text-shadow:0 0 24px rgba(0,0,0,.25);
+  }
+
+  /* ===== Поява hero: місто (мета-рядок) піднімається першим, потім назва.
+     Кожен рядок ховається під власною маскою (overflow:hidden) і виїжджає знизу. */
+  .hero-line{ display:block; overflow:hidden; padding:.06em 0; margin:-.06em 0; }
+  .hero-line > span{
+    display:block;
+    transform:translateY(115%);
+    opacity:0;
+    transition:transform .7s cubic-bezier(.16,.84,.24,1), opacity .5s ease;
+    transition-delay:var(--hero-d, 0ms);
+  }
+  .hero-in .hero-line > span{ transform:translateY(0); opacity:1; }
+  @media (prefers-reduced-motion: reduce){
+    .hero-line > span{ transform:none; opacity:1; transition:none; }
   }
 
   /* ===== DESCRIPTION BLOCKS (текст на зразок Services — слово-за-словом знизу вгору) ===== */
@@ -390,6 +406,38 @@
       document.getElementById('metaText').innerHTML =
         (CATEGORY_LABELS[project.category] || project.category) +
         ' <span>•</span> ' + project.location + ' <span>•</span> ' + project.year;
+
+      /* --- Поява hero: місто (мета) піднімається першим, потім назва --- */
+      (function(){
+        const meta = document.getElementById('metaText');
+        const title = document.getElementById('heroTitle');
+        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if(!meta || !title) return;
+
+        // Обгортаємо наявний вміст у маску .hero-line > span (зберігаючи innerHTML мети).
+        function mask(el, delay){
+          const inner = el.innerHTML;
+          el.classList.add('hero-line');
+          el.style.setProperty('--hero-d', delay + 'ms');
+          el.innerHTML = '<span>' + inner + '</span>';
+        }
+        mask(meta, 0);     // місто/мета — перше
+        mask(title, 140);  // назва — слідом
+
+        if(reduce){
+          document.getElementById('hero').classList.add('hero-in');
+          return;
+        }
+        // Стартуємо після того, як hero-фото готове (щоб поява збіглася з картинкою).
+        const hero = document.getElementById('hero');
+        const trigger = ()=> requestAnimationFrame(()=> requestAnimationFrame(()=> hero.classList.add('hero-in')));
+        if(heroImg.complete && heroImg.naturalWidth){ trigger(); }
+        else {
+          heroImg.addEventListener('load', trigger, {once:true});
+          heroImg.addEventListener('error', trigger, {once:true});
+          setTimeout(trigger, 800); // страховка
+        }
+      })();
 
       /* --- ОПИС + ГАЛЕРЕЯ: інтерлівінг фото і текстових блоків за полем afterPhoto --- */
       const flow = document.getElementById('contentFlow');

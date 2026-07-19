@@ -377,6 +377,32 @@ const PROJECTS = [
         text: 'The spa zone shifts into an even deeper, muted register: warm wood, dark marble and sculptural fabric ceiling fixtures resembling a cloud or coral reef create an almost meditative atmosphere. The massage rooms, both single and double, are finished in a terracotta-brown palette with backlit marble panels, while a circular mirror with contour lighting behind the treatment bed\'s headrest serves as a calm focal point. The waiting area in front of the spa is furnished with deep burgundy velvet armchairs and dried grasses in tall vases, continuing the salon\'s overall palette in its most intimate, darkest expression. Here light, material and form work together toward a single feeling: full immersion in calm, away from the everyday rhythm of the day.'
       }
     ]
+  },
+  {
+    id: '11',
+    title: 'jangel m40',
+    category: 'private',
+    year: '2023',
+    location: 'Kyiv',
+    folder: 'projects/11-jangel-m40/',
+    hero: 'hero.webp',
+    photos: [
+      { file: '01.webp' },
+      { file: '02.webp' },
+      { file: '03.webp' },
+      { file: '04.webp' },
+      { file: '05.webp' },
+      { file: '06.webp' },
+      { file: '07.webp' },
+      { file: '08.webp' },
+      { file: '09.webp' }  
+     ],
+    descriptions: [
+      {
+        afterPhoto: 0,
+        text: 'A 40 m² apartment. A compact space built on the interplay of minimalist white surfaces, light warm wood and terrazzo. The kitchen and dining area are combined into one zone with slim black chairs and a round mirror on the wall instead of conventional decor, while the living room rests on a neutral grey sofa with bright orange and white side tables as the space\'s single color accent. The bathroom is finished in warm terracotta terrazzo with wood fronts and glass blocks in place of a conventional window, letting in natural light without sacrificing privacy. Overall, the interior shows that even a small footprint can feel spacious through a light palette, restrained furniture forms and carefully placed pops of color.'
+      }
+    ]
   }
 
   // Наступні проєкти додавай сюди тим самим блоком, наприклад:

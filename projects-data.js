@@ -333,6 +333,50 @@ const PROJECTS = [
         text: 'The main area rests on the contrast between warm light wood, white subway tile and emerald-green tile on the bar counter. A metal frame with glass shelving and hanging planters marks the visual boundary between the bar and the seating area while staying light and see-through. The waiting or checkout zone takes on a bolder contrast: dark green walls, a display shelving unit for retail products and a round terracotta table give the space character and a slightly curated, gallery-like feel. The restroom continues the brand\'s green palette, now expressed through ceramic tile and graphic wallpaper, showing that the brand color was carried through to the last room. Altogether, the interior works toward the feel of a small, stylish spot people want to return to precisely because of its recognizable, consistent aesthetic.'
       }
     ]
+  },
+  {
+    id: '10',
+    title: 'dream',
+    category: 'commercial',
+    year: '2023',
+    location: 'Kyiv',
+    folder: 'projects/10-dream/',
+    hero: 'hero.webp',
+    photos: [
+      { file: '01.webp' },
+      { file: '02.webp' },
+      { file: '03.webp' },
+      { file: '04.webp' },
+      { file: '05.webp' },
+      { file: '06.webp' },
+      { file: '07.webp' },
+      { file: '08.webp' },
+      { file: '09.webp' },
+      { file: '10.webp' },
+      { file: '11.webp' },
+      { file: '12.webp' },
+      { file: '13.webp' },
+      { file: '14.webp' },
+      { file: '15.webp' },
+      { file: '16.webp' },
+      { file: '17.webp' },
+      { file: '18.webp' },
+      { file: '19.webp' }     
+     ],
+    descriptions: [
+      {
+        afterPhoto: 0,
+        text: 'A 360 m² beauty salon. The common zone, reception and corridors, is built on the contrast between a warm powder-beige space and bold neon accents: illuminated lettering on the mirrors, wavy light lines on the ceiling and sculpted corridor curves create an almost scenographic effect. Burgundy velvet poufs, dried pampas grass and branches with red blossoms add natural texture, while a marble vanity with a backlit oval mirror and colored glass inserts turn even the restroom\'s utilitarian function into part of the brand\'s overall emotional experience.'
+      },
+      {
+        afterPhoto: 9,
+        text: 'The treatment rooms continue the salon\'s overall aesthetic but shift into a more functional, clinical register. A light wood palette, glass shelving displaying cosmetic products and ring-shaped LED fixtures above each treatment chair create the soft, even lighting procedures require, while built-in wash basins and marble countertops keep the same level of premium finish found in the waiting areas. Each room is designed as a self-contained, calm space: rounded chair forms, hidden baseboard lighting and minimal decorative elements let the client focus on the treatment itself rather than the interior.'
+      },
+      {
+        afterPhoto: 13,
+        text: 'The spa zone shifts into an even deeper, muted register: warm wood, dark marble and sculptural fabric ceiling fixtures resembling a cloud or coral reef create an almost meditative atmosphere. The massage rooms, both single and double, are finished in a terracotta-brown palette with backlit marble panels, while a circular mirror with contour lighting behind the treatment bed\'s headrest serves as a calm focal point. The waiting area in front of the spa is furnished with deep burgundy velvet armchairs and dried grasses in tall vases, continuing the salon\'s overall palette in its most intimate, darkest expression. Here light, material and form work together toward a single feeling: full immersion in calm, away from the everyday rhythm of the day.'
+      }
+    ]
   }
 
   // Наступні проєкти додавай сюди тим самим блоком, наприклад:

@@ -536,8 +536,7 @@ const PROJECTS = [
       { file: '21.webp' },
       { file: '22.webp' },
       { file: '23.webp' },
-      { file: '24.webp' },
-      { file: '25.webp' }               
+      { file: '24.webp' }               
      ],
     descriptions: [
       {

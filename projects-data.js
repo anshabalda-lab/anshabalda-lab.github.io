@@ -466,6 +466,43 @@ const PROJECTS = [
         text: 'The private areas of the house continue the same warm wood palette but in a more restrained register: bedrooms with soft velvet headboards, hidden contour lighting and the same stone accent carried up from the ground floor. The bathrooms take on a bolder contrast, finished in dark marble with bronze veining and warm-lit niches, giving even the utilitarian rooms a sense of considered, almost hotel-like luxury.'
       }
     ]
+  },
+  {
+    id: '14',
+    title: 'nn house',
+    category: 'private',
+    year: '2025',
+    location: 'Kyiv',
+    folder: 'projects/14-nn-house/',
+    hero: 'hero.webp',
+    photos: [
+      { file: '01.webp' },
+      { file: '02.webp' },
+      { file: '03.webp' },
+      { file: '04.webp' },
+      { file: '05.webp' },
+      { file: '06.webp' },
+      { file: '07.webp' },
+      { file: '08.webp' },
+      { file: '09.webp' },
+      { file: '10.webp' },
+      { file: '11.webp' },
+      { file: '12.webp' },
+      { file: '13.webp' },
+      { file: '14.webp' },
+      { file: '15.webp' },
+      { file: '16.webp' }         
+     ],
+    descriptions: [
+      {
+        afterPhoto: 0,
+        text: 'An 85 m² apartment. The space is finished in a restrained graphite-and-wood palette with tall panoramic windows and a city view that becomes a genuine part of the interior. The living room and kitchen-dining area are combined into one open zone: a mirrored wall behind the kitchen visually extends the space, and a dark woven rug with wood paneling adds an evening, muted atmosphere.'
+      },
+      {
+        afterPhoto: 6,
+        text: 'The bedroom rests on a calm duet of light wood and a glass-fronted walk-in closet with hidden lighting, while the bathroom takes a bold contrast into deep matte black, almost free of decoration, focusing instead on the form and texture of the stone. The kids\' room is the only place that breaks from the home\'s restrained palette: mustard-and-terracotta accents, an illustrated wall piece and a soft corner sofa create a warm, playful nook within an otherwise adult, understated interior.'
+      }
+    ]
   }
 
   // Наступні проєкти додавай сюди тим самим блоком, наприклад:

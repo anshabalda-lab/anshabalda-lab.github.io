@@ -503,6 +503,56 @@ const PROJECTS = [
         text: 'The bedroom rests on a calm duet of light wood and a glass-fronted walk-in closet with hidden lighting, while the bathroom takes a bold contrast into deep matte black, almost free of decoration, focusing instead on the form and texture of the stone. The kids\' room is the only place that breaks from the home\'s restrained palette: mustard-and-terracotta accents, an illustrated wall piece and a soft corner sofa create a warm, playful nook within an otherwise adult, understated interior.'
       }
     ]
+  },
+  {
+    id: '15',
+    title: 'k25 terracota',
+    category: 'private',
+    year: '2025',
+    location: 'Kyiv',
+    folder: 'projects/15-k25-terracota/',
+    hero: 'hero.webp',
+    photos: [
+      { file: '01.webp' },
+      { file: '02.webp' },
+      { file: '03.webp' },
+      { file: '04.webp' },
+      { file: '05.webp' },
+      { file: '06.webp' },
+      { file: '07.webp' },
+      { file: '08.webp' },
+      { file: '09.webp' },
+      { file: '10.webp' },
+      { file: '11.webp' },
+      { file: '12.webp' },
+      { file: '13.webp' },
+      { file: '14.webp' },
+      { file: '15.webp' },
+      { file: '16.webp' },
+      { file: '17.webp' },
+      { file: '18.webp' },
+      { file: '19.webp' },
+      { file: '20.webp' },
+      { file: '21.webp' },
+      { file: '22.webp' },
+      { file: '23.webp' },
+      { file: '24.webp' },
+      { file: '25.webp' }               
+     ],
+    descriptions: [
+      {
+        afterPhoto: 0,
+        text: 'A two-story house of 120 sq m, where a warm color palette and textured materials create a calm, home-like environment for a family. The layout combines the living room, kitchen, and dining area into a single shared space, while the private zones, bedrooms, bathrooms, and the children\'s room, keep a more intimate character. A recurring element throughout is the combination of warm wood, natural stone, and weathered metal finishes, giving the interior a sense of warmth without excessive decoration.'
+      },
+      {
+        afterPhoto: 8,
+        text: 'The living room is organized around a fireplace clad in a weathered metal panel, with a firewood niche and open shelving with ceramics nearby. The kitchen continues the material story: a terracotta countertop, walnut toned facades, and a sculptural chandelier above the island.'
+      },
+      {
+        afterPhoto: 16,
+        text: 'The bathrooms use terracotta tile, stone, and concrete, with a backlit round mirror adding sculptural detail. The main bathroom tub sits beneath an angled window, dark marble balanced by soft textiles. The children\'s room is lighter in tone, with beige finishes, a climbing wall with a ball pit, and closed storage for toys.'
+      }
+    ]
   }
 
   // Наступні проєкти додавай сюди тим самим блоком, наприклад:

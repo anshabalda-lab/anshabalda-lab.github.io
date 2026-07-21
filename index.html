@@ -913,14 +913,6 @@
       transition:background .25s ease, color .25s ease;
     }
     .cm-submit-btn:hover{ background:#111; color:#fff; }
-    .cm-submit-btn:disabled{ opacity:.5; cursor:default; }
-    .cm-submit-btn:disabled:hover{ background:transparent; color:#111; }
-    .cm-form-status{
-      margin:12px 0 0; min-height:1.4em;
-      font-family:'Roboto'; font-weight:600; letter-spacing:.03em;
-      font-size:clamp(11px,.9vw,13px); color:#111;
-    }
-    .cm-form-status.error{ color:#b32d2d; }
 
     /* ---- Нижній бар: на всю ширину екрана, як фото зверху ---- */
     .cm-bottom-bar{
@@ -1302,7 +1294,7 @@
               <div class="city-name-contact">KYIV <span class="city-arrow-contact"></span></div>
               <div class="city-data-contact">
                 <div class="city-data-inner-contact">
-                  <a href="tel:+380671234567">+380 67 123 4567</a><br>Kyiv, Ukraine
+                  <a href="tel:+380634042353">+380 63 404 23 53</a><br>Kyiv, Ukraine
                 </div>
               </div>
             </div>
@@ -1310,7 +1302,7 @@
               <div class="city-name-contact">BRATISLAVA <span class="city-arrow-contact"></span></div>
               <div class="city-data-contact">
                 <div class="city-data-inner-contact">
-                  <a href="tel:+421901123456">+421 901 123 456</a><br>Bratislava, Slovakia
+                  <a href="tel:+421949770482">+421 949 770 482</a><br>Bratislava, Slovakia
                 </div>
               </div>
             </div>
@@ -1331,20 +1323,19 @@
               <div class="cm-field-row">
                 <div class="cm-field">
                   <label for="cmName">Name</label>
-                  <input type="text" id="cmName" name="name" placeholder="" required>
+                  <input type="text" id="cmName" name="name" placeholder="">
                 </div>
                 <div class="cm-field">
                   <label for="cmPhone">Phone</label>
-                  <input type="tel" id="cmPhone" name="phone" placeholder="" required>
+                  <input type="tel" id="cmPhone" name="phone" placeholder="">
                 </div>
               </div>
               <div class="cm-field">
                 <label for="cmEmail">Email</label>
-                <input type="email" id="cmEmail" name="email" placeholder="" required>
+                <input type="email" id="cmEmail" name="email" placeholder="">
               </div>
             </div>
-            <button type="submit" class="cm-submit-btn">Send email</button>
-            <p class="cm-form-status" id="cmFormStatus" aria-live="polite"></p>
+            <button type="button" class="cm-submit-btn">Send email</button>
           </form>
         </div>
       </div>
@@ -1369,14 +1360,14 @@
         <div class="cm-city" data-item="kyiv">
           <h3 class="cm-city-name">KYIV<span class="cm-dot"></span></h3>
           <div class="cm-city-detail">
-            <div class="cm-detail-line"><span class="cm-detail-label">P.</span><a href="tel:+380671234567">+380 67 123 4567</a></div>
+            <div class="cm-detail-line"><span class="cm-detail-label">P.</span><a href="tel:+380634042353">+380 63 404 23 53</a></div>
             <div class="cm-detail-line"><span class="cm-detail-label">A.</span><span>Kyiv, Ukraine</span></div>
           </div>
         </div>
         <div class="cm-city" data-item="bratislava">
           <h3 class="cm-city-name">BRATISLAVA<span class="cm-dot"></span></h3>
           <div class="cm-city-detail">
-            <div class="cm-detail-line"><span class="cm-detail-label">P.</span><a href="tel:+421901123456">+421 901 123 456</a></div>
+            <div class="cm-detail-line"><span class="cm-detail-label">P.</span><a href="tel:+421949770482">+421 949 770 482</a></div>
             <div class="cm-detail-line"><span class="cm-detail-label">A.</span><span>Bratislava, Slovakia</span></div>
           </div>
         </div>
@@ -2191,43 +2182,10 @@
       });
     });
 
-    /* ===== CONTACT — форма: відправка заявки через Formspree ===== */
+    /* ===== CONTACT — кнопка форми: поки що макет, нічого не відправляє ===== */
     (function(){
-      const form = document.getElementById('mockForm');
-      const status = document.getElementById('cmFormStatus');
-      const btn = form ? form.querySelector('.cm-submit-btn') : null;
-      if (!form || !btn) return;
-
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        status.textContent = '';
-        status.classList.remove('error');
-        btn.disabled = true;
-        const originalLabel = btn.textContent;
-        btn.textContent = 'Sending...';
-
-        try {
-          const response = await fetch('https://formspree.io/f/mnjezjvd', {
-            method: 'POST',
-            headers: { 'Accept': 'application/json' },
-            body: new FormData(form)
-          });
-
-          if (response.ok) {
-            status.textContent = 'Thank you, we\u2019ll get back to you shortly.';
-            form.reset();
-          } else {
-            status.textContent = 'Something went wrong. Please try again or email us directly.';
-            status.classList.add('error');
-          }
-        } catch (err) {
-          status.textContent = 'Something went wrong. Please try again or email us directly.';
-          status.classList.add('error');
-        } finally {
-          btn.disabled = false;
-          btn.textContent = originalLabel;
-        }
-      });
+      const btn = document.querySelector('.cm-submit-btn');
+      if (btn) btn.addEventListener('click', () => { /* форма поки не підключена */ });
     })();
 
     /* ===== MOBILE Contact — великі назви міст (<768px) =====

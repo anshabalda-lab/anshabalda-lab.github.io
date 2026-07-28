@@ -6,10 +6,6 @@
 <meta name="theme-color" content="#ffffff">
 <meta name="color-scheme" content="light">
 <title>Services — FORM·A dsgn</title>
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="icon" href="/icon-32.png" type="image/png" sizes="32x32">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <link rel="manifest" href="/site.webmanifest">
 <style>
   /* ===== Custom fonts (ідентично index.html / contact.html) ===== */
   @font-face{
@@ -30,29 +26,6 @@
     --side-pad: max(28px, calc((100vw - 1600px)/2 + 28px));
   }
   *{box-sizing:border-box} html{overflow-x:hidden; scrollbar-gutter:stable;}
-
-  /* ===== PRELOADER (як на contact/projects): білий фон, F-O-R-M-A.
-     Тримає екран, поки не готові шрифти (щоб виміри висоти каруселей були
-     точні) і hero-фото, потім ховається — контент виїжджає через page-reveal. */
-  .preloader{
-    position:fixed; inset:0; z-index:9999; background:#fff;
-    display:flex; align-items:center; justify-content:center;
-    transition:opacity .5s ease, visibility 0s linear 0s;
-  }
-  .preloader.hide{
-    opacity:0; visibility:hidden;
-    transition:opacity .5s ease, visibility 0s linear .5s;
-    pointer-events:none;
-  }
-  .preloader-mark{
-    font-family:'Figtree'; font-weight:900; text-transform:uppercase;
-    font-size:clamp(90px,15vw,170px); color:#111; line-height:1;
-    width:clamp(90px,15vw,170px); height:clamp(90px,15vw,170px);
-    display:flex; align-items:center; justify-content:center;
-    opacity:0; transition:opacity .15s ease;
-  }
-  .preloader-mark.font-ready{ opacity:1; }
-  html.is-loading{ overflow:hidden; }
   @media (min-width:768px){ html{ overscroll-behavior-y:none; } body{ overscroll-behavior-y:none; } }
   body{margin:0;background:var(--bg);color:var(--ink);
        font:16px/1.55 'Roboto',system-ui,-apple-system,'Segoe UI',Inter,Arial;
@@ -140,7 +113,6 @@
     display:flex; flex-direction:column;
     min-height:calc(var(--vh, 1vh) * 100);
   }
-  @supports (min-height:100dvh){ .svc-page-flex{ min-height:100dvh; } }
   #services-page{
     flex:1 1 auto;
     display:flex; flex-direction:column;
@@ -237,6 +209,17 @@
     background:#fff;
     transform:scale(1.25);
   }
+
+  .svc-next{
+    display:inline-flex; align-items:center; gap:10px;
+    margin-top:16px;
+    background:none; border:none; padding:0; cursor:pointer;
+    font-family:'Roboto'; font-weight:600; font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    color:#111; opacity:.6;
+    transition:opacity .2s ease, gap .2s ease;
+  }
+  .svc-next:hover{ opacity:1; gap:14px; }
+  .svc-next svg{ width:22px; height:9px; display:block; }
 
   .svc-desc-wrap{
     position:relative;
@@ -359,11 +342,6 @@
 </style>
 </head>
 <body>
-  <!-- PRELOADER -->
-  <div class="preloader" id="preloader">
-    <div class="preloader-mark" id="preloaderMark">F</div>
-  </div>
-
   <!-- NAV -->
   <div class="nav" role="navigation" aria-label="Primary">
     <div class="wrap">
@@ -372,9 +350,9 @@
           <a class="link" href="projects.html">PROJECTS</a>
           <a class="link current" href="services.html">SERVICES</a>
         </div>
-        <a class="brand" href="/" id="brandLink">FORM·A</a>
+        <a class="brand" href="index.html" id="brandLink">FORM·A</a>
         <div class="right">
-          <a class="link" href="about.html">ABOUT</a>
+          <a class="link" href="index.html#about">ABOUT</a>
           <a class="link" href="contact.html">CONTACT</a>
         </div>
         <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false">
@@ -390,13 +368,13 @@
 
   <div class="mobile-menu" id="mobileMenu">
     <nav class="mobile-menu-links">
-      <a href="/#intro" class="mobile-link">HOME</a>
+      <a href="index.html#intro" class="mobile-link">HOME</a>
       <a href="projects.html" class="mobile-link">PROJECTS</a>
       <a href="services.html" class="mobile-link">SERVICES</a>
-      <a href="about.html" class="mobile-link">ABOUT</a>
+      <a href="index.html#about" class="mobile-link">ABOUT</a>
       <a href="contact.html" class="mobile-link">CONTACT</a>
     </nav>
-    <a href="https://www.instagram.com/form.a_dsgn/" target="_blank" class="mobile-instagram">Instagram</a>
+    <a href="https://instagram.com" target="_blank" class="mobile-instagram">Instagram</a>
   </div>
 
   <div class="page-reveal" id="pageReveal">
@@ -432,6 +410,10 @@
               <p class="svc-desc">On site, drawings become volume: concrete, timber and glass are assembled with the same discipline as the plan. Every junction and structural decision is checked against the original intent, so nothing is lost between paper and reality. We stay closely involved through this stage, visiting the site regularly to resolve details as they come up, rather than leaving that judgement entirely to the build team.</p>
               <p class="svc-desc">Every project starts as a line on paper: proportion, orientation and light considered long before a single wall exists. We study the site, the sun path and the surrounding context until the plan feels inevitable rather than imposed. Early sketches are tested against orientation, privacy and how the building will be approached, long before floor plans are finalised.</p>
             </div>
+            <button class="svc-next" type="button" data-dir="1">
+              <span>Next</span>
+              <svg viewBox="0 0 24 10" fill="none"><path d="M0 5H22M22 5L17 1M22 5L17 9" stroke="currentColor" stroke-width="1"/></svg>
+            </button>
           </div>
 
           <!-- INTERIOR DESIGN -->
@@ -460,6 +442,10 @@
               <p class="svc-desc">Visualization lets us test light and atmosphere in detail before construction starts, so surprises are resolved on screen rather than on site.</p>
               <p class="svc-desc">The finished interior carries that original idea through, quiet and considered in every corner. Nothing is decorative for its own sake, every choice still serves the same atmosphere we set out to create.</p>
             </div>
+            <button class="svc-next" type="button" data-dir="1">
+              <span>Next</span>
+              <svg viewBox="0 0 24 10" fill="none"><path d="M0 5H22M22 5L17 1M22 5L17 9" stroke="currentColor" stroke-width="1"/></svg>
+            </button>
           </div>
 
           <!-- TURNKEY -->
@@ -488,6 +474,10 @@
               <p class="svc-desc">Paint, texture and finish are chosen together, tested against real light before anything is applied. Samples are reviewed on site, in the actual room, so what looks right on a board also looks right in daylight. We track every decision against a shared reference so nothing is left to memory once work is underway.</p>
               <p class="svc-desc">Every specification is documented precisely, so execution matches the design without compromise. Contractors work from a single clear reference, which keeps the finished result faithful to what was originally agreed. If a substitution is ever needed on site, it's checked against the same standard before it's approved, so the final result never quietly drifts from the plan.</p>
             </div>
+            <button class="svc-next" type="button" data-dir="1">
+              <span>Next</span>
+              <svg viewBox="0 0 24 10" fill="none"><path d="M0 5H22M22 5L17 1M22 5L17 9" stroke="currentColor" stroke-width="1"/></svg>
+            </button>
           </div>
 
         </div>
@@ -509,64 +499,16 @@
   <div id="cursor-dot"></div>
 
   <script>
-    /* ===== PRELOADER + поява сторінки =====
-       Preloader тримає екран, поки не готові шрифти (щоб виміри висоти
-       каруселей були точні) і перші фото, і лише тоді показує контент через
-       page-reveal — без стрибка layout. Страховка 3с. */
+    /* ===== Поява сторінки ===== */
     (function(){
-      const preloader = document.getElementById('preloader');
-      const mark = document.getElementById('preloaderMark');
       const reveal = document.getElementById('pageReveal');
-      document.documentElement.classList.add('is-loading');
-
-      const LETTERS = ['F','O','R','M','A'];
-      let li = 0;
-      const letterTimer = setInterval(()=>{
-        li = (li + 1) % LETTERS.length;
-        if(mark) mark.textContent = LETTERS[li];
-      }, 250);
-
-      if(mark){
-        const showMark = ()=> mark.classList.add('font-ready');
-        if(document.fonts && document.fonts.load){
-          document.fonts.load('900 170px Figtree').then(showMark).catch(showMark);
-          setTimeout(showMark, 600);
-        } else { showMark(); }
-      }
-
-      let done = false;
-      function hide(){
-        if(done) return; done = true;
-        clearInterval(letterTimer);
-        if(preloader) preloader.classList.add('hide');
-        document.documentElement.classList.remove('is-loading');
-        if(reveal){
-          requestAnimationFrame(()=> requestAnimationFrame(()=> reveal.classList.add('in')));
-          reveal.addEventListener('transitionend', ()=>{ reveal.style.transform = 'none'; }, {once:true});
-        }
-      }
-
-      // Чекаємо перші фото сторінки (перший слайд кожної каруселі) + шрифти.
-      const firstImgs = Array.from(document.querySelectorAll('.svc-slide')).slice(0, 3);
-      const imgReady = firstImgs.map(img=>{
-        if(img.complete && img.naturalWidth) return Promise.resolve();
-        return new Promise(res=>{
-          img.addEventListener('load', res, {once:true});
-          img.addEventListener('error', res, {once:true});
-        });
+      if(!reveal) return;
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => reveal.classList.add('in'));
       });
-      const fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
-      Promise.all([...imgReady, fontsReady]).then(hide);
-      setTimeout(hide, 3000); // страховка
-
-      // Повернення з bfcache: показуємо контент, знімаємо preloader.
-      window.addEventListener('pageshow', function(e){
-        if(e.persisted){
-          document.documentElement.classList.remove('is-loading');
-          if(preloader) preloader.classList.add('hide');
-          if(reveal){ reveal.classList.add('in'); reveal.style.transform = 'none'; reveal.style.opacity = '1'; }
-        }
-      });
+      reveal.addEventListener('transitionend', () => {
+        reveal.style.transform = 'none';
+      }, { once: true });
     })();
 
     /* ===== Burger / MENU-fab ===== */
@@ -635,11 +577,10 @@
       }, {passive:true});
 
       window.addEventListener('orientationchange', function(){
-        // Кілька перерахунків після повороту — iOS віддає innerHeight не одразу.
-        [100, 300, 600].forEach(delay => setTimeout(function(){
+        setTimeout(function(){
           lastWidth = window.innerWidth;
           setStableVH();
-        }, delay));
+        }, 300);
       });
     })();
 
@@ -724,7 +665,6 @@
     /* ===== Кожна картка Services — незалежна карусель фото.
        Гортання вручну (стрілки або свайп), слайд "наїжджає" збоку. ===== */
     (function(){
-      const measurers = []; // всі measureDescHeight — оновлюємо одним спільним resize
       document.querySelectorAll('[data-carousel]').forEach(wrap => {
         const track = wrap.querySelector('.svc-track');
         const slides = wrap.querySelectorAll('.svc-slide');
@@ -737,7 +677,9 @@
         const descs = descWrap ? descWrap.querySelectorAll('.svc-desc') : [];
 
         /* резервуємо висоту блока під найдовший варіант тексту,
-           щоб фото над ним ніколи не зсувалось при перемиканні. */
+           щоб фото над ним ніколи не зсувалось при перемиканні.
+           Перераховуємо і при resize — розмір тексту міняється на
+           ширших планшетах (iPad Pro), тож висота має оновлюватись. */
         function measureDescHeight(){
           if (!descWrap || !descs.length) return;
           descs.forEach(d => { d.style.position = 'static'; });
@@ -746,7 +688,11 @@
           descWrap.style.height = maxH + 'px';
         }
         measureDescHeight();
-        measurers.push(measureDescHeight);
+        let descResizeT;
+        window.addEventListener('resize', () => {
+          clearTimeout(descResizeT);
+          descResizeT = setTimeout(measureDescHeight, 220);
+        }, {passive:true});
 
         const dots = wrap.querySelectorAll('.svc-dot');
 
@@ -779,6 +725,17 @@
           });
         });
 
+        /* тонка стрілка "Next" під текстом — та сама логіка гортання */
+        if (col){
+          const nextBtn = col.querySelector('.svc-next');
+          if (nextBtn){
+            nextBtn.addEventListener('click', (e) => {
+              e.preventDefault();
+              go(parseInt(nextBtn.dataset.dir, 10));
+            });
+          }
+        }
+
         /* свайп на тач-екранах */
         let startX = 0, isTouch = false;
         wrap.addEventListener('touchstart', (e) => {
@@ -790,14 +747,6 @@
           if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
         }, {passive:true});
       });
-
-      // ОДИН спільний resize оновлює висоту всіх каруселей (замість окремого
-      // listener-а на кожну з трьох колонок).
-      let measureT;
-      window.addEventListener('resize', () => {
-        clearTimeout(measureT);
-        measureT = setTimeout(()=> measurers.forEach(fn => fn()), 220);
-      }, {passive:true});
     })();
 
     /* ===== Cursor dot follower ===== */
@@ -806,28 +755,26 @@
       if(!dot || matchMedia('(any-pointer: coarse)').matches) return;
       let x = window.innerWidth/2, y = window.innerHeight/2, targetX = x, targetY = y;
       const speed = 0.2;
-      let running = false;
+      window.addEventListener('mousemove', (e)=>{ targetX = e.clientX; targetY = e.clientY; });
       function animate() {
         x += (targetX - x) * speed;
         y += (targetY - y) * speed;
         dot.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-        if (Math.abs(targetX - x) < 0.1 && Math.abs(targetY - y) < 0.1){ running = false; return; }
         requestAnimationFrame(animate);
       }
-      window.addEventListener('mousemove', (e)=>{
-        targetX = e.clientX; targetY = e.clientY;
-        if(!running){ running = true; requestAnimationFrame(animate); }
-      });
+      animate();
     })();
 
-    /* ===== Поворот екрана: будимо resize-залежні виміри (groupLines, висоти
-       каруселей). VH-перерахунок робить власний orientationchange вище. ===== */
+    /* ===== Надійна обробка повороту екрану (orientationchange) ===== */
     (function(){
       function forceRecalc(){
         window.dispatchEvent(new Event('resize'));
       }
       window.addEventListener('orientationchange', function(){
-        [100, 300, 600].forEach(d => setTimeout(forceRecalc, d));
+        forceRecalc();
+        setTimeout(forceRecalc, 100);
+        setTimeout(forceRecalc, 300);
+        setTimeout(forceRecalc, 600);
       });
     })();
   </script>

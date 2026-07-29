@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111111">
+<meta name="color-scheme" content="light">
+<title>Privacy Policy — FORM·A dsgn</title>
+  <meta name="description" content="How FORM·A dsgn collects, uses and protects information submitted through this website.">
+  <link rel="canonical" href="https://formadsgn.com/privacy-policy.html">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="FORM·A dsgn">
+  <meta property="og:title" content="Privacy Policy — FORM·A dsgn">
+  <meta property="og:description" content="How FORM·A dsgn collects, uses and protects information submitted through this website.">
+  <meta property="og:image" content="https://formadsgn.com/hero.webp">
+  <meta property="og:url" content="https://formadsgn.com/privacy-policy.html">
+  <meta property="og:locale" content="en_US">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Privacy Policy — FORM·A dsgn">
+  <meta name="twitter:description" content="How FORM·A dsgn collects, uses and protects information submitted through this website.">
+  <meta name="twitter:image" content="https://formadsgn.com/hero.webp">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" href="/icon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+<style>
+  /* ===== Fonts (ідентично іншим сторінкам) ===== */
+  @font-face{
+    font-family:'Figtree';
+    src:url('Figtree-VariableFont_wght.ttf') format('truetype-variations'),
+        url('Figtree-VariableFont_wght.ttf') format('truetype');
+    font-weight:300 900; font-style:normal; font-display:swap;
+  }
+  @font-face{
+    font-family:'Roboto';
+    src:url('Roboto-VariableFont_wdth,wght.ttf') format('truetype-variations'),
+        url('Roboto-VariableFont_wdth,wght.ttf') format('truetype');
+    font-weight:100 900; font-style:normal; font-display:swap;
+  }
+
+  :root{
+    --bg:#111; --ink:#111; --wrap:1600px;
+    --side-pad: max(28px, calc((100vw - 1600px)/2 + 28px));
+  }
+  *{box-sizing:border-box} html{overflow-x:hidden; scrollbar-gutter:stable;}
+  body{margin:0;background:#111;color:#fff;
+       font:16px/1.55 'Roboto',system-ui,-apple-system,'Segoe UI',Inter,Arial;
+       -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  a{color:inherit;text-decoration:none}
+
+  /* ===== NAV ===== */
+  .nav{position:fixed;top:0;left:0;width:100%;height:96px;display:flex;align-items:center;z-index:60;
+       background:#111;}
+  .nav .brand, .nav .link{ color:#fff; opacity:.95; }
+  .nav .link:hover{ opacity:1; }
+  .nav .wrap{width:100%;padding:0 28px;max-width:var(--wrap);margin:0 auto;}
+  .nav .inner{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;width:100%;gap:16px;}
+  .left,.right{display:flex;gap:28px;align-items:center;}
+  .right{justify-content:flex-end;}
+  .brand{font-family:'Figtree';font-weight:900;letter-spacing:.06em;color:#fff;font-size:34px;}
+  .nav .link{font-family:'Figtree';font-size:18px;letter-spacing:.06em;text-transform:uppercase;color:#fff;opacity:.75;}
+  .nav .link.current{ opacity:1; }
+
+  .burger{ display:none; position:relative; width:32px; height:22px;
+    background:none; border:none; cursor:pointer; padding:0; z-index:80; justify-self:end; }
+  .burger span{ position:absolute; left:0; right:0; height:2px; background:#fff; transition:transform .3s ease, opacity .3s ease; }
+  .burger span:first-child{ top:4px; } .burger span:last-child{ top:16px; }
+
+  @media (max-width:999px){
+    .nav .inner{grid-template-columns:1fr auto 1fr;}
+    .left{display:none;} .right{display:none;}
+    .nav .wrap{padding:0 20px;}
+    .burger{display:flex; align-items:center; grid-column:2; justify-self:end;}
+    .nav{ align-items:flex-start !important; padding-top:20px !important; height:84px !important; z-index:300 !important; }
+    .nav .inner{ grid-template-columns:auto 1fr !important; }
+    .brand{ font-size:22px !important; grid-column:1 !important; justify-self:start !important; }
+    .burger{ grid-column:2 !important; align-self:center !important; width:auto !important; height:auto !important; }
+    .burger span{ display:none !important; }
+    .burger::after{ content:"MENU"; font-size:14px !important; font-weight:700; letter-spacing:.1em; color:#fff; line-height:1 !important; }
+    body.menu-active .burger::after{ content:"CLOSE" !important; }
+  }
+
+  /* ===== Мобільне меню ===== */
+  .mobile-menu{ position:fixed; top:0; left:0; width:100%; height:100%; z-index:200; background:#000;
+    display:flex; flex-direction:column; align-items:flex-start; justify-content:center;
+    padding:0 clamp(24px,6vw,80px); pointer-events:none; transform:translateY(-100%); visibility:hidden;
+    transition:transform .75s cubic-bezier(.16,.84,.24,1), visibility 0s linear .75s; }
+  .mobile-menu.open{ pointer-events:auto; transform:translateY(0); visibility:visible;
+    transition:transform .75s cubic-bezier(.16,.84,.24,1), visibility 0s linear 0s; }
+
+  .mobile-menu-links{ display:flex; flex-direction:column; align-items:flex-start; gap:0; width:100%; }
+  .mobile-link{ font-family:'Figtree'; font-size:clamp(32px,5.5vw,64px); font-weight:400; line-height:0.95;
+    color:#fff; text-transform:uppercase; text-align:left; letter-spacing:.02em;
+    opacity:0; transform:translateY(16px); transition:opacity .4s ease, transform .4s ease; }
+  .mobile-menu.open .mobile-link{ opacity:1; transform:translateY(0); }
+  .mobile-menu.open .mobile-link:nth-child(1){ transition-delay:.05s; }
+  .mobile-menu.open .mobile-link:nth-child(2){ transition-delay:.10s; }
+  .mobile-menu.open .mobile-link:nth-child(3){ transition-delay:.15s; }
+  .mobile-menu.open .mobile-link:nth-child(4){ transition-delay:.20s; }
+  .mobile-menu.open .mobile-link:nth-child(5){ transition-delay:.25s; }
+  .mobile-instagram{ position:absolute; bottom:32px; left:clamp(24px,6vw,80px); color:#fff; font-family:'Figtree';
+    font-size:14px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; text-decoration:none;
+    opacity:0; transform:translateY(10px); transition:opacity .4s ease, transform .4s ease; }
+  .mobile-menu.open .mobile-instagram{ opacity:1; transform:translateY(0); transition-delay:.3s; }
+
+  /* ===== LEGAL CONTENT ===== */
+  .legal-page{ padding:clamp(140px,18vh,190px) var(--side-pad) clamp(80px,10vh,120px); }
+  .legal-inner{ max-width:760px; margin:0 auto; }
+  .legal-eyebrow{
+    margin:0 0 18px; font-family:'Figtree'; font-weight:700; font-size:13px;
+    letter-spacing:.18em; text-transform:uppercase; color:rgba(255,255,255,.55);
+  }
+  .legal-title{
+    margin:0 0 12px; font-family:'Figtree'; font-weight:900; letter-spacing:-.01em;
+    text-transform:uppercase; line-height:1.05; color:#fff;
+    font-size:clamp(32px,5vw,56px);
+  }
+  .legal-updated{
+    margin:0 0 56px; font-family:'Roboto'; font-size:13px; letter-spacing:.04em;
+    color:rgba(255,255,255,.5);
+  }
+  .legal-inner h2{
+    font-family:'Figtree'; font-weight:800; font-size:clamp(18px,1.6vw,22px);
+    letter-spacing:-.01em; color:#fff; margin:48px 0 14px;
+  }
+  .legal-inner h2:first-of-type{ margin-top:0; }
+  .legal-inner p{
+    font-family:'Roboto'; font-weight:400; font-size:15px; line-height:1.75;
+    color:rgba(255,255,255,.78); margin:0 0 16px;
+  }
+  .legal-inner ul{ margin:0 0 16px; padding-left:20px; }
+  .legal-inner li{
+    font-family:'Roboto'; font-weight:400; font-size:15px; line-height:1.75;
+    color:rgba(255,255,255,.78); margin-bottom:8px;
+  }
+  .legal-inner a.inline{ color:#fff; text-decoration:underline; text-underline-offset:2px; }
+  .legal-back{
+    display:inline-flex; align-items:center; gap:10px; margin-top:56px;
+    font-family:'Roboto'; font-size:13px; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
+    color:#fff; padding-bottom:6px; position:relative;
+  }
+  .legal-back::before{
+    content:''; position:absolute; left:0; bottom:0; width:100%; height:1px;
+    background:rgba(255,255,255,.45); transition:background .25s ease;
+  }
+  .legal-back:hover::before{ background:#fff; }
+
+  /* ===== Footer ===== */
+  .legal-foot{
+    border-top:1px solid rgba(255,255,255,.12);
+    padding:24px var(--side-pad) calc(24px + env(safe-area-inset-bottom,0px));
+    font-family:'Roboto'; font-weight:600; font-size:12px; letter-spacing:.1em;
+    text-transform:uppercase; color:rgba(255,255,255,.5);
+  }
+</style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <div class="nav" role="navigation" aria-label="Primary">
+    <div class="wrap">
+      <div class="inner">
+        <div class="left">
+          <a class="link" href="projects.html">PROJECTS</a>
+          <a class="link" href="services.html">SERVICES</a>
+        </div>
+        <a class="brand" href="/" id="brandLink">FORM·A</a>
+        <div class="right">
+          <a class="link" href="about.html">ABOUT</a>
+          <a class="link" href="contact.html">CONTACT</a>
+        </div>
+        <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false">
+          <span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <nav class="mobile-menu-links">
+      <a href="/#intro" class="mobile-link">HOME</a>
+      <a href="projects.html" class="mobile-link">PROJECTS</a>
+      <a href="services.html" class="mobile-link">SERVICES</a>
+      <a href="about.html" class="mobile-link">ABOUT</a>
+      <a href="contact.html" class="mobile-link">CONTACT</a>
+    </nav>
+    <a href="https://www.instagram.com/form.a_dsgn/" target="_blank" class="mobile-instagram">Instagram</a>
+  </div>
+
+  <section class="legal-page">
+    <div class="legal-inner">
+      <p class="legal-eyebrow">(LEGAL)</p>
+      <h1 class="legal-title">Privacy Policy</h1>
+      <p class="legal-updated">Last updated: July 29, 2026</p>
+
+      <h2>Who we are</h2>
+      <p>FORM·A dsgn is an architecture and interior design studio working between Kyiv, Ukraine and Bratislava, Slovakia. This website (formadsgn.com) is our studio portfolio. This policy explains what information we collect through the site and how it is used.</p>
+
+      <h2>What we collect</h2>
+      <p>We do not use analytics tools, advertising pixels or tracking cookies of any kind. The only personal information we collect is what you choose to submit yourself, through the contact form on this site: your name, phone number and email address.</p>
+
+      <h2>How we use it</h2>
+      <p>Information submitted through the contact form is used only to respond to your inquiry — for example, to get in touch about a potential project. We do not use it for marketing, and we do not sell, rent or share it with third parties, other than the service that delivers the form submission to us (see below).</p>
+
+      <h2>Form processing</h2>
+      <p>Our contact form is handled by <a class="inline" href="https://formspree.io" target="_blank" rel="noopener">Formspree</a>, a third-party form-delivery service that forwards your submission to our email inbox. Formspree processes this data on our behalf; we encourage you to review <a class="inline" href="https://formspree.io/legal/privacy-policy" target="_blank" rel="noopener">Formspree's own privacy policy</a> for details on how they handle data in transit.</p>
+
+      <h2>Cookies</h2>
+      <p>This site does not set cookies for analytics, advertising or tracking purposes. Any cookies present are limited to what your browser or GitHub Pages hosting uses to serve the site itself, and are not used to identify or profile visitors.</p>
+
+      <h2>How long we keep it</h2>
+      <p>We keep messages received through the contact form only as long as needed to respond to your inquiry and for reasonable record-keeping afterwards. You can ask us to delete your information at any time — see "Your rights" below.</p>
+
+      <h2>Where your data is processed</h2>
+      <p>This site is hosted on GitHub Pages. Form submissions are processed by Formspree. Both are used by studios and businesses worldwide, including within the EU; if you are located in the European Union, this means your data may be processed outside your country in the course of these services being provided.</p>
+
+      <h2>Your rights</h2>
+      <p>You can ask us at any time to tell you what information we hold about you, to correct it, or to delete it. To do so, just email us directly.</p>
+
+      <h2>Contact</h2>
+      <p>Questions about this policy, or requests regarding your data, can be sent to <a class="inline" href="mailto:formadsgn.studio@gmail.com">formadsgn.studio@gmail.com</a>.</p>
+
+      <h2>Changes to this policy</h2>
+      <p>We may update this policy from time to time as the site evolves. The date at the top of this page reflects the most recent update.</p>
+
+      <a class="legal-back" href="/">← Back to home</a>
+    </div>
+  </section>
+
+  <div class="legal-foot">© 2026 FORM·A DSGN</div>
+
+  <script>
+    (function(){
+      const burgerBtn = document.getElementById('burgerBtn');
+      const mobileMenu = document.getElementById('mobileMenu');
+      if(!burgerBtn || !mobileMenu) return;
+      function openMobileMenu(){
+        mobileMenu.classList.add('open'); document.body.classList.add('menu-active');
+        burgerBtn.setAttribute('aria-expanded','true');
+      }
+      function closeMobileMenu(){
+        mobileMenu.classList.remove('open'); document.body.classList.remove('menu-active');
+        burgerBtn.setAttribute('aria-expanded','false');
+      }
+      function toggleMobileMenu(){ mobileMenu.classList.contains('open') ? closeMobileMenu() : openMobileMenu(); }
+      burgerBtn.addEventListener('click', toggleMobileMenu);
+    })();
+  </script>
+</body>
+</html>

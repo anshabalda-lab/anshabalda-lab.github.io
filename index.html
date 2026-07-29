@@ -282,7 +282,7 @@
     .center{text-align:center;padding:0 1rem}
     .p-title{margin:0 0 6px 0;font-family:'Figtree';font-weight:900;letter-spacing:-.01em;line-height:1;font-size:clamp(28px,5.4vw,64px);text-shadow:0 0 18px rgba(0,0,0,.35);text-transform:uppercase}
     .p-sub{margin:0 0 12px 0;font-family:'Roboto';color:#d0d0d0;opacity:.9;font-size:clamp(14px,2.2vw,16px);text-transform:uppercase;
-           display:flex;justify-content:space-between;align-items:center;width:auto;margin-left:auto;margin-right:auto;letter-spacing:.04em}
+           display:flex;justify-content:space-between;align-items:center;width:auto;margin-left:auto;margin-right:auto;letter-spacing:.04em;gap:16px}
     .p-actions{display:flex;justify-content:center;gap:12px}
     .btn{
       pointer-events:auto;
@@ -1815,7 +1815,13 @@
        getBoundingClientRect(), бо заголовок різної довжини і різного
        розміру шрифту на різних екранах. */
     function syncSubWidthToTitle(){
-      const w = pTitle.getBoundingClientRect().width;
+      const titleW = pTitle.getBoundingClientRect().width;
+      /* Знімаємо обмеження ширини, щоб виміряти природну (мінімально потрібну)
+         ширину самого підрядка — інакше на коротких заголовках (напр. "DREAM")
+         текст категорії/локації/року стискається і зливається без пробілів. */
+      pSub.style.width = 'auto';
+      const naturalW = pSub.getBoundingClientRect().width;
+      const w = Math.max(titleW, naturalW);
       if(w > 0) pSub.style.width = w + 'px';
     }
     window.addEventListener('resize', syncSubWidthToTitle);
